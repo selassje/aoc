@@ -4,7 +4,6 @@
 #include <sstream>
 #include <iostream>
 
-
 #include "inputs.hpp"
 
 using std::vector;
@@ -12,11 +11,8 @@ using NestedVector = vector<vector<unsigned int>>;
 
 static NestedVector readInput(const std::string_view path) {
 
-    std::ifstream ifs{"F:\\Repos\\aoc22\\tests\\input\\day1\\example.txt"};
-    //std::ifstream ifs{"example.txt"};
-    auto r = ifs.rdstate();
-    
-    
+    std::ifstream ifs{path.data()};
+       
     NestedVector input;
     vector<unsigned int> caloriesPerElf{};
 
@@ -41,8 +37,6 @@ static NestedVector readInput(const std::string_view path) {
 
 
 int main(int argc, const char *argv[]) {
-
-    std::cout << "Hello World" << std::endl;
 
     auto input = readInput(inputs::day1::EXAMPLE);
     for (const auto &elf : input)

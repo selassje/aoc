@@ -1,3 +1,6 @@
+#ifndef INPUTS_HPP
+#define INPUTS_HPP
+
 #include <string_view>
 
 namespace inputs {
@@ -7,3 +10,4 @@ namespace inputs {
     }
 }
 
+#endif

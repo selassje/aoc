@@ -1,6 +1,7 @@
+#include  <numeric>
+#include  <algorithm>
+
 namespace day1 {
-    #include  <numeric>
-    #include  <algorithm>
     
     template<typename R, typename Iterator>
     R solve(const Iterator &begin, const Iterator &end) noexcept

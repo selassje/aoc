@@ -4,10 +4,10 @@
 #include <string_view>
 
 namespace inputs {
-    namespace day1 {
-        constexpr std::string_view INPUT = "@INPUTS_DAY1_INPUT@";
-        constexpr std::string_view EXAMPLE = "@INPUTS_DAY1_EXAMPLE@";
-    }
+namespace day1 {
+constexpr std::string_view INPUT = "@INPUTS_DAY1_INPUT@";
+constexpr std::string_view EXAMPLE = "@INPUTS_DAY1_EXAMPLE@";
+}
 }
 
 #endif

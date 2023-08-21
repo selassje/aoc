@@ -41,7 +41,7 @@ static NestedVector readInput(const std::string_view path) {
 static bool test(unsigned int expected_part1, unsigned int expected_part2, std::string_view input_file )
 {
     auto input = readInput(input_file);
-    auto [part_1, part_2] = aoc22::day1::solve(input.begin(), input.end());
+    auto [part_1, part_2] = aoc22::day1::solve(input);
     return expected_part1 == part_1 && expected_part2 == part_2;
 }
 

@@ -38,16 +38,17 @@ static NestedVector readInput(const std::string_view path) {
     return input;
 }
 
-static bool test(unsigned int expected, std::string_view input_file )
+static bool test(unsigned int expected_part1, unsigned int expected_part2, std::string_view input_file )
 {
     auto input = readInput(input_file);
-    return expected == aoc22::day1::solve(input.begin(), input.end());
+    auto [part_1, part_2] = aoc22::day1::solve(input.begin(), input.end());
+    return expected_part1 == part_1 && expected_part2 == part_2;
 }
 
 
 int main() 
 {
-    return test(24000, inputs::day1::EXAMPLE) &&
-           test(70613, inputs::day1::INPUT) ?  0 : 1;
+    return test(24000, 45000,  inputs::day1::EXAMPLE) &&
+           test(70613, 205805, inputs::day1::INPUT) ?  0 : 1;
 
 }

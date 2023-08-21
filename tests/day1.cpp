@@ -1,10 +1,12 @@
+#include "inputs.hpp"
+#include "day1.hpp"
+
 #include <vector>
 #include <string_view>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-#include "inputs.hpp"
 
 using std::vector;
 using NestedVector = vector<vector<unsigned int>>;
@@ -32,20 +34,20 @@ static NestedVector readInput(const std::string_view path) {
             caloriesPerElf.push_back(calories);
         }
     }
+    input.push_back(caloriesPerElf);
     return input;
 }
 
+static bool test(unsigned int expected, std::string_view input_file )
+{
+    auto input = readInput(input_file);
+    return expected == aoc22::day1::solve(input.begin(), input.end());
+}
 
-int main(int argc, const char *argv[]) {
 
-    auto input = readInput(inputs::day1::EXAMPLE);
-    for (const auto &elf : input)
-    {
-        for(const auto &calories : elf)
-        {
-            std::cout << calories << std::endl;
-        }
-        std::cout << std::endl;
-    }
-    return 1;
+int main() 
+{
+    return test(24000, inputs::day1::EXAMPLE) &&
+           test(70613, inputs::day1::INPUT) ?  0 : 1;
+
 }

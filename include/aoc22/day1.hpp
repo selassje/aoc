@@ -10,10 +10,10 @@ namespace day1 {
 template<typename T>
 concept nested_unsigned_range = std::ranges::range<T> && requires(T& t) {
   {
-    *std::ranges::begin(t)
+    std::ranges::range_value_t<T>{}
   } -> std::ranges::range;
   {
-    std::decay_t<decltype(*std::ranges::begin(*std::ranges::begin(t)))>{}
+    std::ranges::range_value_t<std::ranges::range_value_t<T>>{}
   } -> std::unsigned_integral;
 };
 

@@ -1,5 +1,6 @@
 #include "day1.hpp"
 #include "inputs.hpp"
+#include <catch2/catch.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -35,21 +36,17 @@ readInput(const std::string_view path)
   return input;
 }
 
-static bool
-test(unsigned int expected_part1,
-     unsigned int expected_part2,
-     std::string_view input_file)
-{
-  auto input = readInput(input_file);
-  auto [part_1, part_2] = aoc22::day1::solve(input);
-  return expected_part1 == part_1 && expected_part2 == part_2;
+TEST_CASE( "Day1 Example", "[Day1]" ) {
+   auto input = readInput(inputs::day1::EXAMPLE);
+   auto [part_1, part_2] = aoc22::day1::solve(input);
+   REQUIRE( part_1 == 24000 );
+   REQUIRE( part_2 == 45000 );
 }
 
-int
-main()
-{
-  return test(24000, 45000, inputs::day1::EXAMPLE) &&
-             test(70613, 205805, inputs::day1::INPUT)
-           ? 0
-           : 1;
+TEST_CASE( "Day1 Input", "[Day1]" ) {
+   auto input = readInput(inputs::day1::INPUT);
+   auto [part_1, part_2] = aoc22::day1::solve(input);
+   REQUIRE( part_1 == 70613 );
+   REQUIRE( part_2 == 205805 );
 }
+

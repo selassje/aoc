@@ -1,10 +1,12 @@
+cmake_minimum_required(VERSION 3.5)
+
 include(CTest)
 
 set(CMAKE_CXX_STANDARD 20)
 
 include("cmake/configure_input_paths.cmake")
 
-set(CATCH_BUILD_STATIC_LIBRARY ON)
+set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
 add_executable(Day1 day1.cpp)

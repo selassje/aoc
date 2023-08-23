@@ -14,6 +14,7 @@ option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
 add_executable(Day1 day1.cpp)
 
 if(ENABLE_CLANG_TIDY)
+    message("Clang-tidy enabled")
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
     set_target_properties(Day1 PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 endif()

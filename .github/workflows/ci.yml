@@ -14,4 +14,6 @@ jobs:
         run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
+      - name: Run Tests
+        run:  ctest --test-dir build -R Day1 --output-on-failure
       

@@ -10,13 +10,16 @@
 namespace aoc22::day1 {
 
 template<typename T>
-concept nested_unsigned_range = std::ranges::range<T> && requires(T& t) {
+concept nested_unsigned_range = std::ranges::range<T>&& requires(T& t)
+{
   {
-    std::ranges::range_value_t<T>{}
-  } -> std::ranges::range;
+    std::ranges::range_value_t<T> {}
+  }
+  ->std::ranges::range;
   {
-    std::ranges::range_value_t<std::ranges::range_value_t<T>>{}
-  } -> std::unsigned_integral;
+    std::ranges::range_value_t<std::ranges::range_value_t<T>> {}
+  }
+  ->std::unsigned_integral;
 };
 
 auto

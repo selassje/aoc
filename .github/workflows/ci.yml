@@ -10,6 +10,9 @@ jobs:
           submodules: true
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
+
+      - name: CMake version
+        run:  cmake --version
       - name: Configure
         run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
       - name: Build Tests

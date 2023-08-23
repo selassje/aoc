@@ -9,4 +9,4 @@ Checks: "*,
          -readability-identifier-length
          "
 WarningsAsErrors: "*"
-HeaderFilterRegex: "day1.hpp"
+HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)"

@@ -1,5 +1,5 @@
-#ifndef AOC22_INPUTS_HPP_IN
-#define AOC22_INPUTS_HPP_IN
+#ifndef AOC22_BUILD_TESTS_INPUTS_HPP  // NOLINT
+#define AOC22_BUILD_TESTS_INPUTS_HPP
 
 #include <string_view>
 

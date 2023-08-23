@@ -13,7 +13,7 @@ find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
 cmake_path(NATIVE_PATH CLANG_TIDY_EXE CLANG_TIDY_EXE)
 
 add_executable(Day1 day1.cpp)
-set_target_properties(Day1 PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE};")
+set_target_properties(Day1 PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
 
 target_include_directories(Day1 PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
                                 PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)

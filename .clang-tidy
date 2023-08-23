@@ -1,5 +1,4 @@
 Checks: "*,
-         -clang-diagnostic-unused-command-line-argument,
          -llvmlibc-*, 
          -fuchsia-default-arguments-calls,
          -google-readability-namespace-comments,

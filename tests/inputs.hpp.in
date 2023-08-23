@@ -1,13 +1,11 @@
-#ifndef INPUTS_HPP
-#define INPUTS_HPP
+#ifndef AOC22_INPUTS_HPP_IN
+#define AOC22_INPUTS_HPP_IN
 
 #include <string_view>
 
-namespace inputs {
-namespace day1 {
-constexpr std::string_view INPUT = "@INPUTS_DAY1_INPUT@";
-constexpr std::string_view EXAMPLE = "@INPUTS_DAY1_EXAMPLE@";
-}
+namespace inputs::day1 {
+constexpr std::string_view INPUT = R"(@INPUTS_DAY1_INPUT@)";
+constexpr std::string_view EXAMPLE = R"(@INPUTS_DAY1_EXAMPLE@)";
 }
 
 #endif

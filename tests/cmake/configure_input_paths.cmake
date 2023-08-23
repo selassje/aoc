@@ -1,8 +1,6 @@
 macro(to_native path)
     cmake_path(NATIVE_PATH ${path} ${path})
-    STRING(REGEX REPLACE "\\\\" "\\\\\\\\" ${path} ${${path}})
 endmacro()
-
 
 cmake_path(SET ROOT "${CMAKE_CURRENT_SOURCE_DIR}/inputs")
 

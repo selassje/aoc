@@ -11,7 +11,9 @@
 using std::vector;
 using NestedVector = vector<vector<unsigned int>>;
 
-static NestedVector
+namespace {
+
+NestedVector
 readInput(const std::string_view path)
 {
 
@@ -27,13 +29,15 @@ readInput(const std::string_view path)
       caloriesPerElf.clear();
     } else {
       std::istringstream iss{ line };
-      unsigned int calories;
+      unsigned int calories = 0;
       iss >> calories;
       caloriesPerElf.push_back(calories);
     }
   }
   input.push_back(caloriesPerElf);
   return input;
+}
+
 }
 
 TEST_CASE( "Day1 Example", "[Day1]" ) {

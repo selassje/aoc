@@ -1,0 +1,13 @@
+Checks: "*,
+         -clang-diagnostic-unused-command-line-argument,
+         -llvmlibc-*, 
+         -fuchsia-default-arguments-calls,
+         -google-readability-namespace-comments,
+         -llvm-namespace-comment,
+         -modernize-use-trailing-return-type,
+         -altera-id-dependent-backward-branch,
+         -altera-unroll-loops,
+         -readability-identifier-length
+         "
+WarningsAsErrors: "*"
+HeaderFilterRegex: "day1.hpp"

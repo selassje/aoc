@@ -40,17 +40,18 @@ readInput(const std::string_view path)
 
 }
 
-TEST_CASE( "Day1 Example", "[Day1]" ) {
-   auto input = readInput(inputs::day1::EXAMPLE);
-   auto [part_1, part_2] = aoc22::day1::solve(input);
-   REQUIRE( part_1 == 24000 );
-   REQUIRE( part_2 == 45000 );
+TEST_CASE("Day1 Example", "[Day1]")
+{
+  auto input = readInput(inputs::day1::EXAMPLE);
+  auto [part_1, part_2] = aoc22::day1::solve(input);
+  REQUIRE(part_1 == 24000);
+  REQUIRE(part_2 == 45000);
 }
 
-TEST_CASE( "Day1 Input", "[Day1]" ) {
-   auto input = readInput(inputs::day1::INPUT);
-   auto [part_1, part_2] = aoc22::day1::solve(input);
-   REQUIRE( part_1 == 70613 );
-   REQUIRE( part_2 == 205805 );
+TEST_CASE("Day1 Input", "[Day1]")
+{
+  auto input = readInput(inputs::day1::INPUT);
+  auto [part_1, part_2] = aoc22::day1::solve(input);
+  REQUIRE(part_1 == 70613);
+  REQUIRE(part_2 == 205805);
 }
-

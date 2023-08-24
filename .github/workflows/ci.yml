@@ -1,7 +1,7 @@
 name: AoC22 CI
 on: [push]
 jobs:
-  build_and_test:
+  build_and_test_ubuntu:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,4 +22,39 @@ jobs:
         run:  ctest --test-dir build -R Day1 --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format
-      
+  build_and_test_windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          submodules: true
+      - name: Install Ninja
+        run:  choco install Ninja
+      - name: Install LLVM
+        run:  choco install llvm
+      - name: CMake version
+        run:  cmake --version
+      - name: Clang format version
+        run:  clang-format --version
+      - name: Configure
+        run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
+      - name: Build Tests
+        run:  cmake --build build --config Release --target Day1
+      - name: Run Tests
+        run:  ctest --test-dir build -R Day1 --output-on-failure
+      - name: Check Formating
+        run:  cmake --build build --config Release --target clang-format
+      - name: CMake version
+        run:  cmake --version
+      - name: Clang format version
+        run:  clang-format --version
+      - name: Configure
+        run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
+      - name: Build Tests
+        run:  cmake --build build --config Release --target Day1
+      - name: Run Tests
+        run:  ctest --test-dir build -R Day1 --output-on-failure
+      - name: Check Formating
+        run:  cmake --build build --config Release --target clang-format       
+  

@@ -10,4 +10,6 @@ cmake_path(SET INPUTS_DAY1_EXAMPLE "${ROOT}/day1/example.txt")
 to_native(INPUTS_DAY1_EXAMPLE)
 to_native(INPUTS_DAY1_INPUT)
 
+cmake_path(SET INPUTS_DAY2_INPUT "${ROOT}/day2/input.txt")
+
 configure_file(inputs.hpp.in inputs.hpp)

@@ -29,14 +29,14 @@ jobs:
         uses: actions/checkout@v3
         with: 
           submodules: true
-      - name: Install Ninja
-        run:  choco install Ninja
+     # - name: Install Ninja
+    # £   run:  choco install Ninja
       - name: CMake version
         run:  cmake --version
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
+        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests

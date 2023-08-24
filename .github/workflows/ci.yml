@@ -36,7 +36,7 @@ jobs:
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON
+        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -G Ninja
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests

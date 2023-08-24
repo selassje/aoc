@@ -10,8 +10,8 @@ jobs:
           submodules: true
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
-      - name: Install LLVM 
-        run:  sudo apt-get upgrade llvm
+      - name: Install Clang Format 
+        run:  sudo apt-get upgrade clang-format
       - name: CMake version
         run:  cmake --version
       - name: Clang format version

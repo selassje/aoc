@@ -24,6 +24,8 @@ jobs:
         run:  ctest --test-dir build -R Day1 --output-on-failure
   build_and_test_windows:
     runs-on: windows-latest
+    env:
+        CXX: clang
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,7 +38,7 @@ jobs:
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -G Ninja
+        run:  ${CXX} = clang cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -G Ninja
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests

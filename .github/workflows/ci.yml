@@ -30,7 +30,7 @@ jobs:
       - name: CMake version
         run:  cmake --version
       - name: Install LLVM 
-        run:  choco install llvm
+        run:  choco upgrade llvm
       - name: Clang format version
         run:  clang-format --version
       - name: Configure

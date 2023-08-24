@@ -22,7 +22,7 @@ jobs:
         run:  ctest --test-dir build -R Day1 --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format    
-  build_and_test_windos:
+  build_and_test_windows:
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -40,6 +40,6 @@ jobs:
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests
-        run:  ctest --test-dir build -R Day1 --output-on-failure
+        run:  ctest --test-dir build --config Release -R Day1 --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format

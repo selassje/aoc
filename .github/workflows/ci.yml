@@ -10,6 +10,8 @@ jobs:
           submodules: true
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
+      - name: Install LLVM 
+        run:  choco upgrade llvm
       - name: CMake version
         run:  cmake --version
       - name: Clang format version

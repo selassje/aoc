@@ -6,8 +6,7 @@ Checks: "*,
          -modernize-use-trailing-return-type,
          -altera-id-dependent-backward-branch,
          -altera-unroll-loops,
-         -readability-identifier-length,
-         -fuchsia-statically-constructed-objects
+         -readability-identifier-length
          "
 WarningsAsErrors: "*"
 HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)"

@@ -19,7 +19,7 @@ namespace aoc22::day2
             return static_cast<unsigned int>(m);
         }
         
-        const std::unordered_map<Move,Move> beats{ {Rock, Sciscors}, {Sciscors,Paper},{Paper,Rock} }; 
+        const std::unordered_map<Move,Move> beats{ {Rock, Sciscors}, {Sciscors,Paper},{Paper,Rock} }; //NOLINT
 
         constexpr unsigned int evaluateOutcome(Move oponent, Move you) {
             using enum Outcome;

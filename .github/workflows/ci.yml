@@ -11,8 +11,8 @@ jobs:
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
       - name: Install Clang Format 
-        run:  wget https://apt.llvm.org/llvm.sh
-              chmod +x llvm.sh
+        run:  wget https://apt.llvm.org/llvm.sh &&
+              chmod +x llvm.sh &&
               sudo ./llvm.sh 16
       - name: CMake version
         run:  cmake --version

@@ -13,7 +13,7 @@ jobs:
       - name: Install Clang Format 
         run:  wget https://apt.llvm.org/llvm.sh &&
               chmod +x llvm.sh &&
-              sudo ./llvm.sh 16
+              sudo ./llvm.sh 16 all
       - name: CMake version
         run:  cmake --version
       - name: Clang format version

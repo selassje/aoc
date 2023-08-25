@@ -13,7 +13,7 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
       - name: Uninstall LLVM
-        run:  sudo apt-get uninstall llvm
+        run:  sudo apt-get remove llvm
       - name: Install LLVM 
         uses: KyleMayes/install-llvm-action@v1
         with:

@@ -7,9 +7,9 @@
 #include <sstream>
 #include <vector>
 
-using namespace aoc22::day2;
+using aoc22::day2::Guide;
 
-using enum Move;
+using enum aoc22::day2::Move;
 
 
 Guide
@@ -38,10 +38,10 @@ readInput(const std::string_view path)
         case 'Z':
           return Sciscors;
         default:
-          throw;
+          std::terminate();
       }
     };
-    input.push_back(std::make_pair(converToMove(oponent), converToMove(you)));
+    input.emplace_back(std::make_pair(converToMove(oponent), converToMove(you)));
   }
   return input;
 }

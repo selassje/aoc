@@ -1,4 +1,5 @@
 #include "day2.hpp"
+#include <unordered_map>
 #include <numeric>
 namespace aoc22::day2
 {
@@ -11,27 +12,22 @@ namespace aoc22::day2
 
     namespace 
     {
+        using enum Move;
+        
         constexpr unsigned int evaluateMove(Move m) {
             return static_cast<unsigned int>(m);
         }
+        
+        const std::unordered_map<Move,Move> beats{ {Rock, Sciscors}, {Sciscors,Paper},{Paper,Rock} }; 
 
         constexpr unsigned int evaluateOutcome(Move oponent, Move you) {
             using enum Outcome;
-            using enum Move;
-
+            
             Outcome outcome {Draw};
 
             if (oponent != you) 
             {  
-                if ( (you == Rock && oponent == Sciscors) || (you == Sciscors && oponent == Paper) || (you == Paper && oponent == Rock) )
-                {
-                    outcome = Win;
-                }
-                else
-                {
-                    outcome = Loss;
-                }
-
+                outcome = beats.at(you) == oponent ? Win : Loss;
             }
             return static_cast<unsigned int>(outcome);
         }

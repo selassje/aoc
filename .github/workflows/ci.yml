@@ -19,7 +19,7 @@ jobs:
       - name: Configure
         run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
       - name: Build Tests
-        run:  cmake --build build --config Release --target Day1
+        run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build -R * --output-on-failure
   build_and_test_windows:
@@ -40,7 +40,7 @@ jobs:
       - name: Configure
         run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
       - name: Build Tests
-        run:  cmake --build build --config Release --target Day1
+        run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build -C Release -R * --output-on-failure
       - name: Check Formating

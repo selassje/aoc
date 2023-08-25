@@ -16,7 +16,7 @@ enum class Move : unsigned char
 
 using Guide = std::vector<std::pair<Move, Move>>;
 
-unsigned int
+std::pair<unsigned int, unsigned int>
 solve(const Guide& guide) noexcept;
 
 }

@@ -48,15 +48,17 @@ readInput(const std::string_view path)
 
 TEST_CASE("Day2 Example", "[Day2]")
 {
-  auto input =
+  const auto input =
     Guide{ { Rock, Paper }, { Paper, Rock }, { Sciscors, Sciscors } };
-  auto part_1 = aoc22::day2::solve(input);
+  const auto [part_1, part_2] = aoc22::day2::solve(input);
   REQUIRE(part_1 == 15);
+  REQUIRE(part_2 == 12);
 }
 
 TEST_CASE("Day2 Input", "[Day2]")
 {
-  auto input = readInput(inputs::day2::INPUT);
-  auto part_1 = aoc22::day2::solve(input);
+  const auto input = readInput(inputs::day2::INPUT);
+  const auto [part_1, part_2] = aoc22::day2::solve(input);
   REQUIRE(part_1 == 11767);
+  REQUIRE(part_2 == 13886);
 }

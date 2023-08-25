@@ -10,6 +10,8 @@ jobs:
           submodules: true
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
+      - name: Install Clang Format 
+        run:  sudo apt-get upgrade clang-format
       - name: CMake version
         run:  cmake --version
       - name: Clang format version
@@ -20,41 +22,27 @@ jobs:
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests
         run:  ctest --test-dir build -R Day1 --output-on-failure
-      - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format
   build_and_test_windows:
     runs-on: windows-latest
+    env:
+        CXX: clang
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with: 
           submodules: true
-      - name: Install Ninja
-        run:  choco install Ninja
-      - name: Install LLVM
-        run:  choco install llvm
       - name: CMake version
         run:  cmake --version
+      - name: Install LLVM 
+        run:  choco upgrade llvm
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
+        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
       - name: Build Tests
         run:  cmake --build build --config Release --target Day1
       - name: Run Tests
-        run:  ctest --test-dir build -R Day1 --output-on-failure
+        run:  ctest --test-dir build -C Release -R Day1 --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format
-      - name: CMake version
-        run:  cmake --version
-      - name: Clang format version
-        run:  clang-format --version
-      - name: Configure
-        run:  cmake -S . -B build -G Ninja -DENABLE_CLANG_TIDY:STRING=ON
-      - name: Build Tests
-        run:  cmake --build build --config Release --target Day1
-      - name: Run Tests
-        run:  ctest --test-dir build -R Day1 --output-on-failure
-      - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format       
   

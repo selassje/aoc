@@ -44,5 +44,5 @@ jobs:
       - name: Run Tests
         run:  ctest --test-dir build -C Release --output-on-failure
       - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format
+        run:  cmake --build build --config Release --target clang-format-check
   

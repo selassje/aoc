@@ -16,7 +16,7 @@ endif()
 add_subdirectory(src)
 add_subdirectory(tests)
 
-include(cmake/format.cmake)
+include(cmake/clang_format.cmake)
 
 unset(ENABLE_CLANG_TIDY CACHE)
 

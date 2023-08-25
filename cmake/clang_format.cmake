@@ -12,6 +12,13 @@ if(CLANG_FORMAT)
   add_custom_target(
     clang-format
     COMMAND clang-format
+    -i
+    -style=file
+    ${ALL_CXX_SOURCE_FILES}
+    )
+  add_custom_target(
+    clang-format-check
+    COMMAND clang-format
     -dry-run
     -style=file
     -Werror

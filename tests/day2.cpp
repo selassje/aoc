@@ -11,7 +11,6 @@ using aoc22::day2::Guide;
 
 using enum aoc22::day2::Move;
 
-
 Guide
 readInput(const std::string_view path)
 {
@@ -26,8 +25,8 @@ readInput(const std::string_view path)
     std::istringstream iss{ line };
     iss >> oponent >> you;
 
-    auto converToMove = [](unsigned char move){
-      switch(move) {
+    auto converToMove = [](unsigned char move) {
+      switch (move) {
         case 'A':
         case 'X':
           return Rock;
@@ -41,14 +40,16 @@ readInput(const std::string_view path)
           std::terminate();
       }
     };
-    input.emplace_back(std::make_pair(converToMove(oponent), converToMove(you)));
+    input.emplace_back(
+      std::make_pair(converToMove(oponent), converToMove(you)));
   }
   return input;
 }
 
 TEST_CASE("Day2 Example", "[Day2]")
 {
-  auto input = Guide{{Rock, Paper}, {Paper, Rock}, {Sciscors,Sciscors}};
+  auto input =
+    Guide{ { Rock, Paper }, { Paper, Rock }, { Sciscors, Sciscors } };
   auto part_1 = aoc22::day2::solve(input);
   REQUIRE(part_1 == 15);
 }

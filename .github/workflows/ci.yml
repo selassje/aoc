@@ -43,6 +43,8 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "16.0"
+      - name: CMake version
+        run:  cmake --version
       - name: Clang format version
         run:  clang-format --version
       - name: Configure

@@ -10,12 +10,10 @@ jobs:
           submodules: true
       - name: Install Ninja
         run:  sudo apt-get install ninja-build
-      - name: Install LLVM
-        run:  wget https://apt.llvm.org/llvm.sh &&
-              chmod +x llvm.sh &&
-              sudo ./llvm.sh 16 all &&
-              sudo ln -sf /usr/bin/clang-format-16 /usr/bin/clang-format &&
-              sudo ln -sf /usr/bin/clang-tidy-16 /usr/bin/clang-tidy
+      - name: Install LLVM 
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "16.0"
       - name: CMake version
         run:  cmake --version
       - name: Clang format version
@@ -40,7 +38,9 @@ jobs:
       - name: CMake version
         run:  cmake --version
       - name: Install LLVM 
-        run:  choco upgrade llvm
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "16.0"
       - name: Clang format version
         run:  clang-format --version
       - name: Configure

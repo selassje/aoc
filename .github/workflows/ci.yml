@@ -12,6 +12,8 @@ jobs:
           submodules: true
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
+      - name: Uninstall LLVM
+        run:  sudo apt-get uninstall llvm
       - name: Install LLVM 
         uses: KyleMayes/install-llvm-action@v1
         with:

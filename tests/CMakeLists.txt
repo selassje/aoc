@@ -8,13 +8,6 @@ include("cmake/configure_input_paths.cmake")
 set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
-option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
-
-
-if(ENABLE_CLANG_TIDY)
-    message("Clang-tidy enabled")
-    find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
-endif()
 
 foreach(i RANGE 1 2)
     set(TEST_NAME day${i})
@@ -33,6 +26,5 @@ foreach(i RANGE 1 2)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach()
     
-unset(ENABLE_CLANG_TIDY CACHE)
 
 

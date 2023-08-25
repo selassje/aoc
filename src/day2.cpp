@@ -1,6 +1,7 @@
 #include "day2.hpp"
-#include <unordered_map>
 #include <numeric>
+#include <unordered_map>
+#include <vector>
 namespace aoc22::day2
 {
     enum class Outcome : unsigned char

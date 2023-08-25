@@ -2,8 +2,8 @@
 #ifndef AOC22_DAY2_HPP
 #define AOC22_DAY2_HPP
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace aoc22::day2 {
 
@@ -15,7 +15,7 @@ enum class Move : unsigned char {
 
 using Guide = std::vector<std::pair<Move, Move>>;
 
-unsigned int solve(const Guide&) noexcept;
+unsigned int solve(const Guide& guide) noexcept;
 
 }
 

@@ -2,9 +2,7 @@ name: AoC22 CI
 on: [push]
 jobs:
   build_and_test_ubuntu:
-    runs-on: ubuntu-latest
-    env:
-        CXX: clang
+    runs-on: ubuntu-latest_gcc
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -28,8 +26,33 @@ jobs:
         run:  ctest --test-dir build --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
-  build_and_test_windows:
-    runs-on: windows-latest
+  build_and_test_windows_msvc:
+    runs-on: windows-latest_clang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          submodules: true
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+      - name: Install LLVM 
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "16.0"
+      - name: CMake version
+        run:  cmake --version
+      - name: Clang format version
+        run:  clang-format --version
+      - name: Configure
+        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
+      - name: Build Tests
+        run:  cmake --build build --config Release
+      - name: Run Tests
+        run:  ctest --test-dir build -C Release --output-on-failure
+      - name: Check Formating
+        run:  cmake --build build --config Release --target clang-format-check
+  build_and_test_windows_clang:
+    runs-on: windows-latest_clang
     env:
         CXX: clang
     steps:

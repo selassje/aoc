@@ -55,6 +55,8 @@ jobs:
         run:  cmake --build build --config Release --target clang-format-check
   build_and_test_windows_msvc:
     runs-on: windows-latest
+    env:
+        CXX: cl.exe
     steps:
       - name: Checkout
         uses: actions/checkout@v3

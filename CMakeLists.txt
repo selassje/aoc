@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 enable_testing()
 
-option(ENABLE_CLANG_TIDY "Enable Clang Tidy" ON)
+option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
 
 if(ENABLE_CLANG_TIDY)
     message("Clang-tidy enabled")

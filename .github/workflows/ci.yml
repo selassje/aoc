@@ -68,6 +68,8 @@ jobs:
           version: "16.0"
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
+        with:
+          arch: "x64"
       - name: CMake version
         run:  cmake --version
       - name: Clang format version

@@ -27,7 +27,7 @@ jobs:
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
   build_and_test_windows_msvc:
-    runs-on: windows-latest_clang
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -52,7 +52,7 @@ jobs:
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
   build_and_test_windows_clang:
-    runs-on: windows-latest_clang
+    runs-on: windows-latest
     env:
         CXX: clang
     steps:

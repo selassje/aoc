@@ -54,7 +54,7 @@ nextMove(Move oponent, Outcome desiredOutcome)
         }
       }
     default:
-      throw 0;
+      std::abort();
   }
 }
 }
@@ -74,7 +74,7 @@ solve(const Guide& guide)
       case Sciscors:
         return Win;
       default:
-        throw 0;
+        std::abort();
     }
   };
 

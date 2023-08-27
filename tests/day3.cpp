@@ -35,12 +35,16 @@ TEST_CASE("Day3 Example", "[Day3]")
     "ttgJtRGJQctTZtZT",         "CrZsJsPPZsGzwwsLwLmpwMDw"
   };
 
-  REQUIRE(157 == aoc22::day3::solve(input));
+  const auto [part_1, part_2] = aoc22::day3::solve(input);
+  REQUIRE(157 == part_1);
+  REQUIRE(70 == part_2);
 }
 
 TEST_CASE("Day3 Input", "[Day3]")
 {
   const auto input = readInput(inputs::day3::INPUT);
+  const auto [part_1, part_2] = aoc22::day3::solve(input);
 
-  REQUIRE(8243 == aoc22::day3::solve(input));
+  REQUIRE(part_1 == 8243);
+  REQUIRE(part_2 == 2631);
 }

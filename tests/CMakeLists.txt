@@ -9,7 +9,7 @@ set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
 
-foreach(i RANGE 1 2)
+foreach(i RANGE 1 3)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)

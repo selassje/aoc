@@ -53,12 +53,13 @@ nextMove(Move oponent, Outcome desiredOutcome)
           return m;
         }
       }
+    default:
+      throw 0;
   }
-  return Rock;
 }
 }
 std::pair<unsigned int, unsigned int>
-solve(const Guide& guide) noexcept
+solve(const Guide& guide)
 {
   auto evaluateRound = [](Move oponent, Move you) {
     return evaluateMove(you) + evaluateOutcome(oponent, you);
@@ -72,6 +73,8 @@ solve(const Guide& guide) noexcept
         return Draw;
       case Sciscors:
         return Win;
+      default:
+        throw 0;
     }
   };
 

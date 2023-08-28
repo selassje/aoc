@@ -54,6 +54,7 @@ nextMove(Move oponent, Outcome desiredOutcome)
           return m;
         }
       }
+      std::abort();
     default:
       std::abort();
   }

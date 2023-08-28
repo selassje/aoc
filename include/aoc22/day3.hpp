@@ -8,7 +8,7 @@
 namespace aoc22::day3 {
 
 std::pair<unsigned int, unsigned int>
-solve(const std::vector<std::string>& input) noexcept;
+solve(const std::vector<std::string>& input);
 
 }
 

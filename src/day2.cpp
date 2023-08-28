@@ -1,4 +1,5 @@
 #include "day2.hpp"
+#include <cstdlib>
 #include <numeric>
 #include <unordered_map>
 #include <vector>

@@ -8,9 +8,10 @@ jobs:
         os:  [ubuntu-latest, windows-latest]
         cxx: [clang++, g++, cl.exe]
         exclude:
-         - os: windows_latest
+         - os: windows-latest
            cxx: g++
-         - os: ubuntu_latest
+         - os: ubuntu-latest 
+           cxx: cl.exe
     runs-on: ${{ matrix.os }}
     env:
         CXX: ${{ matrix.cxx }}

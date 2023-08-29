@@ -1,8 +1,20 @@
 name: AoC22 CI
 on: [push]
 jobs:
-  build_and_test_ubuntu_gcc:
-    runs-on: ubuntu-latest
+  build_and_test:
+    name: Build and Test On ${{ matrix.os }} using ${{ matrix.cxx }}
+    strategy:
+      matrix:
+        os:  [ubuntu-latest, windows-latest]
+        cxx: [clang++, g++, cl.exe]
+        exclude:
+         - os: windows_latest 
+           version: g++
+         - os: ubuntu_latest 
+           version: cl.exe
+    runs-on: ${{ matrix.os }}
+    env:
+        CXX: ${{ matrix.cxx }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -24,90 +36,5 @@ jobs:
         run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build --output-on-failure
-      - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format-check
-  build_and_test_ubuntu_clang:
-    runs-on: ubuntu-latest
-    env:
-        CXX: clang++
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with: 
-          submodules: true
-      - name: Install Ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Install LLVM 
-        uses: KyleMayes/install-llvm-action@v1
-        with:
-          version: "16.0"
-      - name: CMake version
-        run:  cmake --version
-      - name: Clang format version
-        run:  clang-format --version
-      - name: Configure
-        run:  cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY:STRING=ON
-      - name: Build Tests
-        run:  cmake --build build --config Release
-      - name: Run Tests
-        run:  ctest --test-dir build --output-on-failure
-      - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format-check
-  build_and_test_windows_msvc:
-    runs-on: windows-latest
-    env:
-        CXX: cl.exe
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with: 
-          submodules: true
-      - name: Install Ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Install LLVM 
-        uses: KyleMayes/install-llvm-action@v1
-        with:
-          version: "16.0"
-      - name: Setup MSVC 
-        uses: TheMrMilchmann/setup-msvc-dev@v2
-        with:
-          arch: "x64"
-      - name: CMake version
-        run:  cmake --version
-      - name: Clang format version
-        run:  clang-format --version
-      - name: Configure
-        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
-      - name: Build Tests
-        run:  cmake --build build --config Release
-      - name: Run Tests
-        run:  ctest --test-dir build -C Release --output-on-failure
-      - name: Check Formating
-        run:  cmake --build build --config Release --target clang-format-check
-  build_and_test_windows_clang:
-    runs-on: windows-latest
-    env:
-        CXX: clang++
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with: 
-          submodules: true
-      - name: Install Ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Install LLVM 
-        uses: KyleMayes/install-llvm-action@v1
-        with:
-          version: "16.0" 
-      - name: CMake version
-        run:  cmake --version
-      - name: Clang format version
-        run:  clang-format --version
-      - name: Configure
-        run:  cmake -S . -B build -DENABLE_CLANG_TIDY:STRING=ON -DCMAKE_BUILD_TYPE:STRING=Release -G Ninja
-      - name: Build Tests
-        run:  cmake --build build --config Release
-      - name: Run Tests
-        run:  ctest --test-dir build -C Release --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check

@@ -19,7 +19,7 @@ get_common_types(const std::string& items_1, const std::string& items_2)
   while (next_common_type != items_1.end()) {
     common_types.push_back(*next_common_type);
     std::advance(next_common_type, 1);
-    next_common_type =find_next_common_type();
+    next_common_type = find_next_common_type();
   }
 
   return common_types;

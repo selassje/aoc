@@ -36,6 +36,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
+
 TEST_CASE("Day4 Example", "[Day4]")
 {
   const auto input = readInput(inputs::day4::EXAMPLE);

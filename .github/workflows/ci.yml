@@ -29,6 +29,7 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "16.0"
+        if: ${{ matrix.os }} != cl.exe
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:

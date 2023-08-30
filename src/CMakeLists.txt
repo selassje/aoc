@@ -8,7 +8,7 @@ set(INCLUDE ${CMAKE_CURRENT_LIST_DIR}/../include/aoc22)
 
 target_sources(aoc22 INTERFACE  ${INCLUDE}/day1.hpp 
                      PUBLIC     ${INCLUDE}/day2.hpp ${INCLUDE}/day3.hpp 
-                     PRIVATE    day2.cpp day3.cpp) 
+                     PRIVATE    day2.cpp day3.cpp day4.cpp) 
 
 target_include_directories(aoc22 PUBLIC ${INCLUDE})
 

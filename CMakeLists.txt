@@ -4,7 +4,6 @@ project(AoC22 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
-
 enable_testing()
 
 option(ENABLE_CLANG_TIDY "Enable Clang Tidy" ON)

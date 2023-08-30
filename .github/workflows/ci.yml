@@ -14,7 +14,7 @@ jobs:
            cxx: cl.exe
         include:
          - os: macos-latest
-           cxx: gcc
+           cxx: g++
     runs-on: ${{ matrix.os }}
     env:
         CXX: ${{ matrix.cxx }}

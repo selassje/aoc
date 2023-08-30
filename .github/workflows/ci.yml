@@ -29,12 +29,12 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "16.0"
-        if: ${{ matrix.os }} == macos-latest
+        if: ${{ matrix.os == 'macos-latest'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:
           arch: "x64"
-        if: ${{ matrix.cxx }} == cl.exe
+        if: ${{ matrix.cxx == 'cl.exe'}}
       - name: CMake version
         run:  cmake --version
       - name: Clang format version

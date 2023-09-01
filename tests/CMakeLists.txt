@@ -25,7 +25,11 @@ foreach(i RANGE 1 4)
     target_link_libraries(${TEST_NAME} PRIVATE Catch2WithMain PRIVATE aoc22)
 
     target_setup_compile_options(${TEST_NAME})
-    
+   
+    if(ENABLE_COVERAGE_REPORT)
+        target_link_libraries(${TEST_NAME} PRIVATE gcov)
+    endif()
+
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endforeach()
     

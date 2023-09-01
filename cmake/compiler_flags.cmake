@@ -6,7 +6,7 @@ else()
     set($COMPILE_FLAGS_TO_ADD -Wall -Wextra -Wpedantic -Werror)
     set($COMPILE_FLAGS_TO_REMOVE "")
 
-    if (ENABLE_TEST_COVERAGE_REPORT)
+    if (ENABLE_COVERAGE_REPORT)
         list(APPEND $COMPILE_FLAGS_TO_ADD --coverage)
     endif()
 

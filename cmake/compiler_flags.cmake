@@ -5,6 +5,11 @@ if (MSVC)
 else()
     set($COMPILE_FLAGS_TO_ADD -Wall -Wextra -Wpedantic -Werror)
     set($COMPILE_FLAGS_TO_REMOVE "")
+
+    if (ENABLE_TEST_COVERAGE_REPORT)
+        list(APPEND $COMPILE_FLAGS_TO_ADD --coverage)
+    endif()
+
 endif()
 
 macro(target_setup_compile_options TARGET)

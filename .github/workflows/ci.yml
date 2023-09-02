@@ -54,7 +54,7 @@ jobs:
           with: 
             submodules: true
         - name: Configure
-          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERGE_REPORT=ON
+          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE_REPORT=ON
         - name: Build Tests
           run:  cmake --build build
         - name: Run Tests

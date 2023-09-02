@@ -49,6 +49,10 @@ jobs:
   test_coverage:
       runs-on: ubuntu-latest
       steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+          with: 
+            submodules: true
         - name: Configure
           run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERGE_REPORT=ON
         - name: Build Tests

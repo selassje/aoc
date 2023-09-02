@@ -4,6 +4,7 @@ project(AoC22 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)
 enable_testing()
 
 option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
@@ -18,6 +19,7 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 include(cmake/clang_format.cmake)
+include(cmake/coverage_report.cmake)
 
 unset(ENABLE_CLANG_TIDY CACHE)
 unset(CMAKE_CXX_FLAGS CACHE)

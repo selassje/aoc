@@ -49,6 +49,12 @@ jobs:
   test_coverage:
       runs-on: ubuntu-latest
       steps:
+        - name: Configure
+          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERGE_REPORT=ON
+        - name: Build Tests
+          run:  cmake --build build
+        - name: Run Tests
+          run:  ctest --test-dir build --output-on-failure
         - name: Upload coverage reports to Codecov
           uses: codecov/codecov-action@v3
           env:

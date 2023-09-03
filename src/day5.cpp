@@ -1,5 +1,7 @@
 #include "day5.hpp"
 
+#include <algorithm>
+
 namespace aoc22::day5 {
 
 std::pair<std::string, std::string>

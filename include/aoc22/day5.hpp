@@ -9,7 +9,7 @@
 
 namespace aoc22::day5 {
 
-#ifdef __GNUC__
+#ifndef WIN32
 constexpr size_t MOVE_ALIGNMENT = 32;
 constexpr size_t INPUT_ALIGNMENT = 64;
 #endif
@@ -23,7 +23,7 @@ struct Move
   std::size_t To;
   std::size_t Quantity;
 }
-#ifdef __GNUC__
+#ifndef WIN32
 __attribute__((aligned(MOVE_ALIGNMENT)));
 #endif
 ;
@@ -34,7 +34,7 @@ struct Input
   Stacks stacks;
   Moves moves;
 }
-#ifdef __GNUC__
+#ifndef WIN32
 __attribute__((aligned(INPUT_ALIGNMENT)));
 #endif
 ;

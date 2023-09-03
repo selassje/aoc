@@ -4,6 +4,7 @@
 #include <deque>
 #include <stack>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace aoc22::day5 {
@@ -26,7 +27,7 @@ struct Input
   Moves moves;
 }; // __attribute__((aligned(64))); // NOLINT
 
-std::string
+std::pair<std::string, std::string>
 solve(const Input& input);
 };
 #endif

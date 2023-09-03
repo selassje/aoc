@@ -12,24 +12,29 @@ namespace aoc22::day5 {
 using Stack = std::stack<char>;
 using Stacks = std::vector<Stack>;
 
-constexpr size_t MOVE_ALIGNMENT = 32;
-
 struct Move
 {
   std::size_t From;
   std::size_t To;
   std::size_t Quantity;
-}__attribute__((aligned(MOVE_ALIGNMENT)));
-
+}
+#ifdef __GNUC__
+constexpr size_t MOVE_ALIGNMENT = 32;
+__attribute__((aligned(MOVE_ALIGNMENT)));
+#endif
+;
 using Moves = std::vector<Move>;
 
-constexpr size_t INPUT_ALIGNMENT = 64;
 struct Input
 {
   Stacks stacks;
   Moves moves;
-}__attribute__((aligned(INPUT_ALIGNMENT)));
-
+}
+#ifdef __GNUC__
+constexpr size_t INPUT_ALIGNMENT = 64;
+__attribute__((aligned(INPUT_ALIGNMENT)));
+#endif
+;
 std::pair<std::string, std::string>
 solve(const Input& input);
 };

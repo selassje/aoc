@@ -18,7 +18,7 @@ using aoc22::day5::Moves;
 using aoc22::day5::Stack;
 using aoc22::day5::Stacks;
 
-using Deque = std::deque<unsigned char>;
+using Deque = std::deque<char>;
 using Deques = std::vector<Deque>;
 
 Input
@@ -53,7 +53,7 @@ readInput(const std::string_view path)
         moves.push_back(m);
       } else if (line.find('[') != std::string::npos) {
         for (auto i = 0UL; i < stacks_num; ++i) {
-          const unsigned char crate = line[4 * i + 1];
+          auto crate = line[4 * i + 1];
           if (crate != ' ') {
             deques[i].push_front(crate);
           }

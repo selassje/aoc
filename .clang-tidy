@@ -6,7 +6,8 @@ Checks: "*,
          -modernize-use-trailing-return-type,
          -altera-id-dependent-backward-branch,
          -altera-unroll-loops,
-         -readability-identifier-length
+         -readability-identifier-length,
+         -abseil-string-find-str-contains
          "
 WarningsAsErrors: "*"
 HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)|(unit_test_helper.hpp)"

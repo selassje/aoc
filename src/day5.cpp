@@ -17,7 +17,7 @@ solve(const Input& input)
   };
 
   auto perform_move_order_kept = [&stacks_part2](const Move& m) {
-    std::vector<unsigned char> to_be_moved{};
+    std::vector<char> to_be_moved{};
     for (auto i = 0UL; i < m.Quantity; ++i) {
       auto crate = stacks_part2[m.From - 1].top();
       stacks_part2[m.From - 1].pop();

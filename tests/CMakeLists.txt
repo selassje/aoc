@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.6)
 
 include(CTest)
 
-include(${CMAKE_SOURCE_DIR}/cmake/compiler_flags.cmake)
 include("cmake/configure_input_paths.cmake")
 
 set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
-target_setup_compile_options(Catch2WithMain)
 
 foreach(i RANGE 1 5)
     set(TEST_NAME day${i})
@@ -24,8 +22,6 @@ foreach(i RANGE 1 5)
 
     target_link_libraries(${TEST_NAME} PRIVATE Catch2WithMain PRIVATE aoc22)
 
-    target_setup_compile_options(${TEST_NAME})
-   
     if(ENABLE_COVERAGE_REPORT)
         target_link_libraries(${TEST_NAME} PRIVATE gcov)
     endif()

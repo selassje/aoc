@@ -23,7 +23,7 @@ endif()
 
 include(cmake/clang_format.cmake)
 include(cmake/coverage_report.cmake)
+include(cmake/compiler_flags.cmake)
 
 unset(ENABLE_CLANG_TIDY CACHE)
-unset(CMAKE_CXX_FLAGS CACHE)
 

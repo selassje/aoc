@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-include(${CMAKE_SOURCE_DIR}/cmake/compiler_flags.cmake)
 
 add_library(aoc22)
 
@@ -17,7 +16,6 @@ if(ENABLE_TESTS)
     target_compile_definitions(aoc22 PRIVATE ENABLE_TESTS)
 endif()
 
-target_setup_compile_options(aoc22)
 
 if(ENABLE_CLANG_TIDY)
     set_target_properties(aoc22 PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")

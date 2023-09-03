@@ -16,7 +16,7 @@ struct Move
   std::size_t From;
   std::size_t To;
   std::size_t Quantity;
-};// __attribute__((aligned(4)));
+}; // __attribute__((aligned(4)));
 
 using Moves = std::vector<Move>;
 
@@ -24,7 +24,7 @@ struct Input
 {
   Stacks stacks;
   Moves moves;
-};// __attribute__((aligned(64))); // NOLINT
+}; // __attribute__((aligned(64))); // NOLINT
 
 std::string
 solve(const Input& input);

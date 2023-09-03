@@ -76,4 +76,11 @@ TEST_CASE("Day5 Example", "[Day5]")
   REQUIRE(part_1 == "CMZ");
 }
 
+TEST_CASE("Day5 Input", "[Day5]")
+{
+  const auto input = readInput(inputs::day5::INPUT);
+  const auto part_1 = aoc22::day5::solve(input);
+  REQUIRE(part_1 == "TWSGQHNHL");
+}
+
 }

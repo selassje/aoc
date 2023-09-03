@@ -8,9 +8,14 @@ set(INCLUDE ${CMAKE_CURRENT_LIST_DIR}/../include/aoc22)
 
 target_sources(aoc22 INTERFACE  ${INCLUDE}/day1.hpp 
                      PUBLIC     ${INCLUDE}/day2.hpp ${INCLUDE}/day3.hpp 
-                     PRIVATE    day2.cpp day3.cpp day4.cpp) 
+                     PRIVATE    day2.cpp day3.cpp day4.cpp unit_test_helper.hpp) 
 
 target_include_directories(aoc22 PUBLIC ${INCLUDE})
+
+if(ENABLE_TESTS)
+    target_include_directories(aoc22 PRIVATE ${CMAKE_SOURCE_DIR}/tests/Catch2/single_include)
+    target_compile_definitions(aoc22 PRIVATE ENABLE_TESTS)
+endif()
 
 target_setup_compile_options(aoc22)
 

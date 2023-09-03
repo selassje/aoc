@@ -1,8 +1,13 @@
 #include "day2.hpp"
+
+#include "unit_test_helper.hpp"
+
 #include <cstdlib>
 #include <numeric>
+#include <stdexcept>
 #include <unordered_map>
 #include <vector>
+
 namespace aoc22::day2 {
 enum class Outcome : unsigned char
 {
@@ -54,30 +59,48 @@ nextMove(Move oponent, Outcome desiredOutcome)
           return m;
         }
       }
-      std::abort();
+      [[fallthrough]];
     default:
-      std::abort();
+      throw std::runtime_error{ "Next move: unexpected arguments." };
   }
 }
+
+ADD_TC(TEST_CASE("Day2 nextMove", "[Day2]") {
+  try {
+    nextMove(Rock, static_cast<Outcome>(10));
+  } catch (std::runtime_error&) {
+  }
+})
+
+Outcome
+converMoveToDesiredOutcome(const Move move)
+{
+  switch (move) {
+    case Rock:
+      return Loss;
+    case Paper:
+      return Draw;
+    case Sciscors:
+      return Win;
+    default:
+      throw std::runtime_error{
+        "convertMoveToDesiredOutcome: unexpected argument."
+      };
+  }
+};
+
+ADD_TC(TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]") {
+  try {
+    converMoveToDesiredOutcome(static_cast<Move>(10));
+  } catch (std::runtime_error&) {
+  }
+})
 }
 std::pair<unsigned int, unsigned int>
 solve(const Guide& guide)
 {
   auto evaluateRound = [](Move oponent, Move you) {
     return evaluateMove(you) + evaluateOutcome(oponent, you);
-  };
-
-  auto converMoveToDesiredOutcome = [](const auto move) {
-    switch (move) {
-      case Rock:
-        return Loss;
-      case Paper:
-        return Draw;
-      case Sciscors:
-        return Win;
-      default:
-        std::abort();
-    }
   };
 
   unsigned int score_part1 = 0;

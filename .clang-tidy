@@ -9,4 +9,4 @@ Checks: "*,
          -readability-identifier-length
          "
 WarningsAsErrors: "*"
-HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)"
+HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)|(unit_test_helper.hpp)"

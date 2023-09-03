@@ -39,7 +39,7 @@ jobs:
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_CLANG_TIDY:STRING=ON
+        run:  cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTS=ON -DENABLE_CLANG_TIDY:STRING=ON
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests
@@ -56,7 +56,7 @@ jobs:
         - name: Install LCOV
           run:  sudo apt-get install lcov
         - name: Configure
-          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE_REPORT=ON
+          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTS=ON -DENABLE_COVERAGE_REPORT=ON
         - name: Build Tests
           run:  cmake --build build
         - name: Run Tests

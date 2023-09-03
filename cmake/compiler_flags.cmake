@@ -1,9 +1,12 @@
 
+cmake_path(SET CATCH2 "${CMAKE_SOURCE_DIR}/tests/Catch2/single_include")
+cmake_path(NATIVE_PATH CATCH2 CATCH2)
+
 if (MSVC)
-    set($COMPILE_FLAGS_TO_ADD /W4)
-    set($COMPILE_FLAGS_TO_REMOVE /W3)
+    set($COMPILE_FLAGS_TO_ADD /Wall /WX /external:anglebrackets /external:W0 /permissive /wd5045 /wd4868)
+    set($COMPILE_FLAGS_TO_REMOVE)
 else()
-    set($COMPILE_FLAGS_TO_ADD -Wall -Wextra -Wpedantic -Werror)
+    set($COMPILE_FLAGS_TO_ADD -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor)
     set($COMPILE_FLAGS_TO_REMOVE "")
 
     if (ENABLE_COVERAGE_REPORT)

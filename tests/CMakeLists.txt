@@ -10,7 +10,7 @@ add_subdirectory(Catch2)
 
 target_setup_compile_options(Catch2WithMain)
 
-foreach(i RANGE 1 4)
+foreach(i RANGE 1 5)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)

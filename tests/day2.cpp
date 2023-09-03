@@ -36,8 +36,8 @@ readInput(const std::string_view path)
         case 'C':
         case 'Z':
           return Sciscors;
-        default:
-          std::terminate();
+        default:            //GCOVR_EXCL_LIN
+          std::terminate(); //GCOVR_EXCL_LIN
       }
     };
     input.emplace_back(

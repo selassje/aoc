@@ -7,7 +7,7 @@ else()
     set($COMPILE_FLAGS_TO_REMOVE "")
 
     if (ENABLE_COVERAGE_REPORT)
-        list(APPEND $COMPILE_FLAGS_TO_ADD --coverage)
+        list(APPEND $COMPILE_FLAGS_TO_ADD --coverage -fno-elide-constructors)
     endif()
 
 endif()

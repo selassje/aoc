@@ -7,7 +7,7 @@ else()
                         -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Wmisleading-indentation 
                         -Wnull-dereference  -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough)
                         
-    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT ${ENABLE_CLANG_TIDY})
         add_compile_options(-Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast)
     endif()
 

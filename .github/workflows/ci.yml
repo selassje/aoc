@@ -29,14 +29,19 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: ${{ matrix.os == 'macos-latest' && '15.0' || '16.0' }}  
+      - name: Setup MS developer prompt
+        uses: ilammy/msvc-dev-cmd@v1
+        if: ${{ matrix.cxx == 'cl.exe'}}
+      - name: Check cl.exe
+        run: cl.exe   
+        if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Print VS version
         run: vswhere
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Install MSVC 
         run: choco install visualstudio2022buildtools
         if: ${{ matrix.cxx == 'cl.exe'}}
-      - uses: ilammy/msvc-dev-cmd@v1
-
+          
       - name: Print VS version post
         run: vswhere
         if: ${{ matrix.cxx == 'cl.exe'}}

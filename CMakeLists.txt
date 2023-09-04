@@ -8,6 +8,8 @@ option(ENABLE_TESTS "Enable Tests" OFF)
 option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
 option(ENABLE_COVERAGE_REPORT "Enable Test Coverage Report" OFF)
 
+include(cmake/compiler_flags.cmake)
+
 if(ENABLE_CLANG_TIDY)
     message("Clang-tidy enabled")
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
@@ -23,7 +25,6 @@ endif()
 
 include(cmake/clang_format.cmake)
 include(cmake/coverage_report.cmake)
-include(cmake/compiler_flags.cmake)
 
 unset(ENABLE_CLANG_TIDY CACHE)
 

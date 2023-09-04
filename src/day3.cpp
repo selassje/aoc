@@ -39,7 +39,7 @@ solve(const std::vector<std::string>& input)
 
   auto get_priority = [](char c) {
     const char base = static_cast<bool>(std::islower(c)) ? 'a' : 'A' - 26;
-    return 1 + c - base;
+    return static_cast<unsigned int>(1 + c - base);
   };
 
   for (std::size_t i = 0; i < input.size(); ++i) {
@@ -47,9 +47,9 @@ solve(const std::vector<std::string>& input)
     assert(rucksack.size() % 2 == 0 && rucksack.size() >= 2);
 
     const auto middle = [&rucksack]() {
-      auto middle = rucksack.begin();
-      std::advance(middle, rucksack.size() / static_cast<std::size_t>(2));
-      return middle;
+      auto middle_ = rucksack.begin();
+      std::advance(middle_, rucksack.size() / static_cast<std::size_t>(2));
+      return middle_;
     }();
 
     const auto common_type =

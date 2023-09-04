@@ -30,7 +30,7 @@ solve(const Input& input)
     static_cast<unsigned int>(solve_internal(one_contains_another));
 
   const auto result_part2 =
-    static_cast<unsigned int>(input.size() - solve_internal(are_exclusive));
+    static_cast<unsigned int>(input.size()) - static_cast<unsigned int>(solve_internal(are_exclusive));
 
   return { result_part1, result_part2 };
 }

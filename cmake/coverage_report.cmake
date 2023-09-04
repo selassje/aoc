@@ -4,7 +4,7 @@ if (ENABLE_COVERAGE_REPORT)
     find_program(LCOV "lcov")
 
     if(NOT LCOV)
-        message(SEND_ERROR "LCOV not found.Test Coverage Report Disabled")
+        message(SEND_ERROR "LCOV not found.Test Coverage Report Not Possible. Try disabling ENABLE_COVERAGE_REPORT")
     endif()
   
    add_custom_target(

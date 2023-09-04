@@ -7,6 +7,6 @@ else()
                         -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wnull-dereference -Wuseless-cast -Wdouble-promotion
                         -Wformat=2 -Wimplicit-fallthrough) 
     if (ENABLE_COVERAGE_REPORT)
-        list(APPEND $COMPILE_FLAGS_TO_ADD --coverage -fno-elide-constructors)
+        add_compile_options(--coverage -fno-elide-constructors)
     endif()
 endif()

@@ -33,7 +33,7 @@ jobs:
         run: vswhere
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Install MSVC 
-        run: choco install visualstudio2022community
+        run: choco install visualstudio2022enterprise --update
         if: ${{ matrix.cxx == 'cl.exe'}}
           
       - name: Print VS version post

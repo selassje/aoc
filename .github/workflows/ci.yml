@@ -32,10 +32,10 @@ jobs:
       - name: Install MSVC 
         run: choco install visualstudio2022buildtools
         if: ${{ matrix.cxx == 'cl.exe'}}
-      - name: Setup MSVC 
-        uses: TheMrMilchmann/setup-msvc-dev@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
         with:
-          arch: x64
+          vs-version: '17.7.3'
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: CMake version
         run:  cmake --version

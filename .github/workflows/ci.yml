@@ -29,6 +29,9 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: ${{ matrix.os == 'macos-latest' && '15.0' || '16.0' }}  
+      - name: Install MSVC 
+        run: choco install visualstudio2022buildtools
+        if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:

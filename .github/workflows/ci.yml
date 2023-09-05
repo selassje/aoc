@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Install MSVC 
         #run: choco install visualstudio2022enterprise --package-parameters "update --productId Microsoft.VisualStudio.Product.Enterprise"
-        run: '"C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe update --productId Microsoft.VisualStudio.Product.Enterprise"'
+        run:  "& 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\setup.exe' update --productId Microsoft.VisualStudio.Product.Enterprise --channelUri https://aka.ms/vs/17/release/channel --passive"
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Checkout
         uses: actions/checkout@v3

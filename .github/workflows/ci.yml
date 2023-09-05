@@ -19,6 +19,10 @@ jobs:
     env:
         CXX: ${{ matrix.cxx }}
     steps:
+      - name: Install MSVC 
+        #run: choco install visualstudio2022enterprise --package-parameters "update --productId Microsoft.VisualStudio.Product.Enterprise"
+        run: "C:\Program Files (x86)\\Microsoft Visual Studio\\Installer\\setup.exe  update --productId Microsoft.VisualStudio.Product.Enterprise"
+        if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Checkout
         uses: actions/checkout@v3
         with: 
@@ -34,9 +38,10 @@ jobs:
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Install MSVC 
         #run: choco install visualstudio2022enterprise --package-parameters "update --productId Microsoft.VisualStudio.Product.Enterprise"
-        run: |
-             choco install visualstudio2022enterprise 
-             vs_enterprise.exe update --productId Microsoft.VisualStudio.Product.Enterprise
+        run: "C:\Program Files (x86)\\Microsoft Visual Studio\\Installer\\setup.exe  update --productId Microsoft.VisualStudio.Product.Enterprise"
+       # run: |
+        #     choco install visualstudio2022enterprise 
+         #    vs_enterprise.exe update --productId Microsoft.VisualStudio.Product.Enterprise
       
         #run: cinst visualstudio2022enterprise
         if: ${{ matrix.cxx == 'cl.exe'}}

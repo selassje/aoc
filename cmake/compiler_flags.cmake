@@ -1,6 +1,6 @@
 
 if (MSVC)
-    add_compile_options(/Wall /WX /external:anglebrackets /external:W0 /permissive /wd5045 /wd4868)
+    add_compile_options(/W4 /WX /external:anglebrackets /external:W0 /permissive /wd5045 /wd4868)
 else()
 
     add_compile_options(-Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor -Wold-style-cast

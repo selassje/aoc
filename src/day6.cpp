@@ -14,8 +14,9 @@ solve(std::string_view input)
 
   auto update_last_chars = [&](std::size_t i) {
     const auto start = i - marker_length;
-    std::copy(
-      input.begin() + start, input.begin() + start + marker_length, last_chars.begin());
+    std::copy(input.begin() + start,
+              input.begin() + start + marker_length,
+              last_chars.begin());
   };
 
   auto all_unique = [&last_chars]() {

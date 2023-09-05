@@ -13,4 +13,7 @@ cmake_path(SET INPUTS_DAY4_EXAMPLE "${ROOT}/day4/example.txt")
 
 cmake_path(SET INPUTS_DAY5_INPUT   "${ROOT}/day5/input.txt")
 cmake_path(SET INPUTS_DAY5_EXAMPLE "${ROOT}/day5/example.txt")
+
+cmake_path(SET INPUTS_DAY6_INPUT   "${ROOT}/day6/input.txt")
+
 configure_file(inputs.hpp.in inputs.hpp)

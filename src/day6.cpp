@@ -8,7 +8,7 @@ namespace aoc22::day6 {
 std::pair<std::size_t, std::size_t>
 solve(std::string_view input)
 {
-  static const std::size_t size = input.size();
+  const std::size_t size = input.size();
   static constexpr std::size_t marker_length = 4;
   std::array<char, marker_length> last_chars{};
 

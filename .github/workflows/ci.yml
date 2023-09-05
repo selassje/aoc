@@ -37,15 +37,15 @@ jobs:
       - name: Print VS version
         run: vswhere
         if: ${{ matrix.cxx == 'cl.exe'}}
-      - name: Install MSVC 
-        #run: choco install visualstudio2022enterprise --package-parameters "update --productId Microsoft.VisualStudio.Product.Enterprise"
-        run: "C:\Program Files (x86)\\Microsoft Visual Studio\\Installer\\setup.exe  update --productId Microsoft.VisualStudio.Product.Enterprise"
+#      - name: Install MSVC 
+ #       #run: choco install visualstudio2022enterprise --package-parameters "update --productId Microsoft.VisualStudio.Product.Enterprise"
+  #      run: "C:\Program Files (x86)\\Microsoft Visual Studio\\Installer\\setup.exe  update --productId Microsoft.VisualStudio.Product.Enterprise"
        # run: |
         #     choco install visualstudio2022enterprise 
          #    vs_enterprise.exe update --productId Microsoft.VisualStudio.Product.Enterprise
       
         #run: cinst visualstudio2022enterprise
-        if: ${{ matrix.cxx == 'cl.exe'}}
+        #if: ${{ matrix.cxx == 'cl.exe'}}
           
       - name: Print VS version post
         run: vswhere

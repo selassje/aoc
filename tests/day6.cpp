@@ -47,7 +47,6 @@ TEST_CASE("Day6 Example_4", "[Day6]")
     aoc22::day6::solve("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg");
   REQUIRE(part_1 == 10);
   REQUIRE(part_2 == 29);
-
 }
 
 TEST_CASE("Day6 Example_5", "[Day6]")

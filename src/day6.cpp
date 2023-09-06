@@ -5,19 +5,21 @@
 
 namespace aoc22::day6 {
 
-std::pair<std::size_t, std::size_t>
-solve(std::string_view input)
+namespace {
+
+template<std::size_t marker_length>
+std::size_t
+solve_internal(std::string_view input)
 {
   const std::size_t size = input.size();
-  static constexpr std::size_t marker_length = 4;
   std::array<char, marker_length> last_chars{};
-
 
   auto update_last_chars = [&](std::size_t i) {
     const auto start = i - marker_length;
     using DifferenceType = decltype(input)::difference_type;
     std::copy(input.begin() + static_cast<DifferenceType>(start),
-              input.begin() + static_cast<DifferenceType>(start + marker_length),
+              input.begin() +
+                static_cast<DifferenceType>(start + marker_length),
               last_chars.begin());
   };
 
@@ -31,8 +33,18 @@ solve(std::string_view input)
   while (i < size && !all_unique()) {
     update_last_chars(++i);
   }
+  return i;
+}
 
-  return std::make_pair(i, i);
+};
+
+std::pair<std::size_t, std::size_t>
+solve(std::string_view input)
+{
+  constexpr auto start_marker_length = 4;
+  constexpr auto message_marker_length = 14;
+  return std::make_pair(solve_internal<start_marker_length>(input),
+                        solve_internal<message_marker_length>(input));
 }
 
 };

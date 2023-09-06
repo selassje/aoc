@@ -12,10 +12,12 @@ solve(std::string_view input)
   static constexpr std::size_t marker_length = 4;
   std::array<char, marker_length> last_chars{};
 
+
   auto update_last_chars = [&](std::size_t i) {
     const auto start = i - marker_length;
-    std::copy(input.begin() + start,
-              input.begin() + start + marker_length,
+    using DifferenceType = decltype(input)::difference_type;
+    std::copy(input.begin() + static_cast<DifferenceType>(start),
+              input.begin() + static_cast<DifferenceType>(start + marker_length),
               last_chars.begin());
   };
 

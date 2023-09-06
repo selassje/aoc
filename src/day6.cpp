@@ -20,7 +20,7 @@ solve(std::string_view input)
   };
 
   auto all_unique = [&last_chars]() {
-    std::unordered_set<char> set{ last_chars.begin(), last_chars.end() };
+    const std::unordered_set<char> set{ last_chars.begin(), last_chars.end() };
     return set.size() == last_chars.size();
   };
 

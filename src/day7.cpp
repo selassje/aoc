@@ -36,31 +36,25 @@ class Filetree
   static constexpr std::string_view UP_DIR = "..";
 
 public:
-  void add_directory(std::string_view dir_name)
+template<typename T> 
+  void add_item(const T &item)
   {
     assert(m_cwd->is_dir());
     auto& dir = m_cwd->get_dir();
     const auto it = std::ranges::find_if(
-      dir, [&dir_name](const auto& node) { return node->name == dir_name; });
+      dir, [item](const auto& node) { return node->name == item.name; });
     if (it != dir.end()) {
       throw std::runtime_error("Element already exists!");
     }
-    dir.push_back(std::make_unique<Node>(Node{ .name = std::string{ dir_name },
-                                               .parent_dir = m_cwd,
-                                               .size_or_dir = Dir{} }));
-  }
-  void add_file(std::string_view file_name, std::size_t size)
-  {
-    assert(m_cwd->is_dir());
-    auto& dir = m_cwd->get_dir();
-    const auto it = std::ranges::find_if(
-      dir, [&file_name](const auto& node) { return node->name == file_name; });
-    if (it != dir.end()) {
-      throw std::runtime_error("Element already exists!");
+
+    std::variant<std::size_t, Dir> size_or_dir = Dir{};
+    if constexpr(std::same_as<File,T>)
+    {
+        size_or_dir = item.size;
     }
-    dir.push_back(std::make_unique<Node>(Node{ .name = std::string{ file_name },
+    dir.push_back(std::make_unique<Node>(Node{ .name = std::string{ item.name },
                                                .parent_dir = m_cwd,
-                                               .size_or_dir = size }));
+                                               .size_or_dir = std::move(size_or_dir)}));
   }
 
   void change_directory(std::string_view dir_name)
@@ -149,11 +143,11 @@ solve(const Input& input)
       } break;
       case 2: {
         const auto dir = std::get<Directory>(record);
-        ft.add_directory(dir.name);
+        ft.add_item(dir);
       } break;
       case 3: {
         const auto file = std::get<File>(record);
-        ft.add_file(file.name, file.size);
+        ft.add_item(file);
       } break;
     }
   }

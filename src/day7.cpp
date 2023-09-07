@@ -18,7 +18,7 @@ class Filetree
     std::variant<std::size_t, Dir> size_or_dir;
 
     bool is_dir() const noexcept { return size_or_dir.index() == 1; }
-    Dir& get_dir() noexcept { return std::get<Dir>(size_or_dir); }
+    Dir& get_dir() const noexcept { return const_cast<Dir&>(std::get<Dir>(size_or_dir)); }
   };
 
   Node m_root{ .name = std::string{ ROOT_DIR },
@@ -77,6 +77,46 @@ public:
       m_cwd = it->get();
     }
   }
+
+  std::size_t get_size() const {
+    return get_size(m_root);
+  }
+  std::size_t get_total_dir_size() const {
+    return get_total_dir_size(m_root);
+  }
+  
+private:
+  static std::size_t get_size(const Node &node) {
+      if (node.is_dir())
+      {
+          std::size_t total = 0;
+          for (const auto& child : node.get_dir() )
+          {
+            total += get_size(*child);
+          }
+          return total;
+      }
+      return std::get<std::size_t>(node.size_or_dir);
+  }
+  
+  static std::size_t get_total_dir_size(const Node &node) {
+      const std::size_t max_size = 100000;
+      if (node.is_dir())
+      {
+          std::size_t total = get_size(node);
+          if ( total > max_size)
+          {
+            total = 0;
+          }
+          for (const auto& child : node.get_dir() )
+          {
+              total += get_total_dir_size(*child);
+          }
+          return total;
+      }
+      return 0;
+  }
+
 };
 
 std::pair<std::size_t, std::size_t>
@@ -84,7 +124,6 @@ solve(const Input& input)
 {
   Filetree ft{};
   std::size_t i = 0;
-  constexpr std::size_t result = 0;
   for (; i < input.size(); ++i) {
     const auto& record = input[i];
     switch (record.index()) {
@@ -92,8 +131,6 @@ solve(const Input& input)
         const auto cd = std::get<ChangeDirectory>(record);
         ft.change_directory(cd.directory);
       } break;
-        // case 1:
-        // break;
       case 2: {
         const auto dir = std::get<Directory>(record);
         ft.add_directory(dir.name);
@@ -104,7 +141,7 @@ solve(const Input& input)
       } break;
     }
   }
-
+  const std::size_t result = ft.get_total_dir_size();;
   return std::make_pair(result, result);
 }
 };

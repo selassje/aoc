@@ -64,4 +64,12 @@ TEST_CASE("Day7 Example", "[Day7]")
   const auto input = readInput(inputs::day7::EXAMPLE);
   const auto& [part_1, part_2] = aoc22::day7::solve(input);
   REQUIRE(part_1 == 95437);
+  REQUIRE(part_2 == 24933642);
+}
+
+TEST_CASE("Day7 Input", "[Day7]")
+{
+  const auto input = readInput(inputs::day7::INPUT);
+  const auto& [part_1, part_2] = aoc22::day7::solve(input);
+  REQUIRE(part_1 == 1086293);
 }

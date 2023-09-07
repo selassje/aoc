@@ -9,19 +9,24 @@
 
 namespace aoc22::day7 {
 
-struct  ChangeDirectory{
-    std::string directory; 
+struct ChangeDirectory
+{
+  std::string directory;
 };
 
-enum  List{};
-
-struct Directory {
-    std::string name;
+enum List
+{
 };
 
-struct File {
-    std::string name;
-    std::size_t size;
+struct Directory
+{
+  std::string name;
+};
+
+struct File
+{
+  std::string name;
+  std::size_t size;
 };
 
 using Record = std::variant<ChangeDirectory, List, Directory, File>;
@@ -31,7 +36,5 @@ std::pair<std::size_t, std::size_t>
 solve(const Input& input);
 
 };
-
-
 
 #endif

@@ -17,7 +17,7 @@ public:
 
   void change_directory(std::string_view dir_name);
 
-  std::vector<std::size_t> get_dir_sizes() const;
+  [[nodiscard]] std::vector<std::size_t> get_dir_sizes() const;
 
 private:
   struct Node;
@@ -29,10 +29,13 @@ private:
     Node* parent_dir;
     std::variant<std::size_t, Dir> size_or_dir;
 
-    bool is_dir() const noexcept { return size_or_dir.index() == 1; }
-    Dir& get_dir() const noexcept
+    [[nodiscard]] bool is_dir() const noexcept
     {
-      return const_cast<Dir&>(std::get<Dir>(size_or_dir));
+      return size_or_dir.index() == 1;
+    }
+    [[nodiscard]] Dir& get_dir() const
+    {
+      return const_cast<Dir&>(std::get<Dir>(size_or_dir)); // NOLINT
     }
   };
 
@@ -76,7 +79,7 @@ Filetree::change_directory(std::string_view dir_name)
   if (dir_name == ROOT_DIR) {
     m_cwd = &m_root;
   } else if (dir_name == "..") {
-    if (m_cwd->parent_dir) {
+    if (m_cwd->parent_dir != nullptr) {
       m_cwd = m_cwd->parent_dir;
     }
   } else {
@@ -116,7 +119,7 @@ Filetree::get_dir_sizes(const Node& node, std::vector<std::size_t>& sizes)
 {
   if (node.is_dir()) {
     sizes.push_back(get_size(node));
-    for (const auto& child : node.get_dir()) {
+    for (auto& child : node.get_dir()) {
       get_dir_sizes(*child, sizes);
     }
   }
@@ -148,11 +151,14 @@ solve(const Input& input)
   auto dir_sizes = ft.get_dir_sizes();
   std::ranges::sort(dir_sizes, std::less<std::size_t>{});
 
-  auto filtered_sizes =
-    dir_sizes |
-    std::ranges::views::filter([](const auto& size) { return size <= 100000; });
-  const std::size_t result_part1 = std::accumulate(
-    filtered_sizes.begin(), filtered_sizes.end(), std::size_t{ 0 });
+  static constexpr std::size_t max_dir_size = 100000;
+  auto dir_sizes_below_max_size =
+    dir_sizes | std::ranges::views::filter(
+                  [](const auto& size) { return size <= max_dir_size; });
+  const std::size_t result_part1 =
+    std::accumulate(dir_sizes_below_max_size.begin(),
+                    dir_sizes_below_max_size.end(),
+                    std::size_t{ 0 });
 
   static constexpr std::size_t total_filesystem_size = 70000000;
   static constexpr std::size_t needed_size = 30000000;
@@ -160,10 +166,11 @@ solve(const Input& input)
     total_filesystem_size - dir_sizes[dir_sizes.size() - 1];
   const auto size_to_delete = needed_size - current_unused;
 
-  auto filtered_sizes2 =
+  auto candidate_dir_sizes_to_delete =
     dir_sizes | std::ranges::views::filter(
                   [&](const auto& size) { return size >= size_to_delete; });
-  std::size_t result_part2 = *filtered_sizes2.begin();
+  const std::size_t result_part2 = *candidate_dir_sizes_to_delete.begin();
+
   return std::make_pair(result_part1, result_part2);
 }
 };

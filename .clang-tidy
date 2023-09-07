@@ -7,7 +7,13 @@ Checks: "*,
          -altera-id-dependent-backward-branch,
          -altera-unroll-loops,
          -readability-identifier-length,
-         -abseil-string-find-str-contains
+         -abseil-string-find-str-contains,
+         -altera-struct-pack-align,
+         -misc-no-recursion,
          "
+CheckOptions: 
+  misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true
+ 
+
 WarningsAsErrors: "*"
 HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)|(unit_test_helper.hpp)"

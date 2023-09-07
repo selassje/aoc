@@ -50,7 +50,8 @@ readInput(const std::string_view path)
     } else if (words[0] == directory_prefix) {
       record = aoc22::day7::Directory{ .name = words[1] };
     } else {
-      record = aoc22::day7::File{.name = words[1], .size = std::stoull(words[0])};
+      record =
+        aoc22::day7::File{ .name = words[1], .size = std::stoull(words[0]) };
     }
     input.push_back(record);
   }
@@ -74,4 +75,3 @@ TEST_CASE("Day7 Input", "[Day7]")
   REQUIRE(part_1 == 1086293);
   REQUIRE(part_2 == 366028);
 }
-

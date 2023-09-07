@@ -21,12 +21,12 @@ public:
 
 private:
   struct Node;
-  using Dir = std::vector<std::unique_ptr<Node>>;
+  using Dir = std::vector<std::shared_ptr<Node>>;
   using SizeOrDir = std::variant<std::size_t, Dir>;
   struct Node
   {
     std::string name;
-    Node* parent_dir;
+    std::weak_ptr<Node> parent_dir;
     std::variant<std::size_t, Dir> size_or_dir;
 
     [[nodiscard]] bool is_dir() const noexcept
@@ -39,10 +39,11 @@ private:
     }
   };
 
-  Node m_root{ .name = std::string{ ROOT_DIR },
-               .parent_dir = nullptr,
-               .size_or_dir = Dir{} };
-  Node* m_cwd{ &m_root };
+  std::shared_ptr<Node> m_root =
+    std::make_shared<Node>(Node{ .name = std::string{ ROOT_DIR },
+                                 .parent_dir = {},
+                                 .size_or_dir = Dir{} });
+  std::shared_ptr<Node> m_cwd{ m_root };
 
   static constexpr std::string_view ROOT_DIR = "/";
   static constexpr std::string_view UP_DIR = "..";
@@ -68,7 +69,7 @@ Filetree::add_item(const T& item)
     size_or_dir = item.size;
   }
   dir.push_back(
-    std::make_unique<Node>(Node{ .name = std::string{ item.name },
+    std::make_shared<Node>(Node{ .name = std::string{ item.name },
                                  .parent_dir = m_cwd,
                                  .size_or_dir = std::move(size_or_dir) }));
 }
@@ -77,10 +78,10 @@ Filetree::change_directory(std::string_view dir_name)
 {
   assert(m_cwd->is_dir());
   if (dir_name == ROOT_DIR) {
-    m_cwd = &m_root;
-  } else if (dir_name == "..") {
-    if (m_cwd->parent_dir != nullptr) {
-      m_cwd = m_cwd->parent_dir;
+    m_cwd = m_root;
+  } else if (dir_name == UP_DIR) {
+    if (auto parent = m_cwd->parent_dir.lock()) {
+      m_cwd = parent;
     }
   } else {
     const auto& dir = m_cwd->get_dir();
@@ -90,14 +91,14 @@ Filetree::change_directory(std::string_view dir_name)
     if (it == dir.end()) {
       throw std::runtime_error("Directory not found");
     }
-    m_cwd = it->get();
+    m_cwd = *it;
   }
 }
 std::vector<std::size_t>
 Filetree::get_dir_sizes() const
 {
   std::vector<std::size_t> sizes{};
-  get_dir_sizes(m_root, sizes);
+  get_dir_sizes(*m_root, sizes);
   return sizes;
 }
 

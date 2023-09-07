@@ -1,7 +1,10 @@
 #include "day7.hpp"
 
+#include <algorithm>
 #include <cassert>
 #include <memory>
+#include <numeric>
+#include <ranges>
 #include <stdexcept>
 
 namespace aoc22::day7 {
@@ -18,7 +21,10 @@ class Filetree
     std::variant<std::size_t, Dir> size_or_dir;
 
     bool is_dir() const noexcept { return size_or_dir.index() == 1; }
-    Dir& get_dir() const noexcept { return const_cast<Dir&>(std::get<Dir>(size_or_dir)); }
+    Dir& get_dir() const noexcept
+    {
+      return const_cast<Dir&>(std::get<Dir>(size_or_dir));
+    }
   };
 
   Node m_root{ .name = std::string{ ROOT_DIR },
@@ -78,45 +84,55 @@ public:
     }
   }
 
-  std::size_t get_size() const {
-    return get_size(m_root);
-  }
-  std::size_t get_total_dir_size() const {
-    return get_total_dir_size(m_root);
-  }
-  
-private:
-  static std::size_t get_size(const Node &node) {
-      if (node.is_dir())
-      {
-          std::size_t total = 0;
-          for (const auto& child : node.get_dir() )
-          {
-            total += get_size(*child);
-          }
-          return total;
+  static void get_dir_sizes(const Node& node, std::vector<std::size_t> &sizes)
+  {
+    if (node.is_dir()) {
+      sizes.push_back(get_size(node));      
+      for (const auto& child : node.get_dir()) {
+          get_dir_sizes(*child, sizes); 
       }
-      return std::get<std::size_t>(node.size_or_dir);
-  }
-  
-  static std::size_t get_total_dir_size(const Node &node) {
-      const std::size_t max_size = 100000;
-      if (node.is_dir())
-      {
-          std::size_t total = get_size(node);
-          if ( total > max_size)
-          {
-            total = 0;
-          }
-          for (const auto& child : node.get_dir() )
-          {
-              total += get_total_dir_size(*child);
-          }
-          return total;
-      }
-      return 0;
+    }
   }
 
+
+  std::vector<std::size_t> get_dir_sizes() const
+  {
+      std::vector<std::size_t> sizes{};
+      get_dir_sizes(m_root, sizes);
+      return sizes;
+  }
+
+  std::size_t get_size() const { return get_size(m_root); }
+  std::size_t get_total_dir_size() const { return get_total_dir_size(m_root); }
+
+private:
+  static std::size_t get_size(const Node& node)
+  {
+    if (node.is_dir()) {
+      std::size_t total = 0;
+      for (const auto& child : node.get_dir()) {
+        total += get_size(*child);
+      }
+      return total;
+    }
+    return std::get<std::size_t>(node.size_or_dir);
+  }
+
+  static std::size_t get_total_dir_size(const Node& node)
+  {
+    const std::size_t max_size = 100000;
+    if (node.is_dir()) {
+      std::size_t total = get_size(node);
+      if (total > max_size) {
+        total = 0;
+      }
+      for (const auto& child : node.get_dir()) {
+        total += get_total_dir_size(*child);
+      }
+      return total;
+    }
+    return 0;
+  }
 };
 
 std::pair<std::size_t, std::size_t>
@@ -141,7 +157,20 @@ solve(const Input& input)
       } break;
     }
   }
-  const std::size_t result = ft.get_total_dir_size();;
-  return std::make_pair(result, result);
+
+  auto dir_sizes = ft.get_dir_sizes();
+  std::ranges::sort(dir_sizes,std::less<std::size_t>{});
+  
+  auto filtered_sizes = dir_sizes | std::ranges::views::filter([](const auto &size) { return size <= 100000; } );
+  const std::size_t result_part1 = std::accumulate(filtered_sizes.begin(),filtered_sizes.end(), std::size_t {0});
+
+  static constexpr std::size_t total_filesystem_size = 70000000;
+  static constexpr std::size_t needed_size = 30000000;
+  const auto current_unused = total_filesystem_size - dir_sizes[dir_sizes.size() - 1]; 
+  const auto size_to_delete = needed_size - current_unused;
+
+  auto filtered_sizes2 = dir_sizes | std::ranges::views::filter([&](const auto &size) { return size >= size_to_delete; } );
+  std::size_t result_part2 = *filtered_sizes2.begin();
+  return std::make_pair(result_part1, result_part2);
 }
 };

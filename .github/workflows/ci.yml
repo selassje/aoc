@@ -19,6 +19,8 @@ jobs:
     env:
         CXX: ${{ matrix.cxx }}
     steps:
+      - name: Install MSVC
+        run: Install-VisualStudio  
       - name: Checkout
         uses: actions/checkout@v3
         with: 

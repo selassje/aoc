@@ -21,6 +21,7 @@ jobs:
     steps:
       - name: Install MSVC
         run: Install-VisualStudio  
+        if: ${{ matrix.cxx == 'cl.exe'}}
       - name: Checkout
         uses: actions/checkout@v3
         with: 

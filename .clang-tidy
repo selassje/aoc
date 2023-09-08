@@ -13,7 +13,13 @@ Checks: "*,
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true
- 
+  readability-identifier-naming.NamespaceCase: lower_case 
+  readability-identifier-naming.ClassCase: CamelCase  
+  readability-identifier-naming.PrivateMemberPrefix: m_         
+  readability-identifier-naming.StructCase: CamelCase  
+  readability-identifier-naming.FunctionCase: lower_case 
+  readability-identifier-naming.VariableCase: lower_case 
+  readability-identifier-naming.GlobalConstantCase: UPPER_CASE 
 
 WarningsAsErrors: "*"
 HeaderFilterRegex: "(include[\\\/]aoc22)|(inputs.hpp)|(unit_test_helper.hpp)"

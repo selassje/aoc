@@ -9,7 +9,7 @@
 
 namespace aoc22::day7 {
 
-class Filetree
+class FileTree
 {
 public:
   template<typename T>
@@ -58,7 +58,7 @@ private:
 
 template<typename T>
 void
-Filetree::add_item(const T& item)
+FileTree::add_item(const T& item)
 {
   assert(m_cwd->is_dir());
   auto& dir = m_cwd->get_dir();
@@ -78,7 +78,7 @@ Filetree::add_item(const T& item)
                                  .size_or_dir = std::move(size_or_dir) }));
 }
 void
-Filetree::change_directory(std::string_view dir_name)
+FileTree::change_directory(std::string_view dir_name)
 {
   assert(m_cwd->is_dir());
   if (dir_name == ROOT_DIR) {
@@ -99,7 +99,7 @@ Filetree::change_directory(std::string_view dir_name)
   }
 }
 std::vector<std::size_t>
-Filetree::get_dir_sizes() const
+FileTree::get_dir_sizes() const
 {
   std::vector<std::size_t> sizes{};
   get_dir_sizes(*m_root, sizes);
@@ -107,7 +107,7 @@ Filetree::get_dir_sizes() const
 }
 
 std::size_t
-Filetree::get_size(const Node& node)
+FileTree::get_size(const Node& node)
 {
   if (node.is_dir()) {
     std::size_t total = 0;
@@ -120,7 +120,7 @@ Filetree::get_size(const Node& node)
 }
 
 void
-Filetree::get_dir_sizes(const Node& node, std::vector<std::size_t>& sizes)
+FileTree::get_dir_sizes(const Node& node, std::vector<std::size_t>& sizes)
 {
   if (node.is_dir()) {
     sizes.push_back(get_size(node));
@@ -133,7 +133,7 @@ Filetree::get_dir_sizes(const Node& node, std::vector<std::size_t>& sizes)
 std::pair<std::size_t, std::size_t>
 solve(const Input& input)
 {
-  Filetree ft{};
+  FileTree ft{};
   std::size_t i = 0;
   for (; i < input.size(); ++i) {
     const auto& record = input[i];

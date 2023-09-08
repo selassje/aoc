@@ -33,9 +33,13 @@ private:
     {
       return size_or_dir.index() == 1;
     }
-    [[nodiscard]] Dir& get_dir() const
+    [[nodiscard]] const Dir& get_dir() const
     {
-      return const_cast<Dir&>(std::get<Dir>(size_or_dir)); // NOLINT
+      return std::get<Dir>(size_or_dir); 
+    }
+    [[nodiscard]] Dir& get_dir() 
+    {
+      return std::get<Dir>(size_or_dir);
     }
   };
 
@@ -120,7 +124,7 @@ Filetree::get_dir_sizes(const Node& node, std::vector<std::size_t>& sizes)
 {
   if (node.is_dir()) {
     sizes.push_back(get_size(node));
-    for (auto& child : node.get_dir()) {
+    for (const auto& child : node.get_dir()) {
       get_dir_sizes(*child, sizes);
     }
   }

@@ -20,7 +20,7 @@ concept nested_unsigned_range = std::ranges::range<T> && requires(T& t) {
 };
 
 auto
-get_top_three_calories_per_elf(const nested_unsigned_range auto& input)
+getTopThreeCaloriesPerElf(const nested_unsigned_range auto& input)
 {
   std::vector<unsigned int> caloriesPefElf{};
   for (const auto& inner : input) {
@@ -38,9 +38,9 @@ get_top_three_calories_per_elf(const nested_unsigned_range auto& input)
 auto
 solve(const nested_unsigned_range auto& input)
 {
-  const auto top_three = get_top_three_calories_per_elf(input);
-  const auto sum = std::reduce(top_three.begin(), top_three.end(), 0U);
-  const auto max = top_three[0];
+  const auto topThree = getTopThreeCaloriesPerElf(input);
+  const auto sum = std::reduce(topThree.begin(), topThree.end(), 0U);
+  const auto max = topThree[0];
   return std::make_pair(max, sum);
 }
 

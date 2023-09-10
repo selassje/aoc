@@ -28,14 +28,14 @@ readInput(const std::string_view path)
   std::string line{};
   std::getline(ifs, line);
 
-  const auto stacks_num = 1 + (line.size() - 3) / 4;
-  Deques deques(stacks_num);
+  const auto stacksNum = 1 + (line.size() - 3) / 4;
+  Deques deques(stacksNum);
   Moves moves{};
 
   ifs.clear();
   ifs.seekg(0);
 
-  auto erase_substring = [&line](std::string_view substring) {
+  auto eraseSubstring = [&line](std::string_view substring) {
     auto ind = line.find(substring);
     line.erase(ind, substring.length());
   };
@@ -43,16 +43,16 @@ readInput(const std::string_view path)
   while (std::getline(ifs, line)) {
     if (!line.empty()) {
       if (line.starts_with("move")) {
-        erase_substring("move");
-        erase_substring("from");
-        erase_substring("to");
+        eraseSubstring("move");
+        eraseSubstring("from");
+        eraseSubstring("to");
 
         std::istringstream iss{ line };
         Move m{};
         iss >> m.Quantity >> m.From >> m.To;
         moves.push_back(m);
       } else if (line.find('[') != std::string::npos) {
-        for (auto i = 0UL; i < stacks_num; ++i) {
+        for (auto i = 0UL; i < stacksNum; ++i) {
           auto crate = line[4 * i + 1];
           if (crate != ' ') {
             deques[i].push_front(crate);

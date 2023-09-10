@@ -28,11 +28,11 @@ readInput(const std::string_view path)
 
     std::istringstream iss{ line };
 
-    Range elf_1{};
-    Range elf_2{};
+    Range elf1{};
+    Range elf2{};
 
-    iss >> elf_1.first >> elf_1.second >> elf_2.first >> elf_2.second;
-    input.emplace_back(elf_1, elf_2);
+    iss >> elf1.first >> elf1.second >> elf2.first >> elf2.second;
+    input.emplace_back(elf1, elf2);
   }
   return input;
 }

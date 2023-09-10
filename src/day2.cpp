@@ -103,15 +103,15 @@ solve(const Guide& guide)
     return evaluateMove(you) + evaluateOutcome(oponent, you);
   };
 
-  unsigned int score_part1 = 0;
-  unsigned int score_part2 = 0;
+  unsigned int scorePart1 = 0;
+  unsigned int scorePart2 = 0;
 
   for (const auto& [oponent, you] : guide) {
-    score_part1 += evaluateRound(oponent, you);
-    score_part2 += evaluateRound(
+    scorePart1 += evaluateRound(oponent, you);
+    scorePart2 += evaluateRound(
       oponent, nextMove(oponent, converMoveToDesiredOutcome(you)));
   }
 
-  return std::make_pair(score_part1, score_part2);
+  return std::make_pair(scorePart1, scorePart2);
 }
 };

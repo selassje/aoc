@@ -30,24 +30,24 @@ readInput(const std::string_view path)
 
   std::ifstream ifs{ path.data() };
   std::string line{};
-  const std::string command_prefix = "$";
-  const std::string ls_command = "ls";
-  const std::string cd_command = "cd";
-  const std::string directory_prefix = "dir";
+  const std::string commandPrefix = "$";
+  const std::string lsCommand = "ls";
+  const std::string cdCommand = "cd";
+  const std::string directoryPrefix = "dir";
 
   while (std::getline(ifs, line)) {
     Record record{};
     std::istringstream iss{ line };
     split(iss);
-    if (words[0] == command_prefix) {
-      if (words[1] == ls_command) {
+    if (words[0] == commandPrefix) {
+      if (words[1] == lsCommand) {
         record = aoc22::day7::List{};
-      } else if (words[1] == cd_command) {
+      } else if (words[1] == cdCommand) {
         record = aoc22::day7::ChangeDirectory{ .directory = words[2] };
       } else {
         std::abort();
       }
-    } else if (words[0] == directory_prefix) {
+    } else if (words[0] == directoryPrefix) {
       record = aoc22::day7::Directory{ .name = words[1] };
     } else {
       record =

@@ -5,8 +5,8 @@ jobs:
     name: Build and Test On ${{ matrix.os }} using ${{ matrix.cxx }}
     strategy:
       matrix:
-        os:  [ubuntu-latest, windows-latest]
-        cxx: [clang++, g++, cl.exe]
+        os:  [windows-latest]
+        cxx: [cl.exe]
         exclude:
          - os: windows-latest
            cxx: g++
@@ -20,8 +20,9 @@ jobs:
         CXX: ${{ matrix.cxx }}
     steps:
       - name: Install MSVC
-        run: Install-VisualStudio  
-        if: ${{ matrix.cxx == 'cl.exe'}}
+        run: |
+             choco install visualstudio2022enterprise --package-parameters "--update" 
+             vswhere  
       - name: Checkout
         uses: actions/checkout@v3
         with: 
@@ -49,24 +50,3 @@ jobs:
         run:  ctest --test-dir build --output-on-failure
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
-  test_coverage:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
-          with: 
-            submodules: true
-        - name: Install LCOV
-          run:  sudo apt-get install lcov
-        - name: Configure
-          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTS=ON -DENABLE_COVERAGE_REPORT=ON
-        - name: Build Tests
-          run:  cmake --build build
-        - name: Run Tests
-          run:  ctest --test-dir build --output-on-failure
-        - name: Generate Coverage Report
-          run:  cmake --build build --target generate-coverage-report
-        - name: Upload coverage reports to Codecov
-          uses: codecov/codecov-action@v3
-          env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

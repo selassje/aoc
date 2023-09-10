@@ -17,5 +17,5 @@ endif()
 
 
 if(ENABLE_CLANG_TIDY)
-    set_target_properties(aoc22 PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+    setup_clang_tidy(aoc22)
 endif()

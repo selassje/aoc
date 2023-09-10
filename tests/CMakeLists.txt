@@ -14,7 +14,7 @@ foreach(i RANGE 1 7)
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
 
     if(ENABLE_CLANG_TIDY)
-        set_target_properties(${TEST_NAME} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+        setup_clang_tidy(${TEST_NAME})
     endif()
 
     target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}

@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Install MSVC
         run: |
-             choco install visualstudio2022enterprise --package-parameters "--update" 
+             choco install visualstudio2022community --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US--update" 
              vswhere  
       - name: Checkout
         uses: actions/checkout@v3

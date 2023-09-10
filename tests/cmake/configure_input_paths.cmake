@@ -1,22 +1,25 @@
+macro(set_path DAY FILENAME)
+  cmake_path(SET ROOT "${CMAKE_SOURCE_DIR}/tests/inputs")
+  string(TOUPPER ${FILENAME} FILENAME_UPPER)
+  cmake_path(SET INPUTS_DAY${DAY}_${FILENAME_UPPER} "${ROOT}/day${DAY}/${FILENAME}.txt")
+endmacro(set_path DAY FILENAME)
 
-cmake_path(SET ROOT "${CMAKE_CURRENT_SOURCE_DIR}/inputs")
+set_path(1 input)
+set_path(1 example)
 
-cmake_path(SET INPUTS_DAY1_INPUT "${ROOT}/day1/input.txt")
-cmake_path(SET INPUTS_DAY1_EXAMPLE "${ROOT}/day1/example.txt")
+set_path(2 input)
 
-cmake_path(SET INPUTS_DAY2_INPUT "${ROOT}/day2/input.txt")
+set_path(3 input)
 
-cmake_path(SET INPUTS_DAY3_INPUT "${ROOT}/day3/input.txt")
+set_path(4 input)
+set_path(4 example)
 
-cmake_path(SET INPUTS_DAY4_INPUT   "${ROOT}/day4/input.txt")
-cmake_path(SET INPUTS_DAY4_EXAMPLE "${ROOT}/day4/example.txt")
+set_path(5 input)
+set_path(5 example)
 
-cmake_path(SET INPUTS_DAY5_INPUT   "${ROOT}/day5/input.txt")
-cmake_path(SET INPUTS_DAY5_EXAMPLE "${ROOT}/day5/example.txt")
+set_path(6 input)
 
-cmake_path(SET INPUTS_DAY6_INPUT "${ROOT}/day6/input.txt")
-
-cmake_path(SET INPUTS_DAY7_INPUT "${ROOT}/day7/input.txt")
-cmake_path(SET INPUTS_DAY7_EXAMPLE "${ROOT}/day7/example.txt")
+set_path(7 input)
+set_path(7 example)
 
 configure_file(inputs.hpp.in inputs.hpp)

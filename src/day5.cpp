@@ -11,24 +11,24 @@ solve(const Input& input)
   Stacks stacksPart2{ input.stacks };
 
   auto performMove = [&stacksPart1](const Move& m) {
-    for (auto i = 0UL; i < m.Quantity; ++i) {
-      auto crate = stacksPart1[m.From - 1].top();
-      stacksPart1[m.From - 1].pop();
-      stacksPart1[m.To - 1].push(crate);
+    for (auto i = 0UL; i < m.quantity; ++i) {
+      auto crate = stacksPart1[m.from - 1].top();
+      stacksPart1[m.from - 1].pop();
+      stacksPart1[m.to - 1].push(crate);
     }
   };
 
   auto performMoveOrderKept = [&stacksPart2](const Move& m) {
     std::vector<char> toBeMoved{};
-    for (auto i = 0UL; i < m.Quantity; ++i) {
-      auto crate = stacksPart2[m.From - 1].top();
-      stacksPart2[m.From - 1].pop();
+    for (auto i = 0UL; i < m.quantity; ++i) {
+      auto crate = stacksPart2[m.from - 1].top();
+      stacksPart2[m.from - 1].pop();
       toBeMoved.push_back(crate);
     }
 
     std::reverse(toBeMoved.begin(), toBeMoved.end());
     for (const auto& crate : toBeMoved) {
-      stacksPart2[m.To - 1].push(crate);
+      stacksPart2[m.to - 1].push(crate);
     }
   };
 

@@ -49,7 +49,7 @@ readInput(const std::string_view path)
 
         std::istringstream iss{ line };
         Move m{};
-        iss >> m.Quantity >> m.From >> m.To;
+        iss >> m.quantity >> m.from >> m.to;
         moves.push_back(m);
       } else if (line.find('[') != std::string::npos) {
         for (auto i = 0UL; i < stacksNum; ++i) {

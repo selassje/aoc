@@ -11,7 +11,6 @@ option(ENABLE_COVERAGE_REPORT "Enable Test Coverage Report" OFF)
 include(cmake/compiler_flags.cmake)
 include(cmake/clang_tidy.cmake)
 
-
 add_subdirectory(src)
 
 if(ENABLE_TESTS)

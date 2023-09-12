@@ -19,9 +19,9 @@ using Stacks = std::vector<Stack>;
 
 struct Move
 {
-  std::size_t From;
-  std::size_t To;
-  std::size_t Quantity;
+  std::size_t from;
+  std::size_t to;
+  std::size_t quantity;
 }
 #ifndef WIN32
 __attribute__((aligned(MOVE_ALIGNMENT)));

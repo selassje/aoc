@@ -26,24 +26,18 @@ private:
   struct Node
   {
     std::string name;
-    std::weak_ptr<Node> parent_dir;
-    std::variant<std::size_t, Dir> size_or_dir;
+    std::weak_ptr<Node> parentDir;
+    std::variant<std::size_t, Dir> sizeOrDir;
 
-    [[nodiscard]] bool isDir() const noexcept
-    {
-      return size_or_dir.index() == 1;
-    }
-    [[nodiscard]] const Dir& getDir() const
-    {
-      return std::get<Dir>(size_or_dir);
-    }
-    [[nodiscard]] Dir& getDir() { return std::get<Dir>(size_or_dir); }
+    [[nodiscard]] bool isDir() const noexcept { return sizeOrDir.index() == 1; }
+    [[nodiscard]] const Dir& getDir() const { return std::get<Dir>(sizeOrDir); }
+    [[nodiscard]] Dir& getDir() { return std::get<Dir>(sizeOrDir); }
   };
 
   std::shared_ptr<Node> m_root =
     std::make_shared<Node>(Node{ .name = std::string{ ROOT_DIR },
-                                 .parent_dir = {},
-                                 .size_or_dir = Dir{} });
+                                 .parentDir = {},
+                                 .sizeOrDir = Dir{} });
   std::shared_ptr<Node> m_cwd{ m_root };
 
   static constexpr std::string_view ROOT_DIR = "/";
@@ -71,8 +65,8 @@ FileTree::addItem(const T& item)
   }
   dir.push_back(
     std::make_shared<Node>(Node{ .name = std::string{ item.name },
-                                 .parent_dir = m_cwd,
-                                 .size_or_dir = std::move(sizeOrDir) }));
+                                 .parentDir = m_cwd,
+                                 .sizeOrDir = std::move(sizeOrDir) }));
 }
 void
 FileTree::changeDirectory(std::string_view dir_name)
@@ -81,7 +75,7 @@ FileTree::changeDirectory(std::string_view dir_name)
   if (dir_name == ROOT_DIR) {
     m_cwd = m_root;
   } else if (dir_name == UP_DIR) {
-    if (auto parent = m_cwd->parent_dir.lock()) {
+    if (auto parent = m_cwd->parentDir.lock()) {
       m_cwd = parent;
     }
   } else {
@@ -113,7 +107,7 @@ FileTree::getSize(const Node& node)
     }
     return total;
   }
-  return std::get<std::size_t>(node.size_or_dir);
+  return std::get<std::size_t>(node.sizeOrDir);
 }
 
 void

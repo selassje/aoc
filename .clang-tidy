@@ -19,6 +19,7 @@ CheckOptions:
   readability-identifier-naming.StructCase: CamelCase  
   readability-identifier-naming.FunctionCase: camelBack 
   readability-identifier-naming.VariableCase: camelBack 
+  readability-identifier-naming.MemberCase: camelBack 
   readability-identifier-naming.GlobalConstantCase: UPPER_CASE 
 
 WarningsAsErrors: "*"

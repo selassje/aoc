@@ -19,10 +19,10 @@ jobs:
     env:
         CXX: ${{ matrix.cxx }}
     steps:
-      - name: Install MSVC
-        run: |
-             choco install visualstudio2022community --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US--update" 
-             vswhere  
+   #   - name: Install MSVC
+    #    run: |
+     #        choco install visualstudio2022community --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US--update" 
+      #       vswhere  
       - name: Checkout
         uses: actions/checkout@v3
         with: 

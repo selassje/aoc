@@ -22,4 +22,7 @@ set_path(6 input)
 set_path(7 input)
 set_path(7 example)
 
+set_path(8 input)
+set_path(8 example)
+
 configure_file(inputs.hpp.in inputs.hpp)

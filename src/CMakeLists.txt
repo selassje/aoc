@@ -5,8 +5,8 @@ add_library(aoc22)
 set(INCLUDE ${CMAKE_CURRENT_LIST_DIR}/../include/aoc22)
 
 target_sources(aoc22 INTERFACE  ${INCLUDE}/day1.hpp 
-                     PUBLIC     ${INCLUDE}/day2.hpp ${INCLUDE}/day3.hpp ${INCLUDE}/day4.hpp ${INCLUDE}/day5.hpp ${INCLUDE}/day6.hpp ${INCLUDE}/day7.hpp 
-                     PRIVATE    day2.cpp day3.cpp day4.cpp day5.cpp day6.cpp day7.cpp unit_test_helper.hpp) 
+                     PUBLIC     ${INCLUDE}/day2.hpp ${INCLUDE}/day3.hpp ${INCLUDE}/day4.hpp ${INCLUDE}/day5.hpp ${INCLUDE}/day6.hpp ${INCLUDE}/day7.hpp ${INCLUDE}/day8.hpp 
+                     PRIVATE    day2.cpp day3.cpp day4.cpp day5.cpp day6.cpp day7.cpp day8.cpp unit_test_helper.hpp) 
 
 target_include_directories(aoc22 PUBLIC ${INCLUDE})
 

@@ -154,7 +154,7 @@ solve(const Input& input)
   }
 
   auto dirSizes = ft.getDirSizes();
-  std::ranges::sort(dirSizes, std::less<std::size_t>{});
+  std::sort(dirSizes.begin(), dirSizes.end());
 
   static constexpr std::size_t maxDirSize = 100000;
   auto dirSizesBelowMaxSize =

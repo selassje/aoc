@@ -35,12 +35,9 @@ private:
     }
     [[nodiscard]] const Dir& getDir() const
     {
-      return std::get<Dir>(size_or_dir); 
-    }
-    [[nodiscard]] Dir& getDir() 
-    {
       return std::get<Dir>(size_or_dir);
     }
+    [[nodiscard]] Dir& getDir() { return std::get<Dir>(size_or_dir); }
   };
 
   std::shared_ptr<Node> m_root =
@@ -159,11 +156,9 @@ solve(const Input& input)
   static constexpr std::size_t maxDirSize = 100000;
   auto dirSizesBelowMaxSize =
     dirSizes | std::ranges::views::filter(
-                  [](const auto& size) { return size <= maxDirSize; });
-  const std::size_t resultPart1 =
-    std::accumulate(dirSizesBelowMaxSize.begin(),
-                    dirSizesBelowMaxSize.end(),
-                    std::size_t{ 0 });
+                 [](const auto& size) { return size <= maxDirSize; });
+  const std::size_t resultPart1 = std::accumulate(
+    dirSizesBelowMaxSize.begin(), dirSizesBelowMaxSize.end(), std::size_t{ 0 });
 
   static constexpr std::size_t totalFilesystemSize = 70000000;
   static constexpr std::size_t neededSize = 30000000;
@@ -172,8 +167,9 @@ solve(const Input& input)
   const auto sizeToDelete = neededSize - currentUnused;
 
   auto candidateDirSizesToDelete =
-    dirSizes | std::ranges::views::filter(
-                  [sizeToDelete](const auto& size) { return size >= sizeToDelete; });
+    dirSizes | std::ranges::views::filter([sizeToDelete](const auto& size) {
+      return size >= sizeToDelete;
+    });
   const std::size_t resultPart2 = *candidateDirSizesToDelete.begin();
 
   return std::make_pair(resultPart1, resultPart2);

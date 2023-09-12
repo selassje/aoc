@@ -52,8 +52,8 @@ solve(const std::vector<std::string>& input)
       return middle;
     }();
 
-    const auto commonType =
-      getCommonType({ rucksack.begin(), getMiddle }, { getMiddle, rucksack.end() });
+    const auto commonType = getCommonType({ rucksack.begin(), getMiddle },
+                                          { getMiddle, rucksack.end() });
 
     resultPart1 += getPriority(commonType);
 
@@ -61,8 +61,7 @@ solve(const std::vector<std::string>& input)
       const auto& firstRucksack = input[i - 2];
       const auto& secondRucksack = input[i - 1];
 
-      const auto commonTypes =
-        getCommonTypes(firstRucksack, secondRucksack);
+      const auto commonTypes = getCommonTypes(firstRucksack, secondRucksack);
 
       const auto commonTypeGroup = getCommonType(commonTypes, rucksack);
       resultPart2 += getPriority(commonTypeGroup);

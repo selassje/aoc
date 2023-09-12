@@ -12,10 +12,10 @@ solve(const Input& input)
     return r1.first <= r2.first && r1.second >= r2.second;
   };
 
-  const auto oneContainsAnother =
-    [f = firstContainsSecond](const Range& r1, const Range& r2) {
-      return f(r1, r2) || f(r2, r1);
-    };
+  const auto oneContainsAnother = [f = firstContainsSecond](const Range& r1,
+                                                            const Range& r2) {
+    return f(r1, r2) || f(r2, r1);
+  };
 
   auto areExclusive = [](const Range& r1, const Range& r2) {
     return r1.second < r2.first || r2.second < r1.first;

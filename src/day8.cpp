@@ -8,61 +8,9 @@ namespace aoc22::day8 {
 std::pair<std::size_t, std::size_t>
 solve(const Grid& grid)
 {
-  const size_t height = grid.size();
-  const size_t width = grid[0].size();
-
-  Grid maxesToTheLeft{};
-  Grid maxesToTheRight{};
-
-  for (std::size_t h = 0; h < height; ++h) {
-    std::vector<std::byte> maxToTheLeft{};
-    maxToTheLeft.resize(width);
-    maxToTheLeft[0] = grid[h][0];
-    for (std::size_t w = 1; w < width; ++w) {
-      maxToTheLeft[w] = std::max(maxToTheLeft[w - 1], grid[h][w]);
-    }
-    std::vector<std::byte> maxToTheRight{};
-    maxToTheRight.resize(width);
-    maxToTheRight[width - 1] = grid[h][width - 1];
-    for (std::size_t w = width - 2; w != static_cast<std::size_t>(-1); --w) {
-      maxToTheRight[w] = std::max(maxToTheRight[w + 1], grid[h][w]);
-      if (w == 0)
-        break;
-    }
-    maxesToTheLeft.push_back(maxToTheLeft);
-    maxesToTheRight.push_back(maxToTheRight);
-  }
-  Grid maxesUp{};
-  Grid maxesDown{};
-
-  for (std::size_t w = 0; w < width; ++w) {
-    std::vector<std::byte> maxUp{};
-    maxUp.resize(height);
-    maxUp[0] = grid[0][w];
-    for (std::size_t h = 1; h < height; ++h) {
-      maxUp[h] = std::max(maxUp[h - 1], grid[h][w]);
-    }
-    std::vector<std::byte> maxDown{};
-    maxDown.resize(height);
-    maxDown[height - 1] = grid[height - 1][w];
-    for (std::size_t h = height - 2; h < static_cast<std::size_t>(-1); --h) {
-      maxDown[h] = std::max(maxDown[h + 1], grid[h][w]);
-    }
-    maxesUp.push_back(maxUp);
-    maxesDown.push_back(maxDown);
-  }
-
+  const std::size_t height = grid.size();
+  const std::size_t width = grid[0].size();
   const std::size_t edges = 2 * height + 2 * (width - 2);
-  std::size_t innerVisible = 0;
-
-  for (std::size_t h = 1; h < height - 1; ++h)
-    for (std::size_t w = 1; w < width - 1; ++w) {
-      const auto& tree = grid[h][w];
-      if (tree > maxesToTheLeft[h][w - 1] || tree > maxesToTheRight[h][w + 1] ||
-          tree > maxesUp[w][h - 1] || tree > maxesDown[w][h + 1]) {
-        ++innerVisible;
-      }
-    }
 
   enum class Direction
   {
@@ -83,7 +31,7 @@ solve(const Grid& grid)
 
   auto getSearchPattern =
     [height, width](
-      std::size_t h, std::size_t w, const Direction& dir) -> SearchPattern {
+      std::size_t h, std::size_t w, const Direction& dir) -> SearchPattern { //NOLINT
     switch (dir) {
       case Left:
         return { 0, -1, h, 0 };
@@ -96,33 +44,48 @@ solve(const Grid& grid)
     };
     return {};
   };
-  
+
+  std::size_t innerVisible = 0;
   std::size_t resultPart2 = 0;
-  for (std::size_t h = 0; h < height; ++h)
-    for (std::size_t w = 0; w < width; ++w) {
-      auto scenicScore =
-        [w,h, &grid, &getSearchPattern](Direction dir) {
-          auto h_ = h;
-          auto w_ = w;
-          const auto tree = grid[h][w];
-          auto searchPattern = getSearchPattern(h, w, dir);
-          std::size_t score = 0;
-          while (searchPattern.endH != h_ || searchPattern.endW != w_) {
-            h_ += static_cast<std::size_t>(searchPattern.incH);
-            w_ += static_cast<std::size_t>(searchPattern.incW);
-            ++score;
-            if (grid[h_][w_] >= tree) {
-              break;
-            }
+  for (std::size_t h = 1; h < height - 1; ++h)
+  {
+    for (std::size_t w = 1; w < width - 1; ++w) {
+      auto scenicScoreAndVisibility = [wInit = w, hInit = h, &grid, &getSearchPattern](Direction dir) {
+        auto h = hInit;
+        auto w = wInit;
+        const auto tree = grid[h][w];
+        auto searchPattern = getSearchPattern(h, w, dir);
+        std::size_t score = 0;
+        bool isVisible = true;
+        while (searchPattern.endH != h || searchPattern.endW != w) {
+          h += static_cast<std::size_t>(searchPattern.incH);
+          w += static_cast<std::size_t>(searchPattern.incW);
+          ++score;
+          if (grid[h][w] >= tree) {
+            isVisible = false;
+            break;
           }
-          return score;
-        };
-      const auto score = scenicScore(Up) * scenicScore(Left) *
-                         scenicScore(Right) * scenicScore(Down);
+        }
+        return std::make_pair(score, isVisible);
+      };
+
+      bool isVisible = false;
+      std::size_t score = 1;
+      for (std::size_t i = 0; i < 4; ++i) {
+        const auto& [score_, isVisible_] =
+          scenicScoreAndVisibility(static_cast<Direction>(i));
+        score *= score_;
+        isVisible |= isVisible_;
+      }
+
+      if (isVisible) {
+        ++innerVisible;
+      }
       resultPart2 = std::max(score, resultPart2);
     }
-  const size_t resultPart1 = edges + innerVisible;
+  }
 
+  const size_t resultPart1 = edges + innerVisible;
   return std::make_pair(resultPart1, resultPart2);
 }
 

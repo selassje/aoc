@@ -1,5 +1,5 @@
-#ifndef AOC22_DAY7_HPP
-#define AOC22_DAY7_HPP
+#ifndef AOC22_DAY8_HPP
+#define AOC22_DAY8_HPP
 
 #include <utility>
 #include <vector>

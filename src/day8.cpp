@@ -98,10 +98,10 @@ solve(const Grid& grid)
   };
 
   std::size_t resultPart2 = 0;
-  for (std::size_t _h = 0; _h < height; ++_h)
-    for (std::size_t _w = 0; _w < width; ++_w) {
+  for (std::size_t h = 0; h < height; ++h)
+    for (std::size_t w = 0; w < width; ++w) {
       auto scenicScore =
-        [&grid, getSearchPattern](Direction dir, std::size_t h, std::size_t w) mutable {
+        [=,&grid, &getSearchPattern](Direction dir) mutable {
           const auto tree = grid[h][w];
           auto searchPattern = getSearchPattern(h, w, dir);
           std::size_t score = 0;
@@ -115,8 +115,8 @@ solve(const Grid& grid)
           }
           return score;
         };
-      const auto score = scenicScore(Up,_h,_w) * scenicScore(Left,_h,_w) *
-                         scenicScore(Right,_h,_w) * scenicScore(Down,_h,_w);
+      const auto score = scenicScore(Up) * scenicScore(Left) *
+                         scenicScore(Right) * scenicScore(Down);
       resultPart2 = std::max(score, resultPart2);
     }
   const size_t resultPart1 = edges + innerVisible;

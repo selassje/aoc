@@ -51,18 +51,18 @@ solve(const Grid& grid)
   for (std::size_t h = 1; h < height - 1; ++h) {
     for (std::size_t w = 1; w < width - 1; ++w) {
       auto scenicScoreAndVisibility =
-        [wInit = w, hInit = h, &grid, &getSearchPattern](Direction dir) {
-          auto h = hInit;
-          auto w = wInit;
-          const auto tree = grid[h][w];
-          auto searchPattern = getSearchPattern(h, w, dir);
+        [w, h, &grid, &getSearchPattern](Direction dir) {
+          auto hCurr = h;
+          auto wCurr = w;
+          const auto tree = grid[hCurr][wCurr];
+          auto searchPattern = getSearchPattern(hCurr, wCurr, dir);
           std::size_t score = 0;
           bool isVisible = true;
-          while (searchPattern.endH != h || searchPattern.endW != w) {
-            h += static_cast<std::size_t>(searchPattern.incH);
-            w += static_cast<std::size_t>(searchPattern.incW);
+          while (searchPattern.endH != hCurr || searchPattern.endW != wCurr) {
+            hCurr += static_cast<std::size_t>(searchPattern.incH);
+            wCurr += static_cast<std::size_t>(searchPattern.incW);
             ++score;
-            if (grid[h][w] >= tree) {
+            if (grid[hCurr][wCurr] >= tree) {
               isVisible = false;
               break;
             }

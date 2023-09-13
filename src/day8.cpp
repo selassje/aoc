@@ -28,7 +28,7 @@ solve(const Grid& grid)
     std::size_t endH;
     std::size_t endW;
   };
-
+  // clang-format off
   auto getSearchPattern =
     [height, width](
       std::size_t h, std::size_t w, const Direction& dir) -> SearchPattern { //NOLINT
@@ -44,30 +44,31 @@ solve(const Grid& grid)
     };
     return {};
   };
+  // clang-format on
 
   std::size_t innerVisible = 0;
   std::size_t resultPart2 = 0;
-  for (std::size_t h = 1; h < height - 1; ++h)
-  {
+  for (std::size_t h = 1; h < height - 1; ++h) {
     for (std::size_t w = 1; w < width - 1; ++w) {
-      auto scenicScoreAndVisibility = [wInit = w, hInit = h, &grid, &getSearchPattern](Direction dir) {
-        auto h = hInit;
-        auto w = wInit;
-        const auto tree = grid[h][w];
-        auto searchPattern = getSearchPattern(h, w, dir);
-        std::size_t score = 0;
-        bool isVisible = true;
-        while (searchPattern.endH != h || searchPattern.endW != w) {
-          h += static_cast<std::size_t>(searchPattern.incH);
-          w += static_cast<std::size_t>(searchPattern.incW);
-          ++score;
-          if (grid[h][w] >= tree) {
-            isVisible = false;
-            break;
+      auto scenicScoreAndVisibility =
+        [wInit = w, hInit = h, &grid, &getSearchPattern](Direction dir) {
+          auto h = hInit;
+          auto w = wInit;
+          const auto tree = grid[h][w];
+          auto searchPattern = getSearchPattern(h, w, dir);
+          std::size_t score = 0;
+          bool isVisible = true;
+          while (searchPattern.endH != h || searchPattern.endW != w) {
+            h += static_cast<std::size_t>(searchPattern.incH);
+            w += static_cast<std::size_t>(searchPattern.incW);
+            ++score;
+            if (grid[h][w] >= tree) {
+              isVisible = false;
+              break;
+            }
           }
-        }
-        return std::make_pair(score, isVisible);
-      };
+          return std::make_pair(score, isVisible);
+        };
 
       bool isVisible = false;
       std::size_t score = 1;

@@ -4,11 +4,12 @@
 #include <utility>
 #include <vector>
 
-namespace aoc22::day8{
+namespace aoc22::day8 {
 
-  using Grid = std::vector<std::vector<std::byte>>;
+using Grid = std::vector<std::vector<std::byte>>;
 
-  std::pair<std::size_t, std::size_t> solve(const Grid& grid);
+std::pair<std::size_t, std::size_t>
+solve(const Grid& grid);
 };
 
 #endif

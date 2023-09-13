@@ -16,18 +16,19 @@ solve(const Grid& grid)
   for ( std::size_t h = 0 ; h < height  ; ++h)
   {
       std::vector<std::byte> maxToTheLeft{};
-      maxToTheLeft.reserve(width);
+      maxToTheLeft.resize(width);
       maxToTheLeft[0] = grid[h][0];
       for ( std::size_t w = 1 ; w < width; ++w)
       {
         maxToTheLeft[w] = std::max(maxToTheLeft[w-1], grid[h][w]);
       }
       std::vector<std::byte> maxToTheRight{};
-      maxToTheRight.reserve(width);
+      maxToTheRight.resize(width);
       maxToTheRight[width - 1] = grid[h][width - 1];
-      for ( std::size_t w = width - 2 ; w >= 0; --w)
+      for ( std::size_t w = width - 2 ; w != static_cast<std::size_t>(-1); --w)
       {
         maxToTheRight[w] = std::max(maxToTheRight[w + 1], grid[h][w]);
+        if ( w == 0) break;
       }
       maxesToTheLeft.push_back(maxToTheLeft);
       maxesToTheRight.push_back(maxToTheRight);
@@ -38,18 +39,19 @@ solve(const Grid& grid)
   for ( std::size_t w = 0 ; w < width  ; ++w)
   {
       std::vector<std::byte> maxUp{};
-      maxUp.reserve(height);
+      maxUp.resize(height);
       maxUp[0] = grid[0][w];
       for ( std::size_t h = 1 ; h < height; ++h)
       {
         maxUp[h] = std::max(maxUp[h-1], grid[h][w]);
       }
       std::vector<std::byte> maxDown{};
-      maxDown.reserve(height);
+      maxDown.resize(height);
       maxDown[height - 1] = grid[height - 1][w];
-      for ( std::size_t h = height - 2 ; h >= 0; --h)
+      for ( std::size_t h = height - 2 ; h < static_cast<std::size_t>(-1) ; --h)
       {
         maxDown[h] = std::max(maxDown[h + 1], grid[h][w]);
+      
       }
       maxesUp.push_back(maxUp);
       maxesDown.push_back(maxDown);

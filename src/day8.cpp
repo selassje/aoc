@@ -96,20 +96,22 @@ solve(const Grid& grid)
     };
     return {};
   };
-
+  
   std::size_t resultPart2 = 0;
   for (std::size_t h = 0; h < height; ++h)
     for (std::size_t w = 0; w < width; ++w) {
       auto scenicScore =
-        [=,&grid, &getSearchPattern](Direction dir) mutable {
+        [w,h, &grid, &getSearchPattern](Direction dir) {
+          auto h_ = h;
+          auto w_ = w;
           const auto tree = grid[h][w];
           auto searchPattern = getSearchPattern(h, w, dir);
           std::size_t score = 0;
-          while (searchPattern.endH != h || searchPattern.endW != w) {
-            h += static_cast<std::size_t>(searchPattern.incH);
-            w += static_cast<std::size_t>(searchPattern.incW);
+          while (searchPattern.endH != h_ || searchPattern.endW != w_) {
+            h_ += static_cast<std::size_t>(searchPattern.incH);
+            w_ += static_cast<std::size_t>(searchPattern.incW);
             ++score;
-            if (grid[h][w] >= tree) {
+            if (grid[h_][w_] >= tree) {
               break;
             }
           }

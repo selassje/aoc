@@ -86,7 +86,7 @@ solve(const Grid& grid)
     }
   }
 
-  const size_t resultPart1 = edges + innerVisible;
+  const std::size_t resultPart1 = edges + innerVisible;
   return std::make_pair(resultPart1, resultPart2);
 }
 

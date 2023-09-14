@@ -1,10 +1,12 @@
 file(GLOB_RECURSE
      ALL_CXX_SOURCE_FILES
-     *.[chi]pp *.[chi]xx *.cc *.hh *.ii *.[CHI] *.hpp.in
+     *.cpp *.hpp *.hpp.in
      )
 
 
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX ${CMAKE_BINARY_DIR})
+list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX CMakeCXXCompilerId.cpp)
+list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX inputs.hpp)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX Catch2)
 
 find_program(CLANG_FORMAT "clang-format")

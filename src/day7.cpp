@@ -146,8 +146,9 @@ solve(const Input& input)
 
   auto dirSizes = ft.getDirSizes();
   std::sort(dirSizes.begin(), dirSizes.end());
-
+#ifdef _MSC_VER
 #pragma warning(suppress : 5264)
+#endif
   static constexpr std::size_t maxDirSize = 100000;
   auto dirSizesBelowMaxSize =
     dirSizes | std::ranges::views::filter(

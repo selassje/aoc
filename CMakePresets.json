@@ -54,6 +54,14 @@
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },
     {
+      "name": "coverage_ninja_gcc",
+      "inherits" : "dev_ninja_gcc",
+      "cacheVariables": {
+        "ENABLE_COVERAGE_REPORT":"ON"
+      },
+      "binaryDir": "${sourceDir}/builds/coverage_ninja_gcc"
+    },
+    {
       "name": "dev_vs_msvc",
       "generator": "Visual Studio 17 2022",
       "cacheVariables": {

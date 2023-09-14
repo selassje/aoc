@@ -1,0 +1,66 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 6,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "development",
+      "description": "Build to use during iteration",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"Debug",
+        "ENABLE_TESTS": "ON",
+        "ENABLE_CLANG_TIDY": "OFF"
+      }
+    },
+    {
+      "name": "dev_ninja",
+      "hidden": true,
+      "inherits" : "dev",
+      "generator": "Ninja"
+    },
+    {
+      "name": "dev_ninja_clang",
+      "inherits" : "dev_ninja",
+      "environment": {
+        "CXX": "clang++"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
+    },
+    {
+      "name": "dev_ninja_gcc",
+      "inherits" : "dev_ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "environment": {
+        "CXX": "g++"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "output": {"outputOnFailure": true},
+      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+    },
+    {
+      "name": "dev_ninja_clang",
+      "inherits": "default",
+      "configurePreset" : "dev_ninja_clang"
+    },
+    {
+      "name": "dev_ninja_gcc",
+      "inherits": "default",
+      "configurePreset" : "dev_ninja_gcc"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+
 {
   "version": 6,
   "cmakeMinimumRequired": {
@@ -13,8 +14,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Debug",
-        "ENABLE_TESTS": "ON",
-        "ENABLE_CLANG_TIDY": "OFF"
+        "ENABLE_TESTS": "ON"
       }
     },
     {
@@ -43,6 +43,28 @@
         "CXX": "g++"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
+    },
+    {
+      "name": "dev_vs_msvc",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "ENABLE_TESTS": "ON"
+      },
+      "condition": {
+       "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_vs_msvc"
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "dev_vs_msvc",
+      "configurePreset": "dev_vs_msvc",
+      "targets":["ALL_BUILD"],
+      "configuration": "Debug" 
     }
   ],
   "testPresets": [
@@ -61,6 +83,12 @@
       "name": "dev_ninja_gcc",
       "inherits": "default",
       "configurePreset" : "dev_ninja_gcc"
+    },
+    {
+      "name": "dev_vs_msvc",
+      "inherits": "default",
+      "configurePreset" : "dev_vs_msvc",
+      "configuration": "Debug"
     }
   ]
 }

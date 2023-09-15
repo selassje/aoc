@@ -23,7 +23,7 @@ private:
   struct Node;
   using Dir = std::vector<std::shared_ptr<Node>>;
   using SizeOrDir = std::variant<std::size_t, Dir>;
-  struct Node
+  struct alignas(128) Node
   {
     std::string name;
     std::weak_ptr<Node> parentDir;

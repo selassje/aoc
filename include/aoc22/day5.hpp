@@ -17,27 +17,20 @@ constexpr size_t INPUT_ALIGNMENT = 64;
 using Stack = std::stack<char>;
 using Stacks = std::vector<Stack>;
 
-struct Move
+struct alignas(MOVE_ALIGNMENT) Move
 {
   std::size_t from;
   std::size_t to;
   std::size_t quantity;
-}
-#ifndef WIN32
-__attribute__((aligned(MOVE_ALIGNMENT)));
-#endif
-;
+};
 using Moves = std::vector<Move>;
 
-struct Input
+struct alignas(INPUT_ALIGNMENT) Input
 {
   Stacks stacks;
   Moves moves;
-}
-#ifndef WIN32
-__attribute__((aligned(INPUT_ALIGNMENT)));
-#endif
-;
+};
+
 std::pair<std::string, std::string>
 solve(const Input& input);
 };

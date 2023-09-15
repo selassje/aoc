@@ -9,7 +9,7 @@
 
 namespace aoc22::day7 {
 
-struct ChangeDirectory
+struct alignas(32) ChangeDirectory
 {
   std::string directory;
 };
@@ -18,12 +18,12 @@ enum List
 {
 };
 
-struct Directory
+struct alignas(32) Directory
 {
   std::string name;
 };
 
-struct File
+struct alignas(64) File
 {
   std::string name;
   std::size_t size;

@@ -21,7 +21,7 @@ solve(const Grid& grid)
   };
   using enum Direction;
 
-  struct SearchPattern
+  struct alignas(32) SearchPattern
   {
     std::int32_t incH;
     std::int32_t incW;

@@ -1,7 +1,5 @@
 #include "day2.hpp"
 
-#include "unit_test_helper.hpp"
-
 #include <cstdlib>
 #include <numeric>
 #include <stdexcept>
@@ -65,15 +63,8 @@ nextMove(Move oponent, Outcome desiredOutcome)
   }
 }
 
-ADD_TC(TEST_CASE("Day2 nextMove", "[Day2]") {
-  try {
-    nextMove(Rock, static_cast<Outcome>(10));
-  } catch (std::runtime_error&) {
-  }
-})
-
 Outcome
-converMoveToDesiredOutcome(const Move move)
+convertMoveToDesiredOutcome(const Move move)
 {
   switch (move) {
     case Rock:
@@ -88,14 +79,8 @@ converMoveToDesiredOutcome(const Move move)
       };
   }
 };
+};
 
-ADD_TC(TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]") {
-  try {
-    converMoveToDesiredOutcome(static_cast<Move>(10));
-  } catch (std::runtime_error&) {
-  }
-})
-}
 std::pair<unsigned int, unsigned int>
 solve(const Guide& guide)
 {
@@ -109,9 +94,32 @@ solve(const Guide& guide)
   for (const auto& [oponent, you] : guide) {
     scorePart1 += evaluateRound(oponent, you);
     scorePart2 += evaluateRound(
-      oponent, nextMove(oponent, converMoveToDesiredOutcome(you)));
+      oponent, nextMove(oponent, convertMoveToDesiredOutcome(you)));
   }
 
   return std::make_pair(scorePart1, scorePart2);
 }
 };
+
+#ifdef ENABLE_TESTS
+
+#include <catch2/catch.hpp>
+namespace aoc22::day2 {
+
+TEST_CASE("Day2 nextMove", "[Day2]")
+{
+  try {
+    nextMove(Rock, static_cast<Outcome>(10)); // NOLINT
+  } catch (std::runtime_error&) {
+  }
+}
+
+TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
+{
+  try {
+    convertMoveToDesiredOutcome(static_cast<Move>(10)); // NOLINT
+  } catch (std::runtime_error&) {
+  }
+}
+#endif
+}

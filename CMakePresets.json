@@ -32,6 +32,15 @@
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
     },
     {
+     "name": "rel_ninja_clang",
+      "inherits" : "dev_ninja_clang",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"Release",
+        "ENABLE_TESTS":"OFF"
+      },
+      "binaryDir": "${sourceDir}/builds/rel_ninja_clang"
+    },
+    {
      "name": "rel_ninja_clang_clang-tidy",
       "inherits" : "dev_ninja_clang",
       "cacheVariables": {

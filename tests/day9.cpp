@@ -9,9 +9,9 @@
 #include <ranges>
 #include <sstream>
 
-using aoc22::day9::Moves;
-using aoc22::day9::Move;
 using aoc22::day9::Direction;
+using aoc22::day9::Move;
+using aoc22::day9::Moves;
 using enum aoc22::day9::Direction;
 
 Moves
@@ -20,18 +20,19 @@ readInput(const std::string_view path)
   std::ifstream ifs{ path.data() };
   Moves moves{};
   std::string line{};
-    
-  static const std::unordered_map<char,Direction> charToDirection{{'R',Right}, {'U',Up}, {'L',Left}, {'D',Right}}; 
+
+  static const std::unordered_map<char, Direction> charToDirection{
+    { 'R', Right }, { 'U', Up }, { 'L', Left }, { 'D', Right }
+  };
 
   while (std::getline(ifs, line)) {
-    std::istringstream iss{line};
+    std::istringstream iss{ line };
     char d;
     std::size_t count;
     iss >> d >> count;
-    moves.emplace_back<Move>({charToDirection.at(d),2});
+    moves.emplace_back<Move>({ charToDirection.at(d), 2 });
   }
   return moves;
-    
 }
 
 TEST_CASE("Day8 Example", "[Day8]")

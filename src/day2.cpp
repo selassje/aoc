@@ -121,5 +121,5 @@ TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
   } catch (std::runtime_error&) {
   }
 }
+};
 #endif
-}

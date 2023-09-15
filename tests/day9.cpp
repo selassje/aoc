@@ -1,0 +1,43 @@
+
+#include "day9.hpp"
+#include "inputs.hpp"
+
+#include <catch2/catch.hpp>
+
+#include <fstream>
+#include <iostream>
+#include <ranges>
+#include <sstream>
+
+using aoc22::day9::Moves;
+using aoc22::day9::Move;
+using aoc22::day9::Direction;
+using enum aoc22::day9::Direction;
+
+Moves
+readInput(const std::string_view path)
+{
+  std::ifstream ifs{ path.data() };
+  Moves moves{};
+  std::string line{};
+    
+  static const std::unordered_map<char,Direction> charToDirection{{'R',Right}, {'U',Up}, {'L',Left}, {'D',Right}}; 
+
+  while (std::getline(ifs, line)) {
+    std::istringstream iss{line};
+    char d;
+    std::size_t count;
+    iss >> d >> count;
+    moves.emplace_back<Move>({charToDirection.at(d),2});
+  }
+  return moves;
+    
+}
+
+TEST_CASE("Day8 Example", "[Day8]")
+{
+  const auto input = readInput(inputs::day9::EXAMPLE);
+  const auto& [part_1, part_2] = aoc22::day9::solve(input);
+  REQUIRE(part_1 == 13);
+  REQUIRE(part_2 == 13);
+}

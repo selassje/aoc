@@ -48,8 +48,7 @@
         "dev" : false
       },
       "cacheVariables": {
-        "ENABLE_FUZZ_TESTS":"ON",
-        "CMAKE_BUILD_TYPE":"Release"
+        "ENABLE_FUZZ_TESTS":"ON"
       },
       "condition": {
        "type": "equals",
@@ -57,6 +56,22 @@
         "rhs": "Linux"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang_fuzz"
+    },
+    {
+      "name": "rel_ninja_clang_fuzz",
+      "inherits" : "dev_ninja_clang_fuzz",
+      "warnings" : {
+        "dev" : false
+      },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"Release"
+      },
+      "condition": {
+       "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "binaryDir": "${sourceDir}/builds/rel_ninja_clang_fuzz"
     },
     {
      "name": "rel_ninja_clang_clang-tidy",

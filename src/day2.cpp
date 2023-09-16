@@ -84,6 +84,25 @@ convertMoveToDesiredOutcome(const Move move)
 std::pair<unsigned int, unsigned int>
 solve(const Guide& guide)
 {
+  for (std::size_t i = 0; i < guide.size(); ++i) {
+    auto check_move = [](const Move& m) {
+      const auto c = static_cast<unsigned char>(m);
+      static constexpr auto rock = static_cast<unsigned char>(Rock);
+      static constexpr auto scissors = static_cast<unsigned char>(Sciscors);
+      return c >= rock && c <= scissors;
+    };
+    if (!check_move(guide[i].first)) {
+      throw std::runtime_error{
+        "aoc22::day2::solve first move out of valid range"
+      };
+    }
+    if (!check_move(guide[i].second)) {
+      throw std::runtime_error{
+        "aoc22::day2::solve second move out of valid range"
+      };
+    }
+  };
+
   auto evaluateRound = [](Move oponent, Move you) {
     return evaluateMove(you) + evaluateOutcome(oponent, you);
   };
@@ -103,7 +122,7 @@ solve(const Guide& guide)
 
 #ifdef ENABLE_TESTS
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 namespace aoc22::day2 {
 
 TEST_CASE("Day2 nextMove", "[Day2]")
@@ -122,4 +141,5 @@ TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
   }
 }
 };
+
 #endif

@@ -4,7 +4,7 @@ include(CTest)
 
 include("cmake/configure_input_paths.cmake")
 
-set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
+set(CATCH_BUILD_STATIC_LIBRARY OFF CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
 if(ENABLE_FUZZ_TESTS)
@@ -22,13 +22,17 @@ foreach(i RANGE 1 9)
     endif()
 
     target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
-                                    PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)
-
-    target_link_libraries(${TEST_NAME} PRIVATE Catch2WithMain PRIVATE aoc22)
+                                            PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)
+    if(${i} STREQUAL 2)
+      target_link_libraries(${TEST_NAME} PRIVATE Catch2 PRIVATE aoc22)
+    elseif()
+      target_link_libraries(${TEST_NAME} PRIVATE Catch2WithMain PRIVATE aoc22)
+    endif()
 
     if(ENABLE_FUZZ_TESTS)
       link_fuzztest(${TEST_NAME})
       target_link_options(${TEST_NAME} PRIVATE -fsanitize=address)
+      target_compile_definitions(${TEST_NAME} PRIVATE ENABLE_FUZZ_TESTS)
     endif()
 
     if(ENABLE_COVERAGE_REPORT)

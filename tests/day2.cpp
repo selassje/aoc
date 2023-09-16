@@ -1,8 +1,7 @@
 #include "day2.hpp"
 #include "inputs.hpp"
-#include <catch2/catch.hpp>
 
-#include "fuzztest/fuzztest.h"
+#include "tests_main.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -65,18 +64,26 @@ TEST_CASE("Day2 Input", "[Day2]")
   REQUIRE(part_2 == 13886);
 }
 
+#ifdef ENABLE_FUZZ_TESTS
+
 using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
 
-void FuzzTest(const FuzzInput& input) {
-    aoc22::day2::Guide realInput{};
-    realInput.reserve(input.size());
-    for ( const auto& m : input)
-    {
-      const auto m1 = static_cast<aoc22::day2::Move>(m.first);
-      const auto m2 = static_cast<aoc22::day2::Move>(m.second);
-      realInput.emplace_back(std::make_pair(m1,m2)); 
-    }
+void
+FuzzTest(const FuzzInput& input)
+{
+  aoc22::day2::Guide realInput{};
+  realInput.reserve(input.size());
+  for (const auto& m : input) {
+    const auto m1 = static_cast<aoc22::day2::Move>(m.first);
+    const auto m2 = static_cast<aoc22::day2::Move>(m.second);
+    realInput.emplace_back(std::make_pair(m1, m2));
+  }
+  try {
     aoc22::day2::solve(realInput);
+  } catch (std::runtime_error&) {
+  }
 }
 
 FUZZ_TEST(Day2FuzzTest, FuzzTest);
+
+#endif

@@ -22,7 +22,7 @@ readInput(const std::string_view path)
   std::string line{};
 
   static const std::unordered_map<char, Direction> charToDirection{
-    { 'R', Right }, { 'U', Up }, { 'L', Left }, { 'D', Right }
+    { 'R', Right }, { 'U', Up }, { 'L', Left }, { 'D', Down }
   };
 
   while (std::getline(ifs, line)) {
@@ -30,15 +30,23 @@ readInput(const std::string_view path)
     char d;
     std::size_t count;
     iss >> d >> count;
-    moves.emplace_back<Move>({ charToDirection.at(d), 2 });
+    moves.emplace_back<Move>({ charToDirection.at(d), count });
   }
   return moves;
 }
 
-TEST_CASE("Day8 Example", "[Day8]")
+TEST_CASE("Day9 Example", "[Day9]")
 {
   const auto input = readInput(inputs::day9::EXAMPLE);
   const auto& [part_1, part_2] = aoc22::day9::solve(input);
   REQUIRE(part_1 == 13);
+  REQUIRE(part_2 == 13);
+}
+
+TEST_CASE("Day9 Input", "[Day9]")
+{
+  const auto input = readInput(inputs::day9::INPUT);
+  const auto& [part_1, part_2] = aoc22::day9::solve(input);
+  REQUIRE(part_1 == 6011);
   REQUIRE(part_2 == 13);
 }

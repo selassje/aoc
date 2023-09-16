@@ -85,7 +85,6 @@ areTouching(const Position& p1, const Position& p2)
 std::pair<std::size_t, std::size_t>
 solve(const Moves& moves)
 {
-  const std::size_t resultPart2 = 0;
   Position head{};
   Position tail{};
   std::unordered_set<Position> visitedPostions{ tail };
@@ -106,10 +105,11 @@ solve(const Moves& moves)
         std::cout << tail.x << " " << tail.y << std::endl;
         visitedPostions.insert(tail);
       }
+      //std::cout << "h " <<  head.x << " " << head.y << std::endl;
     }
   }
   const std::size_t resultPart1 = visitedPostions.size();
-  return std::make_pair(resultPart1, resultPart2);
+  return std::make_pair(resultPart1, resultPart1);
 }
 
 };

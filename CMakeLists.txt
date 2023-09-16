@@ -5,6 +5,7 @@ project(AoC22 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_TESTS "Enable Tests" OFF)
+option(ENABLE_FUZZ_TESTS "Enable Fuzzing Tests" OFF)
 option(ENABLE_CLANG_TIDY "Enable Clang Tidy" OFF)
 option(ENABLE_COVERAGE_REPORT "Enable Test Coverage Report" OFF)
 

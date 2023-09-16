@@ -7,6 +7,9 @@ include("cmake/configure_input_paths.cmake")
 set(CATCH_BUILD_STATIC_LIBRARY ON CACHE BOOL "" FORCE)
 add_subdirectory(Catch2)
 
+if(ENABLE_FUZZ_TESTS)
+  add_subdirectory(fuzztest)
+endif()
 
 foreach(i RANGE 1 9)
     set(TEST_NAME day${i})

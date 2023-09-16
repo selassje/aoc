@@ -27,7 +27,8 @@
       "name": "dev_ninja_clang",
       "inherits" : "dev_ninja",
       "environment": {
-        "CXX": "clang++"
+        "CXX": "clang++",
+        "CC": "clang"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
     },
@@ -39,6 +40,19 @@
         "ENABLE_TESTS":"OFF"
       },
       "binaryDir": "${sourceDir}/builds/rel_ninja_clang"
+    },
+    {
+     "name": "dev_ninja_clang_fuzz",
+      "inherits" : "dev_ninja_clang",
+      "cacheVariables": {
+        "ENABLE_FUZZ_TESTS":"ON"
+      },
+      "condition": {
+       "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_clang_fuzz"
     },
     {
      "name": "rel_ninja_clang_clang-tidy",

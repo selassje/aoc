@@ -27,8 +27,8 @@ readInput(const std::string_view path)
 
   while (std::getline(ifs, line)) {
     std::istringstream iss{ line };
-    char d;
-    std::size_t count;
+    char d{};
+    std::size_t count{};
     iss >> d >> count;
     moves.emplace_back<Move>({ charToDirection.at(d), count });
   }
@@ -55,5 +55,5 @@ TEST_CASE("Day9 Input", "[Day9]")
   const auto input = readInput(inputs::day9::INPUT);
   const auto& [part_1, part_2] = aoc22::day9::solve(input);
   REQUIRE(part_1 == 6011);
-  REQUIRE(part_2 == 13);
+  REQUIRE(part_2 == 2419);
 }

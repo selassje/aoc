@@ -9,7 +9,9 @@ Checks: "*,
          -readability-identifier-length,
          -abseil-string-find-str-contains,
          -misc-no-recursion,
-         -cppcoreguidelines-avoid-magic-numbers
+         -cppcoreguidelines-avoid-magic-numbers,
+         -fuchsia-overloaded-operator,
+         -readability-function-cognitive-complexity,
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true

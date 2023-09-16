@@ -1,3 +1,6 @@
+#ifndef AOC22_DAY9_HPP
+#define AOC22_DAY9_HPP
+
 #include <cstdlib>
 #include <utility>
 #include <vector>
@@ -12,7 +15,7 @@ enum class Direction
   Down
 };
 
-struct Move {
+struct alignas(16) Move {
   Direction direction;
   std::size_t count;
 };
@@ -23,3 +26,5 @@ std::pair<std::size_t, std::size_t>
 solve(const Moves& moves);
 
 };
+
+#endif

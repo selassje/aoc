@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 namespace aoc22::day9 {
-struct Position
+struct alignas(16) Position
 {
   std::int64_t x = 0;
   std::int64_t y = 0;
@@ -19,30 +19,18 @@ struct std::hash<aoc22::day9::Position>
 {
   std::size_t operator()(const aoc22::day9::Position p) const noexcept
   {
-    std::size_t h1 = std::hash<std::int64_t>{}(p.x);
-    std::size_t h2 = std::hash<std::int64_t>{}(p.y);
-    return h1 ^ (h2 << 1);
+    const std::size_t h1 = std::hash<std::int64_t>{}(p.x);
+    const std::size_t h2 = std::hash<std::int64_t>{}(p.y);
+    return h1 ^ (h2 << 1U);
   }
 };
 
 namespace aoc22::day9 {
 
-enum class DirectionEx
-{
-  Left,
-  Right,
-  Up,
-  Down,
-  LeftUp,
-  LeftDown,
-  RightUp,
-  RightDown
-};
-
-using enum DirectionEx;
+using enum Direction;
 
 void
-performMove(Position& position, DirectionEx direction)
+performMove(Position& position, Direction direction)
 {
   switch (direction) {
     case Up:
@@ -57,22 +45,6 @@ performMove(Position& position, DirectionEx direction)
     case Right:
       position.x += 1;
       break;
-    case LeftUp:
-      position.x -= 1;
-      position.y += 1;
-      break;
-    case LeftDown:
-      position.x -= 1;
-      position.y -= 1;
-      break;
-    case RightUp:
-      position.x += 1;
-      position.y += 1;
-      break;
-    case RightDown:
-      position.x += 1;
-      position.y -= 1;
-      break;
   }
 }
 
@@ -86,39 +58,45 @@ areTouching(const Position& p1, const Position& p2)
 std::pair<std::size_t, std::size_t>
 solve(const Moves& moves)
 {
-  std::array<Position, 10> knots;
-  std::unordered_set<Position> visitedPositions1{ {} };
-  std::unordered_set<Position> visitedPositions9{ {} };
+  static constexpr std::size_t knotsNumber = 10;
+  static constexpr std::size_t tailPart1 = 1;
+  static constexpr std::size_t tailPart2 = 9;
+
+  std::array<Position, knotsNumber> knots;
+  std::unordered_set<Position> visitedPositionsPart1{ {} };
+  std::unordered_set<Position> visitedPositionPart2{ {} };
 
   for (const auto& move : moves) {
     for (std::size_t i = 0; i < move.count; ++i) {
-      const auto directionEx = static_cast<DirectionEx>(move.direction);
-      performMove(knots[0], directionEx);
+      performMove(knots[0], move.direction);
       for (std::size_t k = 1; k < knots.size(); ++k) {
-        const auto& head = knots[k - 1];
-        auto& tail = knots[k];
+        const auto& head = knots.at(k - 1);
+        auto& tail = knots.at(k);
         if (!areTouching(head, tail)) {
-          if (head.x == tail.x || head.y == tail.y) {
-            performMove(tail, directionEx);
+          int deltaX = 0;
+          int deltaY = 0;
+          if (head.x == tail.x) {
+            deltaY = tail.y < head.y ? 1 : -1;
+          } else if (head.y == tail.y) {
+            deltaX = tail.x < head.x ? 1 : -1;
           } else {
-            const auto deltaX = tail.x < head.x ? 1 : -1;
-            const auto deltaY = tail.y < head.y ? 1 : -1;
-            tail.x += deltaX;
-            tail.y += deltaY;
+            deltaX = tail.x < head.x ? 1 : -1;
+            deltaY = tail.y < head.y ? 1 : -1;
           }
-         // std::cout << tail.x << " " << tail.y << std::endl;
-          if (k == 1) {
-            visitedPositions1.insert(tail);
+          tail.x += deltaX;
+          tail.y += deltaY;
+          if (k == tailPart1) {
+            visitedPositionsPart1.insert(tail);
           }
-          if (k == 9) {
-            visitedPositions9.insert(tail);
+          if (k == tailPart2) {
+            visitedPositionPart2.insert(tail);
           }
         }
       }
-      // std::cout << "h " <<  head.x << " " << head.y << std::endl;
     }
   }
-  return std::make_pair(visitedPositions1.size(), visitedPositions9.size());
+  return std::make_pair(visitedPositionsPart1.size(),
+                        visitedPositionPart2.size());
 }
 
 };

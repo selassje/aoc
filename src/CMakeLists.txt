@@ -17,6 +17,8 @@ if(ENABLE_TESTS)
     target_compile_definitions(aoc22 PRIVATE ENABLE_TESTS)
 endif()
 
+setup_compiler_flags(aoc22)
+
 if(ENABLE_CLANG_TIDY)
     setup_clang_tidy(aoc22)
 endif()

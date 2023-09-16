@@ -129,6 +129,16 @@
       "inherits": "default",
       "configurePreset" : "dev_vs_msvc",
       "configuration": "Debug"
+    },
+    {
+      "name": "dev_ninja_clang_fuzz",
+      "inherits": "default",
+      "configurePreset" : "dev_ninja_clang_fuzz",
+      "filter" : {
+        "include": {
+          "name" : "day"
+        } 
+      }
     }
   ]
 }

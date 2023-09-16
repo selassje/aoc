@@ -1,6 +1,6 @@
 #include "day4.hpp"
 #include "inputs.hpp"
-#include <catch2/catch.hpp>
+#include "tests_main.hpp"
 
 #include <fstream>
 #include <iostream>

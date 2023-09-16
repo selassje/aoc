@@ -2,12 +2,13 @@
 #include "day9.hpp"
 #include "inputs.hpp"
 
-#include <catch2/catch.hpp>
+#include "tests_main.hpp"
 
 #include <fstream>
 #include <iostream>
 #include <ranges>
 #include <sstream>
+#include <unordered_map>
 
 using aoc22::day9::Direction;
 using aoc22::day9::Move;

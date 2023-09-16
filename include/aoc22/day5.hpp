@@ -9,15 +9,10 @@
 
 namespace aoc22::day5 {
 
-#ifndef WIN32
-constexpr size_t MOVE_ALIGNMENT = 32;
-constexpr size_t INPUT_ALIGNMENT = 64;
-#endif
-
 using Stack = std::stack<char>;
 using Stacks = std::vector<Stack>;
 
-struct alignas(MOVE_ALIGNMENT) Move
+struct alignas(32) Move
 {
   std::size_t from;
   std::size_t to;
@@ -25,7 +20,7 @@ struct alignas(MOVE_ALIGNMENT) Move
 };
 using Moves = std::vector<Move>;
 
-struct alignas(INPUT_ALIGNMENT) Input
+struct alignas(64) Input
 {
   Stacks stacks;
   Moves moves;

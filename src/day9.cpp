@@ -1,5 +1,7 @@
 #include "day9.hpp"
 
+
+#include <array>
 #include <cstdint>
 #include <iostream>
 #include <unordered_set>
@@ -9,7 +11,7 @@ struct alignas(16) Position
 {
   std::int64_t x = 0;
   std::int64_t y = 0;
-  bool operator<=>(const Position&) const = default;
+  std::strong_ordering operator<=>(const Position&) const = default;
 };
 
 };
@@ -62,7 +64,7 @@ solve(const Moves& moves)
   static constexpr std::size_t tailPart1 = 1;
   static constexpr std::size_t tailPart2 = 9;
 
-  std::array<Position, knotsNumber> knots;
+  std::array<Position, knotsNumber> knots{};
   std::unordered_set<Position> visitedPositionsPart1{ {} };
   std::unordered_set<Position> visitedPositionPart2{ {} };
 

@@ -27,7 +27,8 @@ struct std::hash<aoc22::day9::Position>
 
 namespace aoc22::day9 {
 
-enum class DirectionEx {
+enum class DirectionEx
+{
   Left,
   Right,
   Up,
@@ -35,7 +36,7 @@ enum class DirectionEx {
   LeftUp,
   LeftDown,
   RightUp,
-  RightDown  
+  RightDown
 };
 
 using enum DirectionEx;
@@ -85,31 +86,39 @@ areTouching(const Position& p1, const Position& p2)
 std::pair<std::size_t, std::size_t>
 solve(const Moves& moves)
 {
-  Position head{};
-  Position tail{};
-  std::unordered_set<Position> visitedPostions{ tail };
+  std::array<Position, 10> knots;
+  std::unordered_set<Position> visitedPositions1{ {} };
+  std::unordered_set<Position> visitedPositions9{ {} };
 
   for (const auto& move : moves) {
     for (std::size_t i = 0; i < move.count; ++i) {
       const auto directionEx = static_cast<DirectionEx>(move.direction);
-      performMove(head, directionEx);
-      if (!areTouching(head, tail)) {
-        if (head.x == tail.x || head.y == tail.y) {
-          performMove(tail, directionEx);
-        } else {
-            const auto deltaX = tail.x < head.x ? 1 : - 1;
-            const auto deltaY = tail.y < head.y ? 1 : - 1;
+      performMove(knots[0], directionEx);
+      for (std::size_t k = 1; k < knots.size(); ++k) {
+        const auto& head = knots[k - 1];
+        auto& tail = knots[k];
+        if (!areTouching(head, tail)) {
+          if (head.x == tail.x || head.y == tail.y) {
+            performMove(tail, directionEx);
+          } else {
+            const auto deltaX = tail.x < head.x ? 1 : -1;
+            const auto deltaY = tail.y < head.y ? 1 : -1;
             tail.x += deltaX;
             tail.y += deltaY;
+          }
+         // std::cout << tail.x << " " << tail.y << std::endl;
+          if (k == 1) {
+            visitedPositions1.insert(tail);
+          }
+          if (k == 9) {
+            visitedPositions9.insert(tail);
+          }
         }
-        std::cout << tail.x << " " << tail.y << std::endl;
-        visitedPostions.insert(tail);
       }
-      //std::cout << "h " <<  head.x << " " << head.y << std::endl;
+      // std::cout << "h " <<  head.x << " " << head.y << std::endl;
     }
   }
-  const std::size_t resultPart1 = visitedPostions.size();
-  return std::make_pair(resultPart1, resultPart1);
+  return std::make_pair(visitedPositions1.size(), visitedPositions9.size());
 }
 
 };

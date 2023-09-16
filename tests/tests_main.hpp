@@ -15,13 +15,13 @@ int
 main(int argc, char* argv[])
 {
   const auto catchTestsResult = Catch::Session().run(argc, argv);
- #ifdef ENABLE_FUZZ_TESTS
+#ifdef ENABLE_FUZZ_TESTS
   testing::InitGoogleTest();
   fuzztest::InitFuzzTest(&argc, &argv);
   const auto fuzzTestResult = RUN_ALL_TESTS();
-  #else
+#else
   const auto fuzzTestResult = 0;
-  #endif
+#endif
   return fuzzTestResult + catchTestsResult;
 }
 

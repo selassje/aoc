@@ -33,7 +33,7 @@
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
     },
     {
-     "name": "rel_ninja_clang",
+      "name": "rel_ninja_clang",
       "inherits" : "dev_ninja_clang",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Release",
@@ -42,10 +42,14 @@
       "binaryDir": "${sourceDir}/builds/rel_ninja_clang"
     },
     {
-     "name": "dev_ninja_clang_fuzz",
+      "name": "dev_ninja_clang_fuzz",
       "inherits" : "dev_ninja_clang",
+      "warnings" : {
+        "dev" : false
+      },
       "cacheVariables": {
-        "ENABLE_FUZZ_TESTS":"ON"
+        "ENABLE_FUZZ_TESTS":"ON",
+        "CMAKE_BUILD_TYPE":"Release"
       },
       "condition": {
        "type": "equals",

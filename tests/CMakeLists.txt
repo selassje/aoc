@@ -26,6 +26,11 @@ foreach(i RANGE 1 9)
 
     target_link_libraries(${TEST_NAME} PRIVATE Catch2WithMain PRIVATE aoc22)
 
+    if(ENABLE_FUZZ_TESTS)
+      link_fuzztest(${TEST_NAME})
+      target_link_options(${TEST_NAME} PRIVATE -fsanitize=address)
+    endif()
+
     if(ENABLE_COVERAGE_REPORT)
         target_link_libraries(${TEST_NAME} PRIVATE gcov)
     endif()

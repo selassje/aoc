@@ -15,5 +15,11 @@ else()
     if (ENABLE_COVERAGE_REPORT)
         target_compile_options( PRIVATE --coverage -fno-elide-constructors)
     endif()
+    
+    if (ENABLE_FUZZ_TESTS)
+        target_compile_options(${TARGET} PRIVATE -g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG 
+                                                 -fsanitize-coverage=inline-8bit-counters -fsanitize-coverage=trace-cmp
+                                                 -fsanitize=address -DADDRESS_SANITIZER)
+    endif()
 endif()
 endfunction(setup_compiler_flags TARGET)

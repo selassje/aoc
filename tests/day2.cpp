@@ -2,6 +2,8 @@
 #include "inputs.hpp"
 #include <catch2/catch.hpp>
 
+#include "fuzztest/fuzztest.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -62,3 +64,19 @@ TEST_CASE("Day2 Input", "[Day2]")
   REQUIRE(part_1 == 11767);
   REQUIRE(part_2 == 13886);
 }
+
+using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
+
+void FuzzTest(const FuzzInput& input) {
+    aoc22::day2::Guide realInput{};
+    realInput.reserve(input.size());
+    for ( const auto& m : input)
+    {
+      const auto m1 = static_cast<aoc22::day2::Move>(m.first);
+      const auto m2 = static_cast<aoc22::day2::Move>(m.second);
+      realInput.emplace_back(std::make_pair(m1,m2)); 
+    }
+    aoc22::day2::solve(realInput);
+}
+
+FUZZ_TEST(Day2FuzzTest, FuzzTest);

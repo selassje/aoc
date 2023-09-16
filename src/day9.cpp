@@ -1,6 +1,5 @@
 #include "day9.hpp"
 
-
 #include <array>
 #include <cstdint>
 #include <iostream>

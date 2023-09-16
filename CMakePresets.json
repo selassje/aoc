@@ -89,7 +89,7 @@
     {
       "name": "dev_vs_msvc",
       "configurePreset": "dev_vs_msvc",
-      "targets":["ALL_BUILD"],
+      "targets":["ALL_BUILD", "clang-format-check"],
       "configuration": "Debug" 
     }
   ],

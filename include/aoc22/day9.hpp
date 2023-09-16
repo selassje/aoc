@@ -15,7 +15,8 @@ enum class Direction
   Down
 };
 
-struct alignas(16) Move {
+struct alignas(16) Move
+{
   Direction direction;
   std::size_t count;
 };

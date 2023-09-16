@@ -15,6 +15,7 @@ foreach(i RANGE 1 9)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
+    setup_compiler_flags(${TEST_NAME})
 
     if(ENABLE_CLANG_TIDY)
         setup_clang_tidy(${TEST_NAME})

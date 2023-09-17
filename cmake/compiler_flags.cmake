@@ -13,7 +13,7 @@ else()
     endif()
 
     if (ENABLE_COVERAGE_REPORT)
-        target_compile_options( PRIVATE --coverage -fno-elide-constructors)
+        target_compile_options(${TARGET} PRIVATE --coverage -fno-elide-constructors)
     endif()
     
     if (ENABLE_FUZZ_TESTS)

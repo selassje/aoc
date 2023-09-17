@@ -131,7 +131,12 @@
       "name": "default",
       "hidden": true,
       "output": {"outputOnFailure": true},
-      "execution": {"noTestsAction": "error", "stopOnFailure": true}
+      "execution": {"noTestsAction": "error", "stopOnFailure": true},
+      "filter" : {
+        "include": {
+          "name" : "day"
+        } 
+      }
     },
     {
       "name": "dev_ninja_clang",
@@ -152,12 +157,12 @@
     {
       "name": "dev_ninja_clang_fuzz",
       "inherits": "default",
-      "configurePreset" : "dev_ninja_clang_fuzz",
-      "filter" : {
-        "include": {
-          "name" : "day"
-        } 
-      }
+      "configurePreset" : "dev_ninja_clang_fuzz"
+    },
+    {
+      "name": "rel_ninja_clang_fuzz",
+      "inherits": "default",
+      "configurePreset" : "rel_ninja_clang_fuzz"
     }
   ]
 }

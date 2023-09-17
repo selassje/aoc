@@ -40,7 +40,7 @@ jobs:
         run:  clang-format --version
       - name: Configure
         run:  cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTS=ON -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'cl.exe' && 'OFF' || 'ON' }} 
-              -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++.exe' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
+              -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests

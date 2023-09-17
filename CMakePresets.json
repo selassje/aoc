@@ -58,11 +58,16 @@
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang_fuzz"
     },
     {
+      "name": "dev_ninja_clang_fuzz_clang_tidy",
+      "inherits" : "dev_ninja_clang_fuzz",
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY":"ON"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_clang_fuzz_clang_tidy"
+    },
+    {
       "name": "rel_ninja_clang_fuzz",
       "inherits" : "dev_ninja_clang_fuzz",
-      "warnings" : {
-        "dev" : false
-      },
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Release"
       },

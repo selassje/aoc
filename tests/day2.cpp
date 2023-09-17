@@ -69,7 +69,7 @@ TEST_CASE("Day2 Input", "[Day2]")
 using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
 
 void
-FuzzTest(const FuzzInput& input)
+fuzzTest(const FuzzInput& input)
 {
   aoc22::day2::Guide realInput{};
   realInput.reserve(input.size());
@@ -84,6 +84,6 @@ FuzzTest(const FuzzInput& input)
   }
 }
 
-FUZZ_TEST(Day2FuzzTest, FuzzTest);
+FUZZ_TEST(Day2FuzzTest, fuzzTest);
 
 #endif

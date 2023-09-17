@@ -19,7 +19,7 @@ readInput(const std::string_view path)
 
   std::ifstream ifs{ path.data() };
 
-  NestedVector input;
+  NestedVector input{};
   vector<unsigned int> caloriesPerElf{};
 
   std::string line{};

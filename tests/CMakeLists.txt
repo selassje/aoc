@@ -1,14 +1,15 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.25)
 
 include(CTest)
 
 include("cmake/configure_input_paths.cmake")
 
-add_subdirectory(Catch2)
+add_subdirectory(Catch2 SYSTEM)
 
 if(ENABLE_FUZZ_TESTS)
   add_subdirectory(fuzztest)
 endif()
+
 
 foreach(i RANGE 1 9)
     set(TEST_NAME day${i})
@@ -22,8 +23,7 @@ foreach(i RANGE 1 9)
 
     target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
                                             PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)
-                                         #   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Catch2/src)
-      
+    
     target_link_libraries(${TEST_NAME} PRIVATE Catch2 PRIVATE aoc22)
 
     if(ENABLE_FUZZ_TESTS)

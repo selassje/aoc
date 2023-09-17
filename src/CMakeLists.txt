@@ -13,7 +13,6 @@ target_sources(aoc22 PUBLIC ${HEADER_FILES}
 target_include_directories(aoc22 PUBLIC ${INCLUDE})
 
 if(ENABLE_TESTS)
-    target_include_directories(aoc22 PRIVATE ${CMAKE_SOURCE_DIR}/tests/Catch2/src)
     target_link_libraries(aoc22 PRIVATE Catch2)
     target_compile_definitions(aoc22 PRIVATE ENABLE_TESTS)
 endif()

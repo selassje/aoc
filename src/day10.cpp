@@ -54,9 +54,9 @@ solve(const Input& input)
       resultPart1 +=
         static_cast<std::int64_t>(cyclesToNextSignalCycle + cycle) * registerX;
     }
-    auto renderPixel = [&crt, &registerX](const auto cycle) {
-      const auto column = (cycle - 1) % CRT_WIDTH;
-      const auto row = (cycle - 1) / CRT_WIDTH;
+    auto renderPixel = [&crt, &registerX](const auto cycle_) {
+      const auto column = (cycle_ - 1) % CRT_WIDTH;
+      const auto row = (cycle_ - 1) / CRT_WIDTH;
       const auto columnSigned = static_cast<int64_t>(column);
       crt[row][column] =
         columnSigned >= registerX - 1 && columnSigned <= registerX + 1 ? '#'

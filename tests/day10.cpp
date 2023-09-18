@@ -1,6 +1,6 @@
 #include "day10.hpp"
-#include "tests_main.hpp"
 #include "inputs.hpp"
+#include "tests_main.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -35,7 +35,7 @@ readInput(const std::string_view path)
     std::istringstream iss{ line };
     split(iss);
     if (words[0] == addXInstruction) {
-      instruction = aoc22::day10::AddX{std::stoll(words[1])};
+      instruction = aoc22::day10::AddX{ std::stoll(words[1]) };
     } else if (words[0] == noopIntruction) {
       instruction = aoc22::day10::Noop{};
     }
@@ -49,15 +49,26 @@ TEST_CASE("Day10 Example", "[Day10]")
   const auto input = readInput(inputs::day10::EXAMPLE);
   const auto& [part_1, part_2] = aoc22::day10::solve(input);
   REQUIRE(part_1 == 13140);
-  REQUIRE(part_2 == 13140);
+  const std::vector<std::string> expectedPart2 = {
+    "##..##..##..##..##..##..##..##..##..##..",
+    "###...###...###...###...###...###...###.",
+    "####....####....####....####....####....",
+    "#####.....#####.....#####.....#####.....",
+    "######......######......######......####",
+    "#######.......#######.......#######....."
+  };
+  for (std::size_t i = 0; i < 6; ++i) {
+    for (std::size_t j = 0; j < 40; ++j) {
+      REQUIRE(expectedPart2[i][j] == part_2[i][j]);
+    }
+  }
 }
 
 TEST_CASE("Day10 Input", "[Day10]")
 {
   const auto input = readInput(inputs::day10::INPUT);
   const auto& [part_1, part_2] = aoc22::day10::solve(input);
+
   REQUIRE(part_1 == 14560);
-  REQUIRE(part_2 == 14560);
+  // REQUIRE(part_2 == 14560);
 }
-
-

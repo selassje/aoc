@@ -1,6 +1,7 @@
 #ifndef AOC22_DAY10_HPP
 #define AOC22_DAY10_HPP
 
+#include <array>
 #include <cstdint>
 #include <variant>
 #include <vector>
@@ -17,7 +18,10 @@ namespace aoc22::day10
     using Instruction = std::variant<Noop, AddX>;    
 
     using Input  = std::vector<Instruction>;
-    using Result = std::pair<std::uint64_t, std::uint64_t>;
+    
+    using Crt = std::array<std::array<char,40>, 6>;  
+    
+    using Result = std::pair<std::uint64_t, Crt>;
 
     Result solve(const Input& input); 
 };

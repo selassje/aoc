@@ -9,8 +9,7 @@ getCyclesToNextSignalCycle(std::size_t cycles)
 {
   if (cycles > 20) {
     auto rem = (cycles - firstSignalCycle) % signalPeriod;
-    if ( rem != 0)
-    {
+    if (rem != 0) {
       rem = signalPeriod - rem;
     }
     return rem;
@@ -47,11 +46,6 @@ solve(const Input& input)
         registerX += addX.x;
         break;
     }
-    if (cycle == 219)
-    {
-      [[maybe_unused]] int a = 3;
-
-    }
 
     if (cyclesToNextSignalCycle == 0) {
       resultPart1 += static_cast<std::int64_t>(oldCycle) * oldRegisterX;
@@ -62,11 +56,10 @@ solve(const Input& input)
     }
   }
 
-  if(getCyclesToNextSignalCycle(cycle) == 0)
-  {
-      resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
+  if (getCyclesToNextSignalCycle(cycle) == 0) {
+    resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
   }
 
-  return std::make_pair(resultPart1, resultPart1);
+  return std::make_pair(resultPart1, Crt{});
 }
 }

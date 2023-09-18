@@ -30,6 +30,7 @@ solve(const Input& input)
   static constexpr std::size_t addXCycles = 2;
 
   std::int64_t resultPart1 = 0;
+  Crt crt{};
   for (std::size_t i = 0; i < inputSize; ++i) {
     const auto cyclesToNextSignalCycle = getCyclesToNextSignalCycle(cycle);
     const auto oldRegisterX = registerX;
@@ -54,12 +55,22 @@ solve(const Input& input)
         static_cast<std::int64_t>(cyclesToNextSignalCycle + oldCycle) *
         oldRegisterX;
     }
+
+   [[maybe_unused]] const auto column = (oldCycle - 1) % 40;
+   [[maybe_unused]] const auto row = (oldCycle - 1) / 40;
+
+    if (static_cast<int64_t>(column) >= oldRegisterX - 1 &&
+        static_cast<int64_t>(column) <= oldRegisterX + 1) {
+        crt[row][column] = '#';
+    } else {
+        crt[row][column] = '.';
+    }
   }
 
   if (getCyclesToNextSignalCycle(cycle) == 0) {
     resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
-  }
+   }
 
-  return std::make_pair(resultPart1, Crt{});
+  return std::make_pair(resultPart1, crt);
 }
 }

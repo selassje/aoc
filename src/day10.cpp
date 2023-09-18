@@ -4,19 +4,19 @@
 
 namespace aoc22::day10 {
 static constexpr std::size_t firstSignalCycle = 20;
-static constexpr std::size_t signalPeriod = 40;
+static constexpr std::size_t signalPeriod = CRT_WIDTH;
 
 std::size_t
 getCyclesToNextSignalCycle(std::size_t cycles)
 {
-  if (cycles > 20) {
+  if (cycles > firstSignalCycle) {
     auto rem = (cycles - firstSignalCycle) % signalPeriod;
     if (rem != 0) {
       rem = signalPeriod - rem;
     }
     return rem;
   } else {
-    return 20 - cycles;
+    return firstSignalCycle - cycles;
   }
 };
 
@@ -58,10 +58,9 @@ solve(const Input& input)
         oldRegisterX;
     }
 
-
     auto renderPixel = [&crt,&oldRegisterX](const auto cycle){
-   [[maybe_unused]] const auto column = (cycle - 1) % 40;
-   [[maybe_unused]] const auto row = (cycle - 1) / 40;
+    const auto column = (cycle - 1) % CRT_WIDTH;
+    const auto row = (cycle - 1) / CRT_WIDTH;
     if (static_cast<int64_t>(column) >= oldRegisterX - 1 &&
         static_cast<int64_t>(column) <= oldRegisterX + 1) {
         crt[row][column] = '#';
@@ -75,10 +74,6 @@ solve(const Input& input)
         renderPixel(oldCycle + 1);
     }
   }
-
-  if (getCyclesToNextSignalCycle(cycle) == 0) {
-    resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
-   }
   return std::make_pair(resultPart1, crt);
 }
 }

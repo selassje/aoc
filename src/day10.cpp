@@ -61,8 +61,8 @@ solve(const Input& input)
     auto renderPixel = [&crt,&oldRegisterX](const auto cycle){
     const auto column = (cycle - 1) % CRT_WIDTH;
     const auto row = (cycle - 1) / CRT_WIDTH;
-    if (static_cast<int64_t>(column) >= oldRegisterX - 1 &&
-        static_cast<int64_t>(column) <= oldRegisterX + 1) {
+    const auto columnSigned =  static_cast<int64_t>(column);
+    if (columnSigned >= oldRegisterX - 1 && columnSigned <= oldRegisterX + 1) {
         crt[row][column] = '#';
     } else {
         crt[row][column] = '.';

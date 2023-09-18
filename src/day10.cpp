@@ -1,5 +1,7 @@
 #include "day10.hpp"
 
+#include <iostream>
+
 namespace aoc22::day10 {
 static constexpr std::size_t firstSignalCycle = 20;
 static constexpr std::size_t signalPeriod = 40;
@@ -56,21 +58,27 @@ solve(const Input& input)
         oldRegisterX;
     }
 
-   [[maybe_unused]] const auto column = (oldCycle - 1) % 40;
-   [[maybe_unused]] const auto row = (oldCycle - 1) / 40;
 
+    auto renderPixel = [&crt,&oldRegisterX](const auto cycle){
+   [[maybe_unused]] const auto column = (cycle - 1) % 40;
+   [[maybe_unused]] const auto row = (cycle - 1) / 40;
     if (static_cast<int64_t>(column) >= oldRegisterX - 1 &&
         static_cast<int64_t>(column) <= oldRegisterX + 1) {
         crt[row][column] = '#';
     } else {
         crt[row][column] = '.';
     }
+    };
+
+    renderPixel(oldCycle);
+    if (cycle - oldCycle > 1) {
+        renderPixel(oldCycle + 1);
+    }
   }
 
   if (getCyclesToNextSignalCycle(cycle) == 0) {
     resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
    }
-
   return std::make_pair(resultPart1, crt);
 }
 }

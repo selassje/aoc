@@ -44,11 +44,21 @@ readInput(const std::string_view path)
   return input;
 }
 
+void
+compareRenders(const auto& r1, const auto r2)
+{
+  for (std::size_t i = 0; i < aoc22::day10::CRT_HEIGHT; ++i) {
+    for (std::size_t j = 0; j < aoc22::day10::CRT_WIDTH; ++j) {
+      REQUIRE(r1[i][j] == r2[i][j]);
+    }
+  }
+}
+
 TEST_CASE("Day10 Example", "[Day10]")
 {
   const auto input = readInput(inputs::day10::EXAMPLE);
-  const auto& [part_1, part_2] = aoc22::day10::solve(input);
-  REQUIRE(part_1 == 13140);
+  const auto& [part1, part2] = aoc22::day10::solve(input);
+  REQUIRE(part1 == 13140);
   const std::vector<std::string> expectedPart2 = {
     "##..##..##..##..##..##..##..##..##..##..",
     "###...###...###...###...###...###...###.",
@@ -57,18 +67,22 @@ TEST_CASE("Day10 Example", "[Day10]")
     "######......######......######......####",
     "#######.......#######.......#######....."
   };
-  for (std::size_t i = 0; i < 6; ++i) {
-    for (std::size_t j = 0; j < 40; ++j) {
-      REQUIRE(expectedPart2[i][j] == part_2[i][j]);
-    }
-  }
+  compareRenders(expectedPart2, part2);
 }
 
 TEST_CASE("Day10 Input", "[Day10]")
 {
   const auto input = readInput(inputs::day10::INPUT);
-  const auto& [part_1, part_2] = aoc22::day10::solve(input);
+  const auto& [part1, part2] = aoc22::day10::solve(input);
 
-  REQUIRE(part_1 == 14560);
-  // REQUIRE(part_2 == 14560);
+  REQUIRE(part1 == 14560);
+  const std::vector<std::string> expectedPart2 = {
+    "####.#..#.###..#..#.####.###..#..#.####.",
+    "#....#.#..#..#.#..#.#....#..#.#..#....#.",
+    "###..##...#..#.####.###..#..#.#..#...#..",
+    "#....#.#..###..#..#.#....###..#..#..#...",
+    "#....#.#..#.#..#..#.#....#....#..#.#....",
+    "####.#..#.#..#.#..#.####.#.....##..####."
+  };
+  compareRenders(expectedPart2, part2);
 }

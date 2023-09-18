@@ -7,8 +7,13 @@ static constexpr std::size_t signalPeriod = 40;
 std::size_t
 getCyclesToNextSignalCycle(std::size_t cycles)
 {
-  if (cycles >= 20) {
-    return (cycles - firstSignalCycle) % signalPeriod;
+  if (cycles > 20) {
+    auto rem = (cycles - firstSignalCycle) % signalPeriod;
+    if ( rem != 0)
+    {
+      rem = signalPeriod - rem;
+    }
+    return rem;
   } else {
     return 20 - cycles;
   }
@@ -41,6 +46,11 @@ solve(const Input& input)
         cycle += addXCycles;
         registerX += addX.x;
         break;
+    }
+    if (cycle == 219)
+    {
+      [[maybe_unused]] int a = 3;
+
     }
 
     if (cyclesToNextSignalCycle == 0) {

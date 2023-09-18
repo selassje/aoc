@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.25)
+
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 20)
 
 project(AoC22 LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
 
 option(ENABLE_TESTS "Enable Tests" OFF)
 option(ENABLE_FUZZ_TESTS "Enable Fuzzing Tests" OFF)

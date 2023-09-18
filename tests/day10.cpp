@@ -86,3 +86,15 @@ TEST_CASE("Day10 Input", "[Day10]")
   };
   compareRenders(expectedPart2, part2);
 }
+
+#ifdef ENABLE_FUZZ_TESTS
+
+void
+fuzzTest(const Input& input)
+{
+  aoc22::day10::solve(input);
+}
+
+FUZZ_TEST(Day10FuzzTest, fuzzTest);
+
+#endif

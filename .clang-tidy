@@ -12,6 +12,7 @@ Checks: "*,
          -cppcoreguidelines-avoid-magic-numbers,
          -fuchsia-overloaded-operator,
          -readability-function-cognitive-complexity,
+         -cppcoreguidelines-pro-bounds-constant-array-index
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true

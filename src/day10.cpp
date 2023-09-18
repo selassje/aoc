@@ -3,21 +3,20 @@
 #include <iostream>
 
 namespace aoc22::day10 {
-static constexpr std::size_t firstSignalCycle = 20;
-static constexpr std::size_t signalPeriod = CRT_WIDTH;
+static constexpr std::size_t FIRST_SIGNAL_CYCLE = 20;
+static constexpr std::size_t SIGNAL_PERIOD = CRT_WIDTH;
 
 std::size_t
 getCyclesToNextSignalCycle(std::size_t cycles)
 {
-  if (cycles > firstSignalCycle) {
-    auto rem = (cycles - firstSignalCycle) % signalPeriod;
+  if (cycles > FIRST_SIGNAL_CYCLE) {
+    auto rem = (cycles - FIRST_SIGNAL_CYCLE) % SIGNAL_PERIOD;
     if (rem != 0) {
-      rem = signalPeriod - rem;
+      rem = SIGNAL_PERIOD - rem;
     }
     return rem;
-  } else {
-    return firstSignalCycle - cycles;
   }
+  return FIRST_SIGNAL_CYCLE - cycles;
 };
 
 Result
@@ -71,7 +70,6 @@ solve(const Input& input)
 
     registerX += addedX;
     cycle += addedCycles;
-
   }
   return std::make_pair(resultPart1, crt);
 }

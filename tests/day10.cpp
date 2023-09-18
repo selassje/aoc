@@ -49,7 +49,7 @@ compareRenders(const auto& r1, const auto r2)
 {
   for (std::size_t i = 0; i < aoc22::day10::CRT_HEIGHT; ++i) {
     for (std::size_t j = 0; j < aoc22::day10::CRT_WIDTH; ++j) {
-      REQUIRE(r1[i][j] == r2[i][j]);
+      REQUIRE(r1.at(i).at(j) == r2.at(i).at(j));
     }
   }
 }

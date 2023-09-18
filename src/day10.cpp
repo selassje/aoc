@@ -35,44 +35,43 @@ solve(const Input& input)
   Crt crt{};
   for (std::size_t i = 0; i < inputSize; ++i) {
     const auto cyclesToNextSignalCycle = getCyclesToNextSignalCycle(cycle);
-    const auto oldRegisterX = registerX;
-    const auto oldCycle = cycle;
+    std::size_t addedCycles = noopCycles;
+    std::int64_t addedX = 0;
 
     const auto& instruction = input[i];
     switch (instruction.index()) {
       case 0:
-        cycle += noopCycles;
         break;
       case 1:
         const auto& addX = std::get<AddX>(instruction);
-        cycle += addXCycles;
-        registerX += addX.x;
+        addedCycles = addXCycles;
+        addedX = addX.x;
         break;
     }
 
     if (cyclesToNextSignalCycle == 0) {
-      resultPart1 += static_cast<std::int64_t>(oldCycle) * oldRegisterX;
-    } else if (cyclesToNextSignalCycle < (cycle - oldCycle)) {
+      resultPart1 += static_cast<std::int64_t>(cycle) * registerX;
+    } else if (cyclesToNextSignalCycle < addedCycles) {
       resultPart1 +=
-        static_cast<std::int64_t>(cyclesToNextSignalCycle + oldCycle) *
-        oldRegisterX;
+        static_cast<std::int64_t>(cyclesToNextSignalCycle + cycle) * registerX;
     }
-
-    auto renderPixel = [&crt,&oldRegisterX](const auto cycle){
-    const auto column = (cycle - 1) % CRT_WIDTH;
-    const auto row = (cycle - 1) / CRT_WIDTH;
-    const auto columnSigned =  static_cast<int64_t>(column);
-    if (columnSigned >= oldRegisterX - 1 && columnSigned <= oldRegisterX + 1) {
-        crt[row][column] = '#';
-    } else {
-        crt[row][column] = '.';
-    }
+    auto renderPixel = [&crt, &registerX](const auto cycle) {
+      const auto column = (cycle - 1) % CRT_WIDTH;
+      const auto row = (cycle - 1) / CRT_WIDTH;
+      const auto columnSigned = static_cast<int64_t>(column);
+      crt[row][column] =
+        columnSigned >= registerX - 1 && columnSigned <= registerX + 1 ? '#'
+                                                                       : '.';
     };
 
-    renderPixel(oldCycle);
-    if (cycle - oldCycle > 1) {
-        renderPixel(oldCycle + 1);
+    renderPixel(cycle);
+    if (addedCycles > 1) {
+      renderPixel(cycle + 1);
     }
+
+    registerX += addedX;
+    cycle += addedCycles;
+
   }
   return std::make_pair(resultPart1, crt);
 }

@@ -1,6 +1,3 @@
-
-
-
 #include "inputs.hpp"
 
 #include "tests_main.hpp"
@@ -10,7 +7,7 @@
 #include <sstream>
 #include <vector>
 
-import Day2;
+import aoc22.day2;
 
 using aoc22::day2::Guide;
 

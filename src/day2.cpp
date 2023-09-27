@@ -6,7 +6,7 @@ module;
 #include <unordered_map>
 #include <vector>
 
-module Day2;
+module aoc22.day2;
 
 namespace aoc22::day2 {
 enum class Outcome : unsigned char

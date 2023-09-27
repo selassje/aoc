@@ -3,7 +3,7 @@ module;
 #include <utility>
 #include <vector>
 
-export module Day2;
+export module aoc22.day2;
 
 export namespace aoc22::day2 {
 

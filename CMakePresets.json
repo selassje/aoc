@@ -15,7 +15,11 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Debug",
         "ENABLE_TESTS": "ON"
+      },
+      "warnings": {
+        "dev": false
       }
+
     },
     {
       "name": "dev_ninja",

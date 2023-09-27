@@ -1,10 +1,12 @@
-#include "day2.hpp"
+module;
 
 #include <cstdlib>
 #include <numeric>
 #include <stdexcept>
 #include <unordered_map>
 #include <vector>
+
+module Day2;
 
 namespace aoc22::day2 {
 enum class Outcome : unsigned char
@@ -120,7 +122,7 @@ solve(const Guide& guide)
 }
 };
 
-#ifdef ENABLE_TESTS
+#ifdef ENABLE_TESTS2
 
 #include <catch2/catch_test_macros.hpp>
 namespace aoc22::day2 {

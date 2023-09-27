@@ -5,8 +5,6 @@ module;
 
 export module Day2;
 
-//import <vector;
-
 export namespace aoc22::day2 {
 
 enum class Move : unsigned char

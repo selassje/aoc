@@ -16,6 +16,7 @@ include(cmake/compiler_flags.cmake)
 include(cmake/clang_tidy.cmake)
 
 add_subdirectory(src)
+add_subdirectory(imports)
 
 if(ENABLE_TESTS)
     set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)

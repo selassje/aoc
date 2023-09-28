@@ -14,6 +14,6 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
   set(CMAKE_EXPERIMENTAL_CXX_MODULE_MAP_FLAG
   "${compiler_flags_for_module_map} -fmodule-mapper=<MODULE_MAP_FILE>")
 
-  #add_compile_options(-fmodules-ts)
+  add_compile_options( -fmodules-ts -x c++)
 
 endif()

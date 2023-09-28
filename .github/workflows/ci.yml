@@ -25,6 +25,8 @@ jobs:
           submodules: true
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
+        with: 
+          version: 1.11 
       - name: Install LLVM 
         uses: KyleMayes/install-llvm-action@v1
         with:

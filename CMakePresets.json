@@ -100,7 +100,7 @@
         "rhs": "Linux"
       },
       "environment": {
-        "CXX": "g++"
+        "CXX": "/usr/local/bin/g++"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },

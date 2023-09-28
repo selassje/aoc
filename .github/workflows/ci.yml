@@ -23,12 +23,17 @@ jobs:
         uses: actions/checkout@v3
         with: 
           submodules: true
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 13
+        if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
       - name: Install LLVM 
         uses: KyleMayes/install-llvm-action@v1
         with:
-          version: ${{ matrix.os == 'macos-latest' && '15.0' || '16.0' }}  
+          version: ${{ matrix.os == 'macos-latest' && '15.0' || '17.0' }}  
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:

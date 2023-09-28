@@ -33,6 +33,7 @@ jobs:
       - name: Install LLVM 
         uses: KyleMayes/install-llvm-action@v1
         with:
+          ubuntu-version: 23.04
           version: ${{ matrix.os == 'macos-latest' && '15.0' || '17.0' }}  
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2

@@ -11,8 +11,6 @@
 using aoc22::day11::Input;
 using aoc22::day11::Monkey;
 using aoc22::day11::Operand;
-using aoc22::day11::Operation;
-using aoc22::day11::OperationType;
 using enum aoc22::day11::OperationType;
 
 Input
@@ -95,6 +93,8 @@ TEST_CASE("Day11 Input", "[Day11]")
 #ifdef ENABLE_FUZZ_TESTS
 
 using aoc22::day11::Operand;
+using aoc22::day11::Operation;
+using aoc22::day11::OperationType;
 
 struct alignas(64) OperationFuzzTest
 {

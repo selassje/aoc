@@ -1,6 +1,7 @@
 #include "day11.hpp"
 
 #include <algorithm>
+#include <array>
 #include <numeric>
 #include <stdexcept>
 #include <vector>
@@ -16,33 +17,35 @@ solveInternal(const Input& input)
       "Aoc22::day11: At least two Monkeys are required in the input");
   }
   {
-    char message[256];
+    std::array<char, 256> messageBuf{};
     for (std::size_t i = 0; i < input.size(); ++i) {
       if (input[i].nextMonkeyTestFail >= input.size()) {
-        std::sprintf(
-          message,
+        (void)std::sprintf( // NOLINT
+          messageBuf.data(),
           "Aoc22::day11: nextMonkeyTestFail of monkey %zu is bigger(%zu) "
           "than the total number of monkeys(%zu)",
           i,
           input[i].nextMonkeyTestFail,
           input.size());
-        throw std::runtime_error(message);
+        throw std::runtime_error(messageBuf.data());
       }
       if (input[i].nextMonkeyTestPass >= input.size()) {
-        std::sprintf(
-          message,
+        (void)std::sprintf( // NOLINT
+          messageBuf.data(),
           "Aoc22::day11: nextMonkeyTestPass of monkey %zu is bigger(%zu) "
           "than the total number of monkeys(%zu)",
           i,
           input[i].nextMonkeyTestPass,
           input.size());
-        throw std::runtime_error(message);
+        throw std::runtime_error(messageBuf.data());
       }
 
       if (input[i].divisionTest == 0) {
-        std::sprintf(
-          message, "Aoc22::day11: divisionTest field of monkey %zu is 0", i);
-        throw std::runtime_error(message);
+        (void)std::sprintf( // NOLINT
+          messageBuf.data(),
+          "Aoc22::day11: divisionTest field of monkey %zu is 0",
+          i);
+        throw std::runtime_error(messageBuf.data());
       }
     }
   }

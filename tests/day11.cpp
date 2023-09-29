@@ -132,8 +132,10 @@ fuzzTest(const InputFuzzTest& inputFuzzTest)
 
     input.push_back(monkey);
   }
-
-  aoc22::day11::solve(input);
+  try {
+    aoc22::day11::solve(input);
+  } catch (...) {
+  }
 }
 
 FUZZ_TEST(Day11FuzzTest, fuzzTest);

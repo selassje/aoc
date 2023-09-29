@@ -1,18 +1,27 @@
 #include "day11.hpp"
 
 #include <algorithm>
+#include <numeric>
 #include <vector>
 
 namespace aoc22::day11 {
 
 template<int ROUNDS, int DIVIDE_NEW_LEVEL>
-std::uint64_t solveInternal(const Input& input)
+std::uint64_t
+solveInternal(const Input& input)
 {
   std::vector<std::vector<std::uint64_t>> worryLevels{};
-  std::uint64_t MODULO = 1;
+
+  const auto MODULO =
+    std::accumulate(input.begin(),
+                    input.end(),
+                    1ULL,
+                    [](const auto& value, const auto& monkey) {
+                      return value * monkey.divisionTest;
+                    });
+
   for (const auto& m : input) {
     worryLevels.push_back(m.worryLevels);
-    MODULO *= m.divisionTest;
   }
 
   auto getOperandValue = [](const std::uint64_t worryLevel,
@@ -24,15 +33,16 @@ std::uint64_t solveInternal(const Input& input)
   };
 
   auto getNewLevel = [&](const std::uint64_t worryLevel,
-                        // const std::uint64_t modulo,
                          const Operation& operation) {
-    const auto operandValue1 = getOperandValue(worryLevel, operation.op1) % MODULO;
-    const auto operandValue2 = getOperandValue(worryLevel, operation.op2) % MODULO;
+    const auto operandValue1 =
+      getOperandValue(worryLevel, operation.op1);
+    const auto operandValue2 =
+      getOperandValue(worryLevel, operation.op2);
 
     if (operation.type == OperationType::Add) {
-      return (operandValue1 + operandValue2) % MODULO;
+      return (operandValue1 + operandValue2);
     }
-    return (operandValue1 * operandValue2) % MODULO;
+    return (operandValue1 * operandValue2);
   };
 
   std::vector<std::size_t> inspectionsCount(input.size(), 0);
@@ -42,7 +52,7 @@ std::uint64_t solveInternal(const Input& input)
       const auto& monkey = input[i];
       for (const auto worryLevel : worryLevels[i]) {
         const auto newLevel =
-          getNewLevel(worryLevel,  monkey.operation) / DIVIDE_NEW_LEVEL;
+          getNewLevel(worryLevel, monkey.operation) % MODULO / DIVIDE_NEW_LEVEL;
         const auto nextMonkey = newLevel % monkey.divisionTest == 0
                                   ? monkey.nextMonkeyTestPass
                                   : monkey.nextMonkeyTestFail;

@@ -34,10 +34,8 @@ solveInternal(const Input& input)
 
   auto getNewLevel = [&](const std::uint64_t worryLevel,
                          const Operation& operation) {
-    const auto operandValue1 =
-      getOperandValue(worryLevel, operation.op1);
-    const auto operandValue2 =
-      getOperandValue(worryLevel, operation.op2);
+    const auto operandValue1 = getOperandValue(worryLevel, operation.op1);
+    const auto operandValue2 = getOperandValue(worryLevel, operation.op2);
 
     if (operation.type == OperationType::Add) {
       return (operandValue1 + operandValue2);
@@ -72,7 +70,7 @@ solveInternal(const Input& input)
 Result
 solve(const Input& input)
 {
-  return std::make_pair(solveInternal<20, 3>(input), //NOLINT
-                        solveInternal<10000, 1>(input)); //NOLINT
+  return std::make_pair(solveInternal<20, 3>(input),     // NOLINT
+                        solveInternal<10000, 1>(input)); // NOLINT
 }
 };

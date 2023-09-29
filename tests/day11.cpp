@@ -10,6 +10,10 @@
 
 using aoc22::day11::Input;
 using aoc22::day11::Monkey;
+using aoc22::day11::Operand;
+using aoc22::day11::Operation;
+using aoc22::day11::OperationType;
+using enum aoc22::day11::OperationType;
 
 Input
 readInput(const std::string_view path)
@@ -56,11 +60,9 @@ readInput(const std::string_view path)
       };
 
       monkey.operation.op1 = getOperand(words[3]);
-      monkey.operation.op2 = getOperand(words[5]); //NOLINT
+      monkey.operation.op2 = getOperand(words[5]); // NOLINT
 
-      monkey.operation.type = words[4] == "+"
-                                ? aoc22::day11::OperationType::Add
-                                : aoc22::day11::OperationType::Multiply;
+      monkey.operation.type = words[4] == "+" ? Add : Multiply;
 
     } else if (words[0] == "Test:") {
       monkey.divisionTest = toULL(words.back());
@@ -89,3 +91,51 @@ TEST_CASE("Day11 Input", "[Day11]")
   REQUIRE(part_1 == 61005);
   REQUIRE(part_2 == 20567144694);
 }
+
+#ifdef ENABLE_FUZZ_TESTS
+
+using aoc22::day11::Operand;
+
+struct alignas(64) OperationFuzzTest
+{
+  int type;
+  Operand op1;
+  Operand op2;
+};
+struct alignas(128) MonkeyFuzzTest
+{
+  OperationFuzzTest operation;
+  std::uint64_t divisionTest;
+  std::size_t nextMonkeyTestPass;
+  std::size_t nextMonkeyTestFail;
+  std::vector<std::uint64_t> worryLevels;
+};
+
+using InputFuzzTest = std::vector<MonkeyFuzzTest>;
+
+void
+fuzzTest(const InputFuzzTest& inputFuzzTest)
+{
+  Input input;
+  for (const auto& monkeyFuzzTest : inputFuzzTest) {
+    Monkey monkey;
+    Operation operation;
+    operation.op1 = monkeyFuzzTest.operation.op1;
+    operation.op2 = monkeyFuzzTest.operation.op2;
+    operation.type = static_cast<OperationType>(monkeyFuzzTest.operation.type);
+
+    monkey.operation = operation;
+    monkey.divisionTest = monkeyFuzzTest.divisionTest;
+    monkey.nextMonkeyTestFail = monkeyFuzzTest.nextMonkeyTestFail;
+    monkey.nextMonkeyTestPass = monkeyFuzzTest.nextMonkeyTestPass;
+    monkey.worryLevels = monkeyFuzzTest.worryLevels;
+
+    input.push_back(monkey);
+  }
+
+  aoc22::day11::solve(input);
+}
+
+FUZZ_TEST(Day11FuzzTest, fuzzTest);
+
+#endif

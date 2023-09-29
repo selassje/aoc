@@ -27,7 +27,7 @@
       "name": "dev_ninja_clang",
       "inherits" : "dev_ninja",
       "environment": {
-        "CXX": "clang++",
+        "CXX": "clang++-16",
         "CC": "clang"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
@@ -96,7 +96,7 @@
         "rhs": "Linux"
       },
       "environment": {
-        "CXX": "g++"
+        "CXX": "g++-11"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },

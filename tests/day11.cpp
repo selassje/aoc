@@ -29,7 +29,8 @@ readInput(const std::string_view path)
 
   auto toULL =
     [end = static_cast<char*>(nullptr)](const std::string& word) mutable {
-      return std::strtoull(word.c_str(), &end, 10);
+      static constexpr auto base = 10;
+      return std::strtoull(word.c_str(), &end, base);
     };
 
   Monkey monkey{};
@@ -37,7 +38,7 @@ readInput(const std::string_view path)
     std::istringstream iss{ line };
     split(iss);
 
-    if (line == "") {
+    if (line.empty()) {
       input.push_back(monkey);
       monkey.worryLevels.clear();
     } else if (words[0] == "Starting") {
@@ -55,7 +56,7 @@ readInput(const std::string_view path)
       };
 
       monkey.operation.op1 = getOperand(words[3]);
-      monkey.operation.op2 = getOperand(words[5]);
+      monkey.operation.op2 = getOperand(words[5]); //NOLINT
 
       monkey.operation.type = words[4] == "+"
                                 ? aoc22::day11::OperationType::Add

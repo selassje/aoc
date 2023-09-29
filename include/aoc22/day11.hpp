@@ -25,18 +25,18 @@ struct Old {
 
 using Operand = std::variant<Literal, Old>;
 
-struct Operation {
+struct alignas(64) Operation {
   OperationType type;
   Operand op1;
   Operand op2;
 };
 
-struct Monkey {
-    std::vector<std::uint64_t> worryLevels;
+struct alignas(128) Monkey {
     Operation operation;
     std::uint64_t divisionTest;
     std::size_t nextMonkeyTestPass;
     std::size_t nextMonkeyTestFail;
+    std::vector<std::uint64_t> worryLevels;
 };
 
 

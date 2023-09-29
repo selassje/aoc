@@ -12,7 +12,7 @@ solveInternal(const Input& input)
 {
   std::vector<std::vector<std::uint64_t>> worryLevels{};
 
-  const auto MODULO =
+  const auto modulo =
     std::accumulate(input.begin(),
                     input.end(),
                     1ULL,
@@ -52,7 +52,7 @@ solveInternal(const Input& input)
       const auto& monkey = input[i];
       for (const auto worryLevel : worryLevels[i]) {
         const auto newLevel =
-          getNewLevel(worryLevel, monkey.operation) % MODULO / DIVIDE_NEW_LEVEL;
+          getNewLevel(worryLevel, monkey.operation) % modulo / DIVIDE_NEW_LEVEL;
         const auto nextMonkey = newLevel % monkey.divisionTest == 0
                                   ? monkey.nextMonkeyTestPass
                                   : monkey.nextMonkeyTestFail;
@@ -72,7 +72,7 @@ solveInternal(const Input& input)
 Result
 solve(const Input& input)
 {
-  return std::make_pair(solveInternal<20, 3>(input),
-                        solveInternal<10000, 1>(input));
+  return std::make_pair(solveInternal<20, 3>(input), //NOLINT
+                        solveInternal<10000, 1>(input)); //NOLINT
 }
 };

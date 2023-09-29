@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <array>
+#include <cstdio>
 #include <numeric>
 #include <stdexcept>
+
 #include <vector>
 
 namespace aoc22::day11 {
@@ -20,8 +22,9 @@ solveInternal(const Input& input)
     std::array<char, 256> messageBuf{};
     for (std::size_t i = 0; i < input.size(); ++i) {
       if (input[i].nextMonkeyTestFail >= input.size()) {
-        (void)std::sprintf( // NOLINT
+        (void)sprintf_s( // NOLINT
           messageBuf.data(),
+          messageBuf.max_size(),
           "Aoc22::day11: nextMonkeyTestFail of monkey %zu is bigger(%zu) "
           "than the total number of monkeys(%zu)",
           i,
@@ -30,8 +33,9 @@ solveInternal(const Input& input)
         throw std::runtime_error(messageBuf.data());
       }
       if (input[i].nextMonkeyTestPass >= input.size()) {
-        (void)std::sprintf( // NOLINT
+        (void)sprintf_s( // NOLINT
           messageBuf.data(),
+          messageBuf.max_size(),
           "Aoc22::day11: nextMonkeyTestPass of monkey %zu is bigger(%zu) "
           "than the total number of monkeys(%zu)",
           i,
@@ -41,8 +45,9 @@ solveInternal(const Input& input)
       }
 
       if (input[i].divisionTest == 0) {
-        (void)std::sprintf( // NOLINT
+        (void)sprintf_s( // NOLINT
           messageBuf.data(),
+          messageBuf.max_size(),
           "Aoc22::day11: divisionTest field of monkey %zu is 0",
           i);
         throw std::runtime_error(messageBuf.data());

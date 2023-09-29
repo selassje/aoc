@@ -2,7 +2,8 @@
 
 #include <algorithm>
 #include <array>
-#include <cstdio>
+
+#include <stdio.h>
 #include <numeric>
 #include <stdexcept>
 
@@ -22,7 +23,7 @@ solveInternal(const Input& input)
     std::array<char, 256> messageBuf{};
     for (std::size_t i = 0; i < input.size(); ++i) {
       if (input[i].nextMonkeyTestFail >= input.size()) {
-        (void)sprintf_s( // NOLINT
+        (void)snprintf( // NOLINT
           messageBuf.data(),
           messageBuf.max_size(),
           "Aoc22::day11: nextMonkeyTestFail of monkey %zu is bigger(%zu) "
@@ -33,7 +34,7 @@ solveInternal(const Input& input)
         throw std::runtime_error(messageBuf.data());
       }
       if (input[i].nextMonkeyTestPass >= input.size()) {
-        (void)sprintf_s( // NOLINT
+        (void)snprintf( // NOLINT
           messageBuf.data(),
           messageBuf.max_size(),
           "Aoc22::day11: nextMonkeyTestPass of monkey %zu is bigger(%zu) "
@@ -45,7 +46,7 @@ solveInternal(const Input& input)
       }
 
       if (input[i].divisionTest == 0) {
-        (void)sprintf_s( // NOLINT
+        (void)snprintf( // NOLINT
           messageBuf.data(),
           messageBuf.max_size(),
           "Aoc22::day11: divisionTest field of monkey %zu is 0",

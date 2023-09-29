@@ -40,9 +40,7 @@ readInput(const std::string_view path)
     if (line == "") {
       input.push_back(monkey);
       monkey.worryLevels.clear();
-    }
-
-    if (words[0] == "Starting") {
+    } else if (words[0] == "Starting") {
       for (std::size_t i = 2; i < words.size(); ++i) {
         monkey.worryLevels.push_back(toULL(words[i]));
       }
@@ -81,4 +79,12 @@ TEST_CASE("Day11 Example", "[Day11]")
   const auto& [part_1, part_2] = aoc22::day11::solve(input);
   REQUIRE(part_1 == 10605);
   REQUIRE(part_2 == 10605);
+}
+
+TEST_CASE("Day11 Input", "[Day11]")
+{
+  const auto input = readInput(inputs::day11::INPUT);
+  const auto& [part_1, part_2] = aoc22::day11::solve(input);
+  REQUIRE(part_1 == 61005);
+  REQUIRE(part_2 == 61005);
 }

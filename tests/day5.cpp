@@ -52,7 +52,7 @@ readInput(const std::string_view path)
         iss >> m.quantity >> m.from >> m.to;
         moves.push_back(m);
       } else if (line.find('[') != std::string::npos) {
-        for (auto i = 0UL; i < stacksNum; ++i) {
+        for (std::size_t i = 0; i < stacksNum; ++i) {
           auto crate = line[4 * i + 1];
           if (crate != ' ') {
             deques[i].push_front(crate);

@@ -28,18 +28,18 @@ using Operand = std::variant<Literal, Old>;
 
 struct alignas(64) Operation
 {
-  OperationType type;
-  Operand op1;
-  Operand op2;
+  OperationType type{};
+  Operand op1{};
+  Operand op2{};
 };
 
 struct alignas(128) Monkey
 {
-  Operation operation;
-  std::uint64_t divisionTest;
-  std::size_t nextMonkeyTestPass;
-  std::size_t nextMonkeyTestFail;
-  std::vector<std::uint64_t> worryLevels;
+  Operation operation{};
+  std::uint64_t divisionTest{};
+  std::size_t nextMonkeyTestPass{};
+  std::size_t nextMonkeyTestFail{};
+  std::vector<std::uint64_t> worryLevels{};
 };
 
 using Input = std::vector<Monkey>;

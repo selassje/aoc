@@ -2,11 +2,9 @@
 
 #include <algorithm>
 #include <array>
-
-#include <stdio.h>
+#include <cstdio>
 #include <numeric>
 #include <stdexcept>
-
 #include <vector>
 
 namespace aoc22::day11 {

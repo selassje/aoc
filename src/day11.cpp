@@ -105,7 +105,8 @@ solveInternal(const Input& input)
     }
   }
 
-  std::ranges::sort(inspectionsCount, std::ranges::greater{});
+  std::ranges::partial_sort(
+    inspectionsCount, inspectionsCount.begin() + 2, std::ranges::greater{});
 
   return inspectionsCount[0] * inspectionsCount[1];
 }

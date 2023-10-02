@@ -26,7 +26,7 @@ jobs:
       - name: Set up GCC
         uses: egor-tensin/setup-gcc@v1
         with:
-          version: 13
+          version: 12
         if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master

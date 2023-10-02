@@ -12,9 +12,6 @@ jobs:
            cxx: g++
          - os: ubuntu-latest 
            cxx: cl.exe
-#        include:
-#         - os: macos-latest
-#           cxx: clang++
     runs-on: ${{ matrix.os }}
     env:
         CXX: ${{ matrix.cxx }}
@@ -30,12 +27,15 @@ jobs:
         if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Install LLVM 
-        uses: KyleMayes/install-llvm-action@v1
-        with:
-          ubuntu-version: 23.10
-          force-version: true
-          version: ${{ matrix.os == 'macos-latest' && '15.0' || '17.0' }}  
+      - name: Install LLVM Ubuntu
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17.0.1 all  
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+      - name: Install LLVM Windows
+        run: choco install llvm --version=17.0.1  
+        if: ${{ matrix.os == 'windows-latest'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:

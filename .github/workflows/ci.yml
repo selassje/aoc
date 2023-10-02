@@ -31,7 +31,7 @@ jobs:
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 17.0.1 all  
+          sudo ./llvm.sh 17 all  
         if: ${{ matrix.os == 'ubuntu-latest'}}
       - name: Install LLVM Windows
         run: choco install llvm --version=17.0.1  

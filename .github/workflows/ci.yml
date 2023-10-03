@@ -36,7 +36,7 @@ jobs:
             --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 17 \
             --slave /usr/bin/clang clang /usr/bin/clang-17 \
             --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-17 \
-            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-17 \
+            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-17
           sudo update-alternatives --list clang++
         if: ${{ matrix.os == 'ubuntu-latest'}}
       - name: Install LLVM Windows

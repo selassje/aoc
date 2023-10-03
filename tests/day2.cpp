@@ -68,6 +68,9 @@ TEST_CASE("Day2 Input", "[Day2]")
 
 #ifdef ENABLE_FUZZ_TESTS
 #include <fuzztest/fuzztest.h>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
 
 using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
 
@@ -84,6 +87,7 @@ fuzzTest(const FuzzInput& input)
   try {
     aoc22::day2::solve(realInput);
   } catch (std::runtime_error&) {
+    std::cout <<"Aoc22::Day2 FuzzTest : exception caught\n";
   }
 }
 

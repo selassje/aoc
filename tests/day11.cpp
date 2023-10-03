@@ -97,6 +97,7 @@ TEST_CASE("Day11 Input", "[Day11]")
 
 #ifdef ENABLE_FUZZ_TESTS
 #include <fuzztest/fuzztest.h>
+#include <cstdint>
 
 using aoc22::day11::Operand;
 using aoc22::day11::Operation;

@@ -38,7 +38,7 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
         with:
-          version: $NINJA_VER
+          version: ${{matrix.os == 'ubuntu-latest' && '$NINJA_VER' || '$env:NINJA_VER' }}
       - name: Install LLVM Ubuntu
         run: |
           wget https://apt.llvm.org/llvm.sh

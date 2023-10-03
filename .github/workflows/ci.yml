@@ -92,7 +92,7 @@ jobs:
             sudo apt-get install g++-$GCC_VER
             sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-$GCC_VER 50 \
-            --slave /usr/bin/gcov gcov /usr/bin/gcov++-$GCC_VER
+            --slave /usr/bin/gcov gcov /usr/bin/gcov-$GCC_VER
         - name: Install LCOV
           run:  sudo apt-get install lcov
         - name: Configure

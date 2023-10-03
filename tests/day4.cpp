@@ -10,7 +10,6 @@
 #include <string>
 #include <string_view>
 
-
 namespace {
 
 using aoc22::day4::Input;

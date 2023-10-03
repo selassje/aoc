@@ -32,7 +32,7 @@ jobs:
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install g++-$GCC_VER
-          sudo update-alternatives \ 
+          sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-$GCC_VER 50
         if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja

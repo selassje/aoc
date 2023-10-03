@@ -38,7 +38,7 @@ jobs:
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
         with:
-          version: ${{matrix.os == 'ubuntu-latest' && '$NINJA_VER' || '$env:NINJA_VER' }}
+          version: ${{env.NINJA_VER}}
       - name: Install LLVM Ubuntu
         run: |
           wget https://apt.llvm.org/llvm.sh
@@ -55,7 +55,7 @@ jobs:
             --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER
         if: ${{ matrix.os == 'ubuntu-latest'}}
       - name: Install LLVM Windows
-        run: choco install llvm --version=$LLVM_VER 
+        run: choco install llvm --version=$env:LLVM_VER 
         if: ${{ matrix.os == 'windows-latest'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2

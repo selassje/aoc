@@ -93,6 +93,7 @@ TEST_CASE("Day10 Input", "[Day10]")
 }
 
 #ifdef ENABLE_FUZZ_TESTS
+#include <fuzztest/fuzztest.h>
 
 void
 fuzzTest(const Input& input)

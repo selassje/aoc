@@ -67,6 +67,7 @@ TEST_CASE("Day2 Input", "[Day2]")
 }
 
 #ifdef ENABLE_FUZZ_TESTS
+#include <fuzztest/fuzztest.h>
 
 using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
 

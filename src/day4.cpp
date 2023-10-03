@@ -1,7 +1,6 @@
 #include "day4.hpp"
 
 #include <algorithm>
-#include <functional>
 
 namespace aoc22::day4 {
 

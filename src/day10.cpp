@@ -1,6 +1,8 @@
 #include "day10.hpp"
 
-#include <iostream>
+#include <cstddef>
+#include <cstdint>
+#include <utility>
 
 namespace aoc22::day10 {
 static constexpr std::size_t FIRST_SIGNAL_CYCLE = 20;
@@ -39,12 +41,13 @@ solve(const Input& input)
 
     const auto& instruction = input[i];
     switch (instruction.index()) {
-      case 0:
-        break;
-      case 1:
+      case 0: {
         const auto& addX = std::get<AddX>(instruction);
         addedCycles = addXCycles;
         addedX = addX.x;
+      } break;
+      case 1:
+      default:
         break;
     }
 

@@ -1,5 +1,11 @@
 name: AoC22 CI
+
 on: [push]
+        
+env:
+  NINJA_VER: 1.11.1
+  GCC_VER: 13
+
 jobs:
   build_and_test:
     name: Build and Test On ${{ matrix.os }} using ${{ matrix.cxx }}
@@ -12,23 +18,45 @@ jobs:
            cxx: g++
          - os: ubuntu-latest 
            cxx: cl.exe
-#        include:
-#         - os: macos-latest
-#           cxx: clang++
     runs-on: ${{ matrix.os }}
     env:
-        CXX: ${{ matrix.cxx }}
+      LLVM_VER: ${{matrix.os == 'ubuntu-latest' && '17' || '17.0.1' }}
+      CXX: ${{ matrix.cxx }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with: 
           submodules: true
+      - name: Set up GCC
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install g++-$GCC_VER
+          sudo update-alternatives \
+            --install /usr/bin/g++ g++ /usr/bin/g++-$GCC_VER 50
+        if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
-      - name: Install LLVM 
-        uses: KyleMayes/install-llvm-action@v1
         with:
-          version: ${{ matrix.os == 'macos-latest' && '15.0' || '16.0' }}  
+          version: ${{env.NINJA_VER}}
+      - name: Install LLVM Ubuntu
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh $LLVM_VER all
+          sudo update-alternatives --remove-all clang++
+          sudo update-alternatives --remove-all clang
+          sudo update-alternatives --remove-all clang-tidy
+          sudo update-alternatives --remove-all clang-format
+          sudo update-alternatives \
+            --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER 50 \
+            --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER \
+            --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER \
+            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER
+        if: ${{ matrix.os == 'ubuntu-latest'}}
+      - name: Install LLVM Windows
+        run: choco install llvm --version=$env:LLVM_VER 
+        if: ${{ matrix.os == 'windows-latest'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:
@@ -39,7 +67,10 @@ jobs:
       - name: Clang format version
         run:  clang-format --version
       - name: Configure
-        run:  cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTS=ON -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'cl.exe' && 'OFF' || 'ON' }} 
+        run:  cmake -S . -B build -G Ninja 
+              -DCMAKE_BUILD_TYPE=Release 
+              -DENABLE_TESTS=ON 
+              -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'cl.exe' && 'OFF' || 'ON' }} 
               -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
       - name: Build Tests
         run:  cmake --build build --config Release
@@ -54,6 +85,14 @@ jobs:
           uses: actions/checkout@v3
           with: 
             submodules: true
+        - name: Set up GCC
+          run: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install g++-$GCC_VER
+            sudo update-alternatives \
+            --install /usr/bin/g++ g++ /usr/bin/g++-$GCC_VER 50 \
+            --slave /usr/bin/gcov gcov /usr/bin/gcov-$GCC_VER
         - name: Install LCOV
           run:  sudo apt-get install lcov
         - name: Configure

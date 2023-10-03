@@ -1,6 +1,9 @@
 #include "day5.hpp"
 
 #include <algorithm>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace aoc22::day5 {
 

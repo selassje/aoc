@@ -27,7 +27,7 @@
       "name": "dev_ninja_clang",
       "inherits" : "dev_ninja",
       "environment": {
-        "CXX": "clang++-16",
+        "CXX": "clang++",
         "CC": "clang"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
@@ -96,7 +96,7 @@
         "rhs": "Linux"
       },
       "environment": {
-        "CXX": "g++-11"
+        "CXX": "g++"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },
@@ -107,6 +107,15 @@
         "ENABLE_COVERAGE_REPORT":"ON"
       },
       "binaryDir": "${sourceDir}/builds/coverage_ninja_gcc"
+    },
+    {
+      "name": "rel_ninja_gcc_clang_tidy",
+      "inherits" : "dev_ninja_gcc",
+      "cacheVariables": {
+        "ENABLE_CLANG_TIDY":"ON",
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "binaryDir": "${sourceDir}/builds/rel_ninja_gcc_clang_tidy"
     },
     {
       "name": "dev_vs_msvc",

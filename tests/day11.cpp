@@ -1,7 +1,8 @@
 
 #include "day11.hpp"
 #include "inputs.hpp"
-#include "tests_main.hpp"
+
+#include <catch2/catch_test_macros.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -91,6 +92,8 @@ TEST_CASE("Day11 Input", "[Day11]")
 }
 
 #ifdef ENABLE_FUZZ_TESTS
+
+#include <fuzztest/fuzztest.h>
 
 using aoc22::day11::Operand;
 using aoc22::day11::Operation;

@@ -14,7 +14,7 @@ endif()
 foreach(i RANGE 1 11)
     set(TEST_NAME day${i})
 
-    add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
+    add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)
     setup_compiler_flags(${TEST_NAME})
 
     if(ENABLE_CLANG_TIDY)

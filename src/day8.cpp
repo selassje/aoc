@@ -1,7 +1,9 @@
 #include "day8.hpp"
 
+#include <algorithm>
+#include <cstddef>
 #include <cstdint>
-#include <numeric>
+#include <utility>
 
 namespace aoc22::day8 {
 

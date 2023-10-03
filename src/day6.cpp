@@ -1,7 +1,10 @@
 #include "day6.hpp"
 
 #include <array>
+#include <cstddef>
+#include <string_view>
 #include <unordered_set>
+#include <utility>
 
 namespace aoc22::day6 {
 

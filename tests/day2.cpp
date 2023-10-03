@@ -1,12 +1,14 @@
 #include "day2.hpp"
 #include "inputs.hpp"
 
-#include "tests_main.hpp"
+#include <catch2/catch_test_macros.hpp>
 
+#include <exception>
 #include <fstream>
-#include <iostream>
 #include <sstream>
-#include <vector>
+#include <string>
+#include <string_view>
+#include <utility>
 
 using aoc22::day2::Guide;
 
@@ -65,6 +67,10 @@ TEST_CASE("Day2 Input", "[Day2]")
 }
 
 #ifdef ENABLE_FUZZ_TESTS
+#include <fuzztest/fuzztest.h>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
 
 using FuzzInput = std::vector<std::pair<unsigned char, unsigned char>>;
 
@@ -81,6 +87,7 @@ fuzzTest(const FuzzInput& input)
   try {
     aoc22::day2::solve(realInput);
   } catch (std::runtime_error&) {
+    std::cout <<"Aoc22::Day2 FuzzTest : exception caught\n";
   }
 }
 

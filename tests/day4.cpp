@@ -1,12 +1,15 @@
 #include "day4.hpp"
 #include "inputs.hpp"
-#include "tests_main.hpp"
 
+#include <catch2/catch_test_macros.hpp>
+
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <string_view>
 
-#include <algorithm>
 
 namespace {
 

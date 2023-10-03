@@ -1,9 +1,6 @@
 
-#ifndef TESTS_MAIN_HPP
-#define TESTS_MAIN_HPP
 
 #include <catch2/catch_session.hpp>
-#include <catch2/catch_test_macros.hpp>
 
 #ifdef ENABLE_FUZZ_TESTS
 #include <fuzztest/fuzztest.h>
@@ -24,5 +21,3 @@ main(int argc, char* argv[])
 #endif
   return fuzzTestResult + catchTestsResult;
 }
-
-#endif

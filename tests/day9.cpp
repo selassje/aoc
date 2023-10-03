@@ -2,12 +2,13 @@
 #include "day9.hpp"
 #include "inputs.hpp"
 
-#include "tests_main.hpp"
+#include <catch2/catch_test_macros.hpp>
 
+#include <cstddef>
 #include <fstream>
-#include <iostream>
-#include <ranges>
 #include <sstream>
+#include <string>
+#include <string_view>
 #include <unordered_map>
 
 using aoc22::day9::Direction;

@@ -1,12 +1,14 @@
 #include "day2.hpp"
 #include "inputs.hpp"
 
-#include "tests_main.hpp"
+#include <catch2/catch_test_macros.hpp>
 
+#include <exception>
 #include <fstream>
-#include <iostream>
 #include <sstream>
-#include <vector>
+#include <string>
+#include <string_view>
+#include <utility>
 
 using aoc22::day2::Guide;
 

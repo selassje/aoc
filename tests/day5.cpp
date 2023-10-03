@@ -2,12 +2,15 @@
 #include "day5.hpp"
 #include "inputs.hpp"
 
-#include "tests_main.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include <deque>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 namespace {

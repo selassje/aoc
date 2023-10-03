@@ -4,6 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdlib>
 #include <deque>
 #include <fstream>
 #include <iostream>
@@ -19,7 +20,7 @@ using aoc22::day5::Input;
 using aoc22::day5::Move;
 using aoc22::day5::Moves;
 using aoc22::day5::Stack;
-using aoc22::day5::Stacks;
+using aoc22::day5::Stacks; 
 
 using Deque = std::deque<char>;
 using Deques = std::vector<Deque>;

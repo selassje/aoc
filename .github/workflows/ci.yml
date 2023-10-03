@@ -48,7 +48,7 @@ jobs:
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy
           sudo update-alternatives --remove-all clang-format
-          sudo update-alternatives \ 
+          sudo update-alternatives \
             --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER 50 \
             --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER \
             --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER \

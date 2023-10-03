@@ -1,7 +1,13 @@
+#include "day3.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cctype>
-#include <day3.hpp>
+#include <cstddef>
+#include <iterator>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace aoc22::day3 {
 

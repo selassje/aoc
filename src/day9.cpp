@@ -1,9 +1,12 @@
 #include "day9.hpp"
 
 #include <array>
+#include <compare>
+#include <cstddef>
 #include <cstdint>
-#include <iostream>
+#include <functional>
 #include <unordered_set>
+#include <utility>
 
 namespace aoc22::day9 {
 struct alignas(16) Position

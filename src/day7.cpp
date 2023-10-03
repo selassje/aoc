@@ -2,10 +2,16 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <memory>
 #include <numeric>
 #include <ranges>
 #include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+#include <variant>
+#include <vector>
 
 namespace aoc22::day7 {
 
@@ -128,7 +134,7 @@ solve(const Input& input)
   std::size_t i = 0;
   for (; i < input.size(); ++i) {
     const auto& record = input[i];
-    switch (record.index()) {
+    switch (record.index()) { //NOLINT
       case 0: {
         const auto cd = std::get<ChangeDirectory>(record);
         ft.changeDirectory(cd.directory);

@@ -16,7 +16,7 @@ struct AddX
   std::int64_t x;
 };
 
-using Instruction = std::variant<Noop, AddX>;
+using Instruction = std::variant<AddX,Noop>;
 
 using Input = std::vector<Instruction>;
 

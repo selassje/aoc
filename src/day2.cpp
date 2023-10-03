@@ -1,10 +1,8 @@
 #include "day2.hpp"
 
-#include <cstdlib>
-#include <numeric>
 #include <stdexcept>
 #include <unordered_map>
-#include <vector>
+#include <utility>
 
 namespace aoc22::day2 {
 enum class Outcome : unsigned char
@@ -123,6 +121,8 @@ solve(const Guide& guide)
 #ifdef ENABLE_TESTS
 
 #include <catch2/catch_test_macros.hpp>
+#include <iostream>
+
 namespace aoc22::day2 {
 
 TEST_CASE("Day2 nextMove", "[Day2]")
@@ -130,6 +130,7 @@ TEST_CASE("Day2 nextMove", "[Day2]")
   try {
     nextMove(Rock, static_cast<Outcome>(10)); // NOLINT
   } catch (std::runtime_error&) {
+    std::cout << "Exception expected\n";
   }
 }
 
@@ -138,6 +139,7 @@ TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
   try {
     convertMoveToDesiredOutcome(static_cast<Move>(10)); // NOLINT
   } catch (std::runtime_error&) {
+    std::cout << "Exception expected\n";
   }
 }
 };

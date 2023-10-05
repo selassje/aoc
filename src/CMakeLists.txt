@@ -14,10 +14,9 @@ target_include_directories(aoc22 PUBLIC ${INCLUDE})
 
 if(ENABLE_TESTS)
     target_link_libraries(aoc22 PRIVATE Catch2)
-    target_compile_definitions(aoc22 PRIVATE ENABLE_TESTS)
 endif()
 
-setup_compiler_flags(aoc22)
+setup_compiler_and_linker_flags(aoc22)
 
 if(ENABLE_CLANG_TIDY)
     setup_clang_tidy(aoc22)

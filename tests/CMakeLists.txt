@@ -6,16 +6,19 @@ include("cmake/configure_input_paths.cmake")
 
 add_subdirectory(Catch2 SYSTEM)
 
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND  (${CMAKE_SYSTEM_NAME} STREQUAL "Linux"))
+  target_compile_options(Catch2 PRIVATE -stdlib=libc++)
+endif()
+
 if(ENABLE_FUZZ_TESTS)
   add_subdirectory(fuzztest)
 endif()
-
 
 foreach(i RANGE 1 11)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)
-    setup_compiler_flags(${TEST_NAME})
+    setup_compiler_and_linker_flags(${TEST_NAME})
 
     if(ENABLE_CLANG_TIDY)
         setup_clang_tidy(${TEST_NAME})
@@ -28,12 +31,10 @@ foreach(i RANGE 1 11)
 
     if(ENABLE_FUZZ_TESTS)
       link_fuzztest(${TEST_NAME})
-      target_link_options(${TEST_NAME} PRIVATE -fsanitize=address)
-      target_compile_definitions(${TEST_NAME} PRIVATE ENABLE_FUZZ_TESTS)
     endif()
 
     if(ENABLE_COVERAGE_REPORT)
-        target_link_libraries(${TEST_NAME} PRIVATE gcov)
+      target_link_libraries(${TEST_NAME} PRIVATE gcov)
     endif()
 
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

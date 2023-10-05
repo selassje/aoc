@@ -16,8 +16,8 @@ if(ENABLE_TESTS)
     target_link_libraries(aoc22 PRIVATE Catch2)
 endif()
 
-setup_compiler_and_linker_flags(aoc22)
-
-if(ENABLE_CLANG_TIDY)
-    setup_clang_tidy(aoc22)
-endif()
+setup_compiler_warnings(aoc22)
+setup_std_lib(aoc22)
+setup_clang_tidy(aoc22)
+setup_tests_flags(aoc22)
+setup_coverage_report(aoc22)

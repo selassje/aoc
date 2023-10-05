@@ -6,23 +6,36 @@ include("cmake/configure_input_paths.cmake")
 
 add_subdirectory(Catch2 SYSTEM)
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND  (${CMAKE_SYSTEM_NAME} STREQUAL "Linux"))
-  target_compile_options(Catch2 PRIVATE -stdlib=libc++)
-endif()
+setup_std_lib(Catch2)
 
 if(ENABLE_FUZZ_TESTS)
+
+  function(setup_std_lib_for_targets DIR)
+    get_property(TGTS DIRECTORY "${DIR}" PROPERTY BUILDSYSTEM_TARGETS)
+    foreach(TGT IN LISTS TGTS)
+      setup_std_lib(${TGT})
+    endforeach() 
+    get_property(SUBDIRS DIRECTORY "${DIR}" PROPERTY SUBDIRECTORIES)
+    foreach(SUBDIR IN LISTS SUBDIRS)
+      setup_std_lib_for_targets("${SUBDIR}")
+    endforeach()
+  endfunction()
+
   add_subdirectory(fuzztest)
+  setup_std_lib_for_targets(fuzztest)
+
 endif()
 
 foreach(i RANGE 1 11)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)
-    setup_compiler_and_linker_flags(${TEST_NAME})
 
-    if(ENABLE_CLANG_TIDY)
-        setup_clang_tidy(${TEST_NAME})
-    endif()
+    setup_compiler_warnings(${TEST_NAME})
+    setup_std_lib(${TEST_NAME})
+    setup_clang_tidy(${TEST_NAME})
+    setup_tests_flags(${TEST_NAME})
+    setup_coverage_report(${TEST_NAME})
 
     target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
                                             PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)
@@ -30,11 +43,8 @@ foreach(i RANGE 1 11)
     target_link_libraries(${TEST_NAME} PRIVATE Catch2 PRIVATE aoc22)
 
     if(ENABLE_FUZZ_TESTS)
+      setup_std_lib(fuzztest_gtest_main)
       link_fuzztest(${TEST_NAME})
-    endif()
-
-    if(ENABLE_COVERAGE_REPORT)
-      target_link_libraries(${TEST_NAME} PRIVATE gcov)
     endif()
 
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})

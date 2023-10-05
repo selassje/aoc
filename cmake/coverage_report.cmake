@@ -16,3 +16,10 @@ if (ENABLE_COVERAGE_REPORT)
     COMMAND genhtml ${CMAKE_BINARY_DIR}/coverage.info --output ${CMAKE_BINARY_DIR}/lcov/index.html 
     )
 endif()
+
+function(setup_coverage_report TARGET)
+  if (ENABLE_COVERAGE_REPORT)
+    target_compile_options(${TARGET} PRIVATE --coverage -fno-elide-constructors)
+    target_link_libraries(${TEST_NAME} PRIVATE gcov)
+  endif()
+endfunction()

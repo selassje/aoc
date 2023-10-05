@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <format>
 #include <functional>
 #include <numeric>
 #include <stdexcept>
@@ -21,38 +22,27 @@ solveInternal(const Input& input)
       "Aoc22::day11: At least two Monkeys are required in the input");
   }
   {
-    std::array<char, 256> messageBuf{};
     for (std::size_t i = 0; i < input.size(); ++i) {
       if (input[i].nextMonkeyTestFail >= input.size()) {
-        (void)snprintf( // NOLINT
-          messageBuf.data(),
-          messageBuf.max_size(),
-          "Aoc22::day11: nextMonkeyTestFail of monkey %zu is bigger(%zu) "
-          "than the total number of monkeys(%zu)",
+        throw std::runtime_error(std::format(
+          "Aoc22::day11: nextMonkeyTestFail of monkey {} is bigger({}) "
+          "than the total number of monkeys({})",
           i,
           input[i].nextMonkeyTestFail,
-          input.size());
-        throw std::runtime_error(messageBuf.data());
+          input.size()));
       }
       if (input[i].nextMonkeyTestPass >= input.size()) {
-        (void)snprintf( // NOLINT
-          messageBuf.data(),
-          messageBuf.max_size(),
-          "Aoc22::day11: nextMonkeyTestPass of monkey %zu is bigger(%zu) "
-          "than the total number of monkeys(%zu)",
+        throw std::runtime_error(std::format(
+          "Aoc22::day11: nextMonkeyTestPass of monkey {} is bigger({}) "
+          "than the total number of monkeys({})",
           i,
           input[i].nextMonkeyTestPass,
-          input.size());
-        throw std::runtime_error(messageBuf.data());
+          input.size()));
       }
 
       if (input[i].divisionTest == 0) {
-        (void)snprintf( // NOLINT
-          messageBuf.data(),
-          messageBuf.max_size(),
-          "Aoc22::day11: divisionTest field of monkey %zu is 0",
-          i);
-        throw std::runtime_error(messageBuf.data());
+        throw std::runtime_error(
+          std::format("Aoc22::day11: divisionTest field of monkey {} is 0", i));
       }
     }
   }

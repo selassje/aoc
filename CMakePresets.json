@@ -129,6 +129,19 @@
         "rhs": "Windows"
       },
       "binaryDir": "${sourceDir}/builds/dev_vs_msvc"
+    },
+    {
+      "name": "dev_ninja_msvc",
+      "inherits" : "dev_ninja",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "environment": {
+        "CXX": "cl.exe"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
     }
   ],
 

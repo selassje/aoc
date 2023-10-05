@@ -12,6 +12,10 @@ else()
         target_compile_options(${TARGET} PRIVATE -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast)
     endif()
 
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND NOT (${CMAKE_SYSTEM_NAME} STREQUAL "Windows"))
+        target_compile_options(${TARGET} PRIVATE -stdlib=libc++)
+    endif()
+
     if (ENABLE_COVERAGE_REPORT)
         target_compile_options(${TARGET} PRIVATE --coverage -fno-elide-constructors)
     endif()

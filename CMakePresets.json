@@ -191,6 +191,11 @@
       "name": "rel_ninja_clang_fuzz",
       "inherits": "default",
       "configurePreset" : "rel_ninja_clang_fuzz"
+    },
+    {
+      "name": "dev_ninja_clang_fuzz_clang_tidy",
+      "inherits": "default",
+      "configurePreset" : "dev_ninja_clang_fuzz_clang_tidy"
     }
   ]
 }

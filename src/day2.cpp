@@ -1,11 +1,43 @@
 #include "day2.hpp"
 
+#include <cstddef>
 #include <exception>
-#include <stdexcept>
+#include <format>
+#include <string>
 #include <unordered_map>
 #include <utility>
 
+using enum aoc22::day2::Move;
+
 namespace aoc22::day2 {
+
+struct ExceptionBase : std::exception
+{
+  std::string message;
+  [[nodiscard]] const char* what() const noexcept override
+  {
+    return message.c_str();
+  }
+  explicit ExceptionBase(std::string message_)
+    : message(std::move(message_))
+  {
+  }
+};
+
+struct InputErrorMoveOutOfRange : ExceptionBase
+{
+  explicit InputErrorMoveOutOfRange(std::size_t index, Move move, bool first)
+    : ExceptionBase(
+        std::format("Aoc22::day2 {} move of turn {} is out of range({}).",
+                    first ? "First" : "Second",
+                    index,
+                    static_cast<unsigned char>(move)))
+  {
+  }
+};
+
+namespace {
+
 enum class Outcome : unsigned char
 {
   Loss,
@@ -13,9 +45,6 @@ enum class Outcome : unsigned char
   Win = 6,
 };
 
-namespace {
-
-using enum Move;
 using enum Outcome;
 
 constexpr unsigned int
@@ -74,7 +103,7 @@ convertMoveToDesiredOutcome(const Move move)
       return Win;
     default:
       throw std::exception{
-        
+
       };
   }
 };
@@ -83,7 +112,8 @@ convertMoveToDesiredOutcome(const Move move)
 std::pair<unsigned int, unsigned int>
 solve(const Guide& guide)
 {
-  for (const auto& pair : guide) {
+  for (std::size_t i = 0; i < std::size(guide); ++i) {
+    auto const& pair = guide[i];
     auto checkMove = [](const Move& m) {
       const auto c = static_cast<unsigned char>(m);
       static constexpr auto rock = static_cast<unsigned char>(Rock);
@@ -91,16 +121,12 @@ solve(const Guide& guide)
       return c >= rock && c <= scissors;
     };
     if (!checkMove(pair.first)) {
-      throw std::runtime_error{
-        "aoc22::day2::solve first move out of valid range"
-      };
+      throw InputErrorMoveOutOfRange{ i, pair.first, true };
     }
     if (!checkMove(pair.second)) {
-      throw std::runtime_error{
-        "aoc22::day2::solve second move out of valid range"
-      };
-    }
-  };
+      throw InputErrorMoveOutOfRange{ i, pair.second, false };
+    };
+  }
 
   auto evaluateRound = [](Move oponent, Move you) {
     return evaluateMove(you) + evaluateOutcome(oponent, you);

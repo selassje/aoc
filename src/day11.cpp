@@ -4,44 +4,104 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <exception>
 #include <format>
 #include <functional>
 #include <numeric>
-#include <stdexcept>
+#include <string>
+#include <utility>
 #include <vector>
 
 namespace aoc22::day11 {
+
+struct ExceptionBase : std::exception
+{
+  std::string message;
+  [[nodiscard]] const char* what() const noexcept override { return message.c_str(); }
+  explicit ExceptionBase(std::string message_)
+    : message(std::move(message_))
+  {
+  }
+};
+
+struct InputErrorTooFewMonkeys : ExceptionBase
+{
+  explicit InputErrorTooFewMonkeys(std::size_t count)
+    : ExceptionBase(
+        std::format("Aoc22::day11: At least two Monkeys are required in the "
+                    "input. Passed  size {}",
+                    count))
+  {
+  }
+};
+
+struct InputErrorDivisionTest : ExceptionBase
+{
+
+  explicit InputErrorDivisionTest(std::size_t monkey)
+    : ExceptionBase(
+        std::format("Aoc22::day11: divisionTest field of monkey {} is 0",
+                    monkey))
+  {
+  }
+};
+
+struct InputErrorNextMonkeyTestFail : ExceptionBase
+{
+
+  InputErrorNextMonkeyTestFail(std::size_t monkey,
+                               std::size_t nextMonkeyTestFail,
+                               std::size_t count)
+    : ExceptionBase(std::format(
+        "Aoc22::day11: nextMonkeyTestFail of monkey {} is bigger({}) "
+        "than the total number of monkeys({})",
+        monkey,
+        nextMonkeyTestFail,
+        count))
+
+  {
+  }
+};
+
+struct InputErrorNextMonkeyTestPass : ExceptionBase
+{
+
+  InputErrorNextMonkeyTestPass(std::size_t monkey,
+                               std::size_t nextMonkeyTestPass,
+                               std::size_t count)
+    : ExceptionBase(std::format(
+        "Aoc22::day11: nextMonkeyTestPass of monkey {} is bigger({}) "
+        "than the total number of monkeys({})",
+        monkey,
+        nextMonkeyTestPass,
+        count))
+
+  {
+  }
+};
 
 template<int ROUNDS, int DIVIDE_NEW_LEVEL>
 std::uint64_t
 solveInternal(const Input& input)
 {
   if (input.size() < 2) {
-    throw std::runtime_error(
-      "Aoc22::day11: At least two Monkeys are required in the input");
+    throw InputErrorTooFewMonkeys{ input.size() };
   }
   {
     for (std::size_t i = 0; i < input.size(); ++i) {
       if (input[i].nextMonkeyTestFail >= input.size()) {
-        throw std::runtime_error(std::format(
-          "Aoc22::day11: nextMonkeyTestFail of monkey {} is bigger({}) "
-          "than the total number of monkeys({})",
-          i,
-          input[i].nextMonkeyTestFail,
-          input.size()));
+        throw InputErrorNextMonkeyTestFail{ i,
+                                            input[i].nextMonkeyTestFail,
+                                            input.size() };
       }
       if (input[i].nextMonkeyTestPass >= input.size()) {
-        throw std::runtime_error(std::format(
-          "Aoc22::day11: nextMonkeyTestPass of monkey {} is bigger({}) "
-          "than the total number of monkeys({})",
-          i,
-          input[i].nextMonkeyTestPass,
-          input.size()));
+        throw InputErrorNextMonkeyTestPass{ i,
+                                            input[i].nextMonkeyTestPass,
+                                            input.size() };
       }
 
       if (input[i].divisionTest == 0) {
-        throw std::runtime_error(
-          std::format("Aoc22::day11: divisionTest field of monkey {} is 0", i));
+        throw InputErrorDivisionTest{ i };
       }
     }
   }

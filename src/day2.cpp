@@ -1,5 +1,6 @@
 #include "day2.hpp"
 
+#include <exception>
 #include <stdexcept>
 #include <unordered_map>
 #include <utility>
@@ -57,7 +58,7 @@ nextMove(Move oponent, Outcome desiredOutcome)
       }
       [[fallthrough]];
     default:
-      throw std::runtime_error{ "Next move: unexpected arguments." };
+      throw std::exception{};
   }
 }
 
@@ -72,8 +73,8 @@ convertMoveToDesiredOutcome(const Move move)
     case Sciscors:
       return Win;
     default:
-      throw std::runtime_error{
-        "convertMoveToDesiredOutcome: unexpected argument."
+      throw std::exception{
+        
       };
   }
 };
@@ -129,7 +130,7 @@ TEST_CASE("Day2 nextMove", "[Day2]")
 {
   try {
     nextMove(Rock, static_cast<Outcome>(10)); // NOLINT
-  } catch (std::runtime_error&) {
+  } catch (std::exception&) {
     std::cout << "Exception expected\n";
   }
 }
@@ -138,7 +139,7 @@ TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
 {
   try {
     convertMoveToDesiredOutcome(static_cast<Move>(10)); // NOLINT
-  } catch (std::runtime_error&) {
+  } catch (std::exception&) {
     std::cout << "Exception expected\n";
   }
 }

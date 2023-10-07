@@ -22,5 +22,5 @@ if(ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
 
-
+setup_coverage_report_target()
 

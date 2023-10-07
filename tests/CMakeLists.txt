@@ -35,7 +35,7 @@ foreach(i RANGE 1 11)
     setup_std_lib(${TEST_NAME})
     setup_clang_tidy(${TEST_NAME})
     setup_tests_flags(${TEST_NAME})
-    setup_coverage_report(${TEST_NAME})
+    setup_coverage_report_flags(${TEST_NAME})
 
     target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
                                             PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc22)
@@ -48,6 +48,7 @@ foreach(i RANGE 1 11)
     endif()
 
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+    setup_coverate_report_env(${TEST_NAME})
 endforeach()
     
 

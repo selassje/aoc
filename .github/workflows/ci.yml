@@ -60,14 +60,7 @@ jobs:
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
           $process = Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "$pwd\VSBuildTools", "--passive", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
           Write-Output $process.ExitCode 
-          cd VSBuildTools
-          vswhere
-
-        if: ${{ matrix.cxx == 'cl.exe'}}
-      - name: Setup MSVC 
-        uses: TheMrMilchmann/setup-msvc-dev@v2
-        with:
-          arch: x64
+          .\VSBuildTools\VC\Auxiliary\Build\vcvars64.bat
         if: ${{ matrix.cxx == 'cl.exe'}}
       - name: CMake version
         run:  cmake --version

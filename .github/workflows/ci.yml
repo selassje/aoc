@@ -72,45 +72,18 @@ jobs:
               -DENABLE_TESTS=ON 
               -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'cl.exe' && 'OFF' || 'ON' }} 
               -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
+              -DENABLE_COVERAGE_REPORT=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build --output-on-failure
+      - name: Generate Coverage Report
+        run:  cmake --build build --target generate-coverage-report
+        if:  ${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest'}}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        if:  ${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest'}}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
-  test_coverage:
-      env:
-        LLVM_VER: 17
-        CXX: clang++
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
-          with: 
-            submodules: true
-        - name: Install LLVM Ubuntu
-          run: |
-              wget https://apt.llvm.org/llvm.sh
-              chmod +x llvm.sh
-              sudo ./llvm.sh $LLVM_VER all
-              sudo update-alternatives --remove-all clang++
-              sudo update-alternatives --remove-all clang
-              sudo update-alternatives --remove-all clang-tidy
-              sudo update-alternatives --remove-all clang-format
-              sudo update-alternatives \
-                --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER 50 \
-                --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER \
-                --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER \
-                --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER
-        - name: Configure
-          run:  cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTS=ON -DENABLE_COVERAGE_REPORT=ON
-        - name: Build Tests
-          run:  cmake --build build
-        - name: Run Tests
-          run:  ctest --test-dir build --output-on-failure
-        - name: Generate Coverage Report
-          run:  cmake --build build --target generate-coverage-report
-        - name: Upload coverage reports to Codecov
-          uses: codecov/codecov-action@v3
-          env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -58,7 +58,7 @@ jobs:
         run:  |
           vswhere 
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_enterprise.exe -OutFile vs_enterprise.exe
-          .\vs_enterprise.exe update --passive --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
+          .\vs_enterprise.exe modify --passive --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise" --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
           vswhere
 
         if: ${{ matrix.cxx == 'cl.exe'}}

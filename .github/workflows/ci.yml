@@ -57,8 +57,9 @@ jobs:
       - name: Upgrade MSVC 
         run:  |
           vswhere 
-          Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_enterprise.exe -OutFile vs_enterprise.exe
-          .\vs_enterprise.exe update --wait --passive --norestart --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
+          Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
+          .\vs_buildtools.exe --installPath "VSBuildTools"  --norestart --quiet --wait --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+          cd VSBuildTools
           vswhere
 
         if: ${{ matrix.cxx == 'cl.exe'}}

@@ -58,7 +58,7 @@ jobs:
         run:  |
           vswhere 
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
-          .\vs_buildtools.exe --installPath "VSBuildTools"  --norestart --quiet --wait --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+          Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "VSBuildTools", "--quiet", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
           cd VSBuildTools
           vswhere
 

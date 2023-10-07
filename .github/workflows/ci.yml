@@ -58,7 +58,8 @@ jobs:
         run:  |
           vswhere 
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
-          Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "VSBuildTools", "--quiet", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
+          $process = Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "VSBuildTools", "--passive", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
+          Write-Output $process.ExitCode 
           cd VSBuildTools
           vswhere
 

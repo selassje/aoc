@@ -57,7 +57,7 @@ jobs:
       - name: Upgrade MSVC 
         run:  |
           vswhere 
-          wget -URI https://aka.ms/vs/17/release/vs_enterprise.exe -OutFile vs_enterprise.exe
+          curl -URI https://aka.ms/vs/17/release/vs_enterprise.exe -OutFile vs_enterprise.exe
           .\vs_entreprise.exe update --passive --installPath "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
           vswhere
 

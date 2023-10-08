@@ -8,10 +8,13 @@
 
 namespace aoc22::day12 {
 
+using IndexType =
+  std::conditional_t<sizeof(std::size_t) == 8, std::uint32_t, std::uint16_t>;
+
 struct Position
 {
-  std::size_t x;
-  std::size_t y;
+  IndexType x;
+  IndexType y;
 };
 
 using Grid = std::vector<std::vector<std::byte>>;

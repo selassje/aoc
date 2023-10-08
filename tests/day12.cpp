@@ -29,11 +29,11 @@ readInput(const std::string_view path)
       auto c = line[x];
       if (c == 'S') {
         input.startPosition = { x, y };
-        c = 's';
+        c = 'a';
       }
       if (c == 'E') {
         input.finalPosition = { x, y };
-        c = 'e';
+        c = 'z';
       }
       row[x] = c;
     }
@@ -46,6 +46,14 @@ readInput(const std::string_view path)
 TEST_CASE("Day12 Example", "[Day12]")
 {
   const auto input = readInput(inputs::day12::EXAMPLE);
+  const auto& [part_1, part_2] = aoc22::day12::solve(input);
+  REQUIRE(part_1 == 31);
+  REQUIRE(part_2 == 31);
+}
+
+TEST_CASE("Day12 Input", "[Day12]")
+{
+  const auto input = readInput(inputs::day12::INPUT);
   const auto& [part_1, part_2] = aoc22::day12::solve(input);
   REQUIRE(part_1 == 31);
   REQUIRE(part_2 == 31);

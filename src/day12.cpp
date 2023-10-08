@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <queue>
+#include <ranges>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -41,6 +42,7 @@ solve(const Input& input)
 
   auto getNeighbours = [&](const auto& position) {
     std::vector<Position> neighbours{};
+    neighbours.reserve(4);
     const auto& [x, y] = position;
     if (x > 0) {
       neighbours.emplace_back(Position{ x - 1, y });
@@ -66,7 +68,10 @@ solve(const Input& input)
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
       if (isStepPossible(position, neighbour) &&
-          !visitedPositions.contains(neighbour)) {
+          !(visitedPositions.contains(neighbour) ||
+            std::ranges::find(toBeVisitedPositions._Get_container(),
+                              neighbour) !=
+              toBeVisitedPositions._Get_container().end())) {
         const auto canidateLength = distances[position] + 1;
         if (canidateLength < distances[neighbour]) {
           distances[neighbour] = canidateLength;

@@ -14,7 +14,7 @@ if(ENABLE_FUZZ_TESTS)
     foreach(TGT IN LISTS TGTS)
       setup_std_lib(${TGT})
     endforeach() 
-    get_property(SUBDIRS DIRECTORY "${DIR}" PROPERTY SUBDIRECTORIES)
+   get_property(SUBDIRS DIRECTORY "${DIR}" PROPERTY SUBDIRECTORIES)
     foreach(SUBDIR IN LISTS SUBDIRS)
       setup_std_lib_for_targets("${SUBDIR}")
     endforeach()
@@ -25,7 +25,7 @@ if(ENABLE_FUZZ_TESTS)
 
 endif()
 
-foreach(i RANGE 1 11)
+foreach(i RANGE 1 12)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)

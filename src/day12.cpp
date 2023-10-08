@@ -1,5 +1,6 @@
 #include "day12.hpp"
 
+#include <algorithm>
 #include <limits>
 #include <queue>
 #include <ranges>
@@ -79,11 +80,22 @@ solve(const Input& input)
         toBeVisitedPositions.push(neighbour);
       }
     }
+
     visitedPositions.insert(position);
     toBeVisitedPositions.pop();
   }
 
-  return { distances[input.finalPosition], distances[input.finalPosition] };
+  auto positionsA = distances | std::views::filter([&grid](auto& position) {
+                      return grid[position.first.y][position.first.x] == 'a';
+                    });
+
+  const auto part2 = std::ranges::min_element(
+                       positionsA,
+                       std::ranges::less{},
+                       [](const auto& distance) { return distance.second; })
+                       ->second;
+
+  return { distances[input.finalPosition], part2 };
 }
 
 };

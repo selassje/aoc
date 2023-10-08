@@ -35,7 +35,7 @@ solve(const Input& input)
     for (IndexType x = 0; x < width; ++x) {
       const auto position = Position{ x, y };
       auto& distance = distances[position];
-      if (input.startPosition != position) {
+      if (input.finalPosition != position) {
         distance = maxDistance;
       }
     }
@@ -64,11 +64,11 @@ solve(const Input& input)
     return grid[src.y][src.x] + 1 >= grid[dst.y][dst.x];
   };
 
-  toBeVisitedPositions.push(input.startPosition);
+  toBeVisitedPositions.push(input.finalPosition);
   while (!toBeVisitedPositions.empty()) {
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
-      if (isStepPossible(position, neighbour) &&
+      if (isStepPossible(neighbour, position) &&
           !(visitedPositions.contains(neighbour) ||
             std::ranges::find(toBeVisitedPositions._Get_container(),
                               neighbour) !=
@@ -95,7 +95,7 @@ solve(const Input& input)
                        [](const auto& distance) { return distance.second; })
                        ->second;
 
-  return { distances[input.finalPosition], part2 };
+  return { distances[input.startPosition], part2 };
 }
 
 };

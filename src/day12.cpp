@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <unordered_set>
 
-
 template<>
 struct std::hash<aoc22::day12::Position>
 {
@@ -67,15 +66,19 @@ solve(const Input& input)
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
       if (isStepPossible(position, neighbour) &&
-          visitedPositions.contains(neighbour)) {
+          !visitedPositions.contains(neighbour)) {
+        const auto canidateLength = distances[position] + 1;
+        if (canidateLength < distances[neighbour]) {
+          distances[neighbour] = canidateLength;
+        }
+        toBeVisitedPositions.push(neighbour);
       }
     }
-
     visitedPositions.insert(position);
     toBeVisitedPositions.pop();
   }
 
-  return { distances[input.finalPosition], input.grid.size() };
+  return { distances[input.finalPosition], distances[input.finalPosition] };
 }
 
 };

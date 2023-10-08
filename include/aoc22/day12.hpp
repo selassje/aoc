@@ -17,7 +17,7 @@ struct Position
   IndexType y;
 };
 
-using Grid = std::vector<std::vector<std::byte>>;
+using Grid = std::vector<std::vector<char>>;
 
 struct Input
 {

@@ -24,7 +24,7 @@ readInput(const std::string_view path)
 
   IndexType y = 0;
   while (std::getline(ifs, line)) {
-    std::vector<std::byte> row(line.size(), std::byte{0});
+    std::vector<char> row(line.size(), -1);
     for (IndexType x = 0; x < line.size(); ++x) {
       auto c = line[x];
       if (c == 'S') {
@@ -35,9 +35,10 @@ readInput(const std::string_view path)
         input.finalPosition = { x, y };
         c = 'e';
       }
-      row[x] = static_cast<std::byte>(c - 'a');
+      row[x] = c;
     }
     input.grid.push_back(row);
+    ++y;
   }
   return input;
 }

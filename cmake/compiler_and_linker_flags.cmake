@@ -1,7 +1,7 @@
 
 function(setup_compiler_warnings TARGET)
   if (MSVC)
-    target_compile_options(${TARGET} PRIVATE /W4 /WX /external:anglebrackets /external:W0 /permissive /wd4868 /wd5045 /wd4324)
+    target_compile_options(${TARGET} PRIVATE /W4 /WX /external:anglebrackets /external:W0 /permissive- /wd4868 /wd5045 /wd4324)
   else()
     target_compile_options(${TARGET} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor -Wold-style-cast
                             -Wcast-align -Wunused -Woverloaded-virtual -Wconversion -Wsign-conversion -Wmisleading-indentation 

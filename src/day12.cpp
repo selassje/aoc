@@ -1,8 +1,8 @@
 #include "day12.hpp"
 
 #include <algorithm>
+#include <deque>
 #include <limits>
-#include <queue>
 #include <ranges>
 #include <unordered_map>
 #include <unordered_set>
@@ -28,7 +28,7 @@ solve(const Input& input)
   const auto maxDistance = std::numeric_limits<decltype(Result::Part1)>::max();
 
   std::unordered_set<Position> visitedPositions{};
-  std::queue<Position> toBeVisitedPositions{};
+  std::deque<Position> toBeVisitedPositions{};
   std::unordered_map<Position, std::size_t> distances{};
 
   for (IndexType y = 0; y < height; ++y) {
@@ -64,30 +64,30 @@ solve(const Input& input)
     return grid[src.y][src.x] + 1 >= grid[dst.y][dst.x];
   };
 
-  toBeVisitedPositions.push(input.finalPosition);
+  toBeVisitedPositions.push_back(input.finalPosition);
   while (!toBeVisitedPositions.empty()) {
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
       if (isStepPossible(neighbour, position) &&
           !(visitedPositions.contains(neighbour) ||
-            std::ranges::find(toBeVisitedPositions._Get_container(),
-                              neighbour) !=
-              toBeVisitedPositions._Get_container().end())) {
+            std::ranges::find(toBeVisitedPositions, neighbour) !=
+              toBeVisitedPositions.end())) {
         const auto canidateLength = distances[position] + 1;
         if (canidateLength < distances[neighbour]) {
           distances[neighbour] = canidateLength;
         }
-        toBeVisitedPositions.push(neighbour);
+        toBeVisitedPositions.push_back(neighbour);
       }
     }
 
     visitedPositions.insert(position);
-    toBeVisitedPositions.pop();
+    toBeVisitedPositions.pop_front();
   }
 
-  auto positionsA = distances | std::views::filter([&grid](auto& position) {
-                      return grid[position.first.y][position.first.x] == 'a';
-                    });
+  auto positionsA =
+    distances | std::views::filter([&grid](const auto& position) {
+      return grid[position.first.y][position.first.x] == 'a';
+    });
 
   const auto part2 = std::ranges::min_element(
                        positionsA,

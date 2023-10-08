@@ -15,6 +15,7 @@ struct Position
 {
   IndexType x;
   IndexType y;
+  std::strong_ordering operator<=>(const Position&) const = default;
 };
 
 using Grid = std::vector<std::vector<char>>;
@@ -28,8 +29,8 @@ struct Input
 
 struct Result
 {
-  std::uint64_t Part1;
-  std::uint64_t Part2;
+  std::size_t Part1;
+  std::size_t Part2;
 };
 
 Result

@@ -24,7 +24,6 @@ jobs:
            cxx: cl.exe
     runs-on: ${{ matrix.os }}
     env:
-      LLVM_VER: ${{matrix.os == 'ubuntu-latest' && '17' || '17.0.1' }}
       CXX: ${{ matrix.cxx }}
     steps:
       - name: Checkout

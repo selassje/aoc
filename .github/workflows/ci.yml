@@ -6,6 +6,9 @@ env:
   NINJA_VER: 1.11.1
   GCC_VER: 13
   MVSC_VER: 14.37
+  CMAKE_VER: 3.27.3
+  LLVM_VER_UBUNTU: 17
+  LLVM_VER_WIN: 17.0.1
 
 jobs:
   build_and_test:
@@ -28,6 +31,10 @@ jobs:
         uses: actions/checkout@v3
         with: 
           submodules: true
+      - name: Setup cmake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: ${{env.CMAKE_VER}}
       - name: Set up GCC
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -44,31 +51,26 @@ jobs:
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh $LLVM_VER all
+          sudo ./llvm.sh $LLVM_VER_UBUNTU all
           sudo update-alternatives --remove-all clang++
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy
           sudo update-alternatives --remove-all clang-format
           sudo update-alternatives \
-            --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER 50 \
-            --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER \
-            --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER \
-            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER
+            --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER_UBUNTU 50 \
+            --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER_UBUNTU \
+            --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER_UBUNTU \
+            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER_UBUNTU
         if: ${{ matrix.os == 'ubuntu-latest'}}
       - name: Install LLVM Windows
-        run: choco install llvm --version=$env:LLVM_VER 
+        run: choco install llvm --version=$env:LLVM_VER_WIN 
         if: ${{ matrix.os == 'windows-latest'}}
       - name: Update MSVC 
         run: |
           Invoke-WebRequest -URI https://aka.ms/vs/17/release/vs_buildtools.exe -OutFile vs_buildtools.exe
           $process = Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "$pwd\VSBuildTools", "--passive", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
           Write-Output $process.ExitCode 
-          .\VSBuildTools\VC\Auxiliary\Build\vcvars64.bat
         if: ${{ matrix.cxx == 'cl.exe'}}
-      - name: CMake version
-        run:  cmake --version
-      - name: Clang format version
-        run:  clang-format --version
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:

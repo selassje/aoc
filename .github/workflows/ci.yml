@@ -31,10 +31,12 @@ jobs:
         uses: actions/checkout@v3
         with: 
           submodules: true
-      - name: Setup cmake
+      - name: Setup CMake
         uses: jwlawson/actions-setup-cmake@v1.13
         with:
           cmake-version: ${{env.CMAKE_VER}}
+      - name: CMake version
+        run: cmake --version
       - name: Set up GCC
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test

@@ -3,11 +3,13 @@ file(GLOB_RECURSE
      *.cpp *.hpp *.hpp.in
      )
 
-message("Sources to check " ${ALL_CXX_SOURCE_FILES})
+#message("Sources to check " ${ALL_CXX_SOURCE_FILES})
 
 get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)
 
-list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX ${BINARY_DIR_NAME})
+message("Bin dir regex " ${BINARY_DIR_NAME})
+
+#list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX ${BINARY_DIR_NAME})
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX CMakeCXXCompilerId.cpp)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX inputs.hpp)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX Catch2)

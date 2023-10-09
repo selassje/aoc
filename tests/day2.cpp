@@ -86,7 +86,7 @@ fuzzTest(const FuzzInput& input)
   try {
     aoc22::day2::solve(realInput);
   } catch (std::exception&) {
-    std::cout <<"Aoc22::Day2 FuzzTest : exception caught\n";
+    std::cout << "Aoc22::Day2 FuzzTest : exception caught\n";
   }
 }
 

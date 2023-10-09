@@ -23,7 +23,7 @@ struct alignas(32) Directory
   std::string name;
 };
 
-struct File //NOLINT 
+struct File // NOLINT
 {
   std::string name;
   std::size_t size;

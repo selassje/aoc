@@ -134,7 +134,7 @@ solve(const Input& input)
   std::size_t i = 0;
   for (; i < input.size(); ++i) {
     const auto& record = input[i];
-    switch (record.index()) { //NOLINT
+    switch (record.index()) { // NOLINT
       case 0: {
         const auto cd = std::get<ChangeDirectory>(record);
         ft.changeDirectory(cd.directory);

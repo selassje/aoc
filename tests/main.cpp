@@ -1,8 +1,8 @@
 #include <catch2/catch_session.hpp>
 
 #ifdef ENABLE_FUZZ_TESTS
-#include <gtest/gtest.h>
 #include <fuzztest/init_fuzztest.h>
+#include <gtest/gtest.h>
 #endif
 
 int

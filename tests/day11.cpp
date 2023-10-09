@@ -141,7 +141,7 @@ fuzzTest(const InputFuzzTest& inputFuzzTest)
   }
   try {
     aoc22::day11::solve(input);
-  } catch (...) { //NOLINT
+  } catch (...) { // NOLINT
   }
 }
 

@@ -17,7 +17,10 @@ namespace aoc22::day11 {
 struct ExceptionBase : std::exception
 {
   std::string message;
-  [[nodiscard]] const char* what() const noexcept override { return message.c_str(); }
+  [[nodiscard]] const char* what() const noexcept override
+  {
+    return message.c_str();
+  }
   explicit ExceptionBase(std::string message_)
     : message(std::move(message_))
   {

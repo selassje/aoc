@@ -4,6 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <exception>
 #include <fstream>
 #include <string>
 #include <string_view>
@@ -56,3 +57,20 @@ TEST_CASE("Day12 Input", "[Day12]")
   REQUIRE(part_1 == 370);
   REQUIRE(part_2 == 363);
 }
+
+#ifdef ENABLE_FUZZ_TESTS
+#include <fuzztest/fuzztest.h>
+
+void
+fuzzTest(const Input& input)
+{
+  try {
+  aoc22::day12::solve(input);
+  } catch (const std::exception &e) { //NOLINT
+
+  }
+}
+
+FUZZ_TEST(Day12FuzzTest, fuzzTest);
+
+#endif

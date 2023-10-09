@@ -3,13 +3,16 @@
 #include <algorithm>
 #include <cstddef>
 #include <deque>
+#include <exception>
+#include <format>
 #include <functional>
 #include <limits>
 #include <ranges>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
-
 
 template<>
 struct std::hash<aoc22::day12::Position>
@@ -26,16 +29,105 @@ struct std::hash<aoc22::day12::Position>
 
 namespace aoc22::day12 {
 
+struct Exception : std::exception
+{
+  std::string message;
+  [[nodiscard]] const char* what() const noexcept override
+  {
+    return message.c_str();
+  }
+  explicit Exception(std::string message_)
+    : message(std::move(message_))
+  {
+  }
+};
+void
+veryfiInput(const Input& input)
+{
+  const auto& grid = input.grid;
+  static const char* const prefix = "Aoc22::day12::solve";
+
+  const auto height = grid.size();
+  if (height == 0) {
+    throw Exception{ std::format("{} Grid height is 0 ", prefix) };
+  }
+
+  const auto width = grid[0].size();
+  if (width == 0) {
+    throw Exception{ std::format("{} Grid width is 0 ", prefix) };
+  }
+
+  for (std::size_t i = 0; i < height; ++i) {
+    if (grid[i].size() != width)
+      throw Exception{ std::format(
+        "{} Grid is ill formed : Row 0 has size {} but row {} has size {} ",
+        prefix,
+        width,
+        i,
+        grid[i].size()) };
+
+    for (std::size_t j = 0; j < width; ++j) {
+      if (grid[i][j] < 'a' || grid[i][j] > 'z') {
+        throw Exception{ std::format(
+          "{} Grid is ill formed : Value {} at ({},{}) is outside "
+          "of the valid range ('a' - 'z') ",
+          prefix,
+          grid[i][j],
+          j,
+          i) };
+      }
+    }
+
+    if ( input.startPosition.x >= width || input.startPosition.y >= height) {
+       throw Exception{ std::format(
+          "{} Input is ill formed : Start position ({},{}) is outside of the grid ( {} x  {}) ",
+          prefix,
+          input.startPosition.x,
+          input.startPosition.y,
+          width,
+          height)};
+    }
+    const auto valueAtStart = grid[input.startPosition.y][input.startPosition.x];
+
+    if ( valueAtStart != 'a') {
+       throw Exception{ std::format(
+          "{} Input is ill formed : Value at {} start position ({},{}) should be 'a'",
+          prefix,
+          input.startPosition.x,
+          input.startPosition.y,
+          valueAtStart)};
+    }
+    
+    if ( input.finalPosition.x >= width || input.finalPosition.y >= height) {
+       throw Exception{ std::format(
+          "{} Input is ill formed : Final position ({},{}) is outside of the grid ( {} x  {}) ",
+          prefix,
+          input.finalPosition.x,
+          input.finalPosition.y,
+          width,
+          height)};
+    }
+    const auto valueAtEnd = grid[input.finalPosition.y][input.finalPosition.x];
+    if ( valueAtEnd != 'z') {
+       throw Exception{ std::format(
+          "{} Input is ill formed : Value at {} final position ({},{}) should be 'z'",
+          prefix,
+          input.finalPosition.x,
+          input.finalPosition.y,
+          valueAtEnd)};
+    }
+
+  }
+}
+
 bool
-operator==(const Position& positionA,
-           const Position& positionB) noexcept
+operator==(const Position& positionA, const Position& positionB) noexcept
 {
   return positionA.x == positionB.x && positionA.y == positionB.y; // NOLINT
 }
 
 bool
-operator!=(const Position& positionA,
-           const Position& positionB) noexcept
+operator!=(const Position& positionA, const Position& positionB) noexcept
 {
   return !(positionA == positionB);
 }
@@ -43,6 +135,8 @@ operator!=(const Position& positionA,
 Result
 solve(const Input& input)
 {
+  veryfiInput(input);
+
   const auto& grid = input.grid;
   const auto height = grid.size();
   const auto width = grid[0].size();
@@ -54,7 +148,7 @@ solve(const Input& input)
 
   for (IndexType y = 0; y < height; ++y) {
     for (IndexType x = 0; x < width; ++x) {
-      const auto position = Position{x, y};
+      const auto position = Position{ x, y };
       auto& distance = distances[position];
       if (input.finalPosition != position) {
         distance = maxDistance;
@@ -65,7 +159,7 @@ solve(const Input& input)
   auto getNeighbours = [&](const auto& position) {
     std::vector<Position> neighbours{};
     neighbours.reserve(4);
-    const auto &[x,y] = position;
+    const auto& [x, y] = position;
 
     if (x > 0) {
       neighbours.emplace_back(x - 1, y);
@@ -117,8 +211,6 @@ solve(const Input& input)
                        [](const auto& distance) { return distance.second; })
                        ->second;
 
-  return { distances[input.startPosition],
-           part2 };
+  return { distances[input.startPosition], part2 };
 }
-
 };

@@ -1,8 +1,8 @@
 file(GLOB
      ALL_CXX_SOURCE_FILES
-     src/*.cpp
-     include/aoc22/*.hpp
-     tests/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/include/aoc22/*.hpp
+     ${CMAKE_SOURCE_DIR}/tests/*.cpp
      )
 
 get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)

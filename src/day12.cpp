@@ -10,20 +10,11 @@
 #include <unordered_set>
 #include <vector>
 
-namespace aoc22::day12 {
-struct PositionInternal : Position
-{
-  PositionInternal(IndexType x_, IndexType y_)
-    : Position{ x_, y_ } {};
-  explicit PositionInternal(const Position& position)
-    : Position(position){};
-};
 
-}
 template<>
-struct std::hash<aoc22::day12::PositionInternal>
+struct std::hash<aoc22::day12::Position>
 {
-  std::size_t operator()(const aoc22::day12::PositionInternal p) const noexcept
+  std::size_t operator()(const aoc22::day12::Position p) const noexcept
   {
     static_assert(2 * sizeof(aoc22::day12::IndexType) == sizeof(std::size_t));
 
@@ -36,15 +27,15 @@ struct std::hash<aoc22::day12::PositionInternal>
 namespace aoc22::day12 {
 
 bool
-operator==(const PositionInternal& positionA,
-           const PositionInternal& positionB) noexcept
+operator==(const Position& positionA,
+           const Position& positionB) noexcept
 {
   return positionA.x == positionB.x && positionA.y == positionB.y; // NOLINT
 }
 
 bool
-operator!=(const PositionInternal& positionA,
-           const PositionInternal& positionB) noexcept
+operator!=(const Position& positionA,
+           const Position& positionB) noexcept
 {
   return !(positionA == positionB);
 }
@@ -57,25 +48,24 @@ solve(const Input& input)
   const auto width = grid[0].size();
   const auto maxDistance = std::numeric_limits<decltype(Result::part1)>::max();
 
-  std::unordered_set<PositionInternal> visitedPositions{};
-  std::deque<PositionInternal> toBeVisitedPositions{};
-  std::unordered_map<PositionInternal, std::size_t> distances{};
+  std::unordered_set<Position> visitedPositions{};
+  std::deque<Position> toBeVisitedPositions{};
+  std::unordered_map<Position, std::size_t> distances{};
 
   for (IndexType y = 0; y < height; ++y) {
     for (IndexType x = 0; x < width; ++x) {
-      const auto position = PositionInternal(x, y);
+      const auto position = Position{x, y};
       auto& distance = distances[position];
-      if (static_cast<PositionInternal>(input.finalPosition) != position) {
+      if (input.finalPosition != position) {
         distance = maxDistance;
       }
     }
   }
 
   auto getNeighbours = [&](const auto& position) {
-    std::vector<PositionInternal> neighbours{};
+    std::vector<Position> neighbours{};
     neighbours.reserve(4);
-    const auto x = position.x;
-    const auto y = position.y;
+    const auto &[x,y] = position;
 
     if (x > 0) {
       neighbours.emplace_back(x - 1, y);
@@ -96,8 +86,7 @@ solve(const Input& input)
     return grid[src.y][src.x] + 1 >= grid[dst.y][dst.x];
   };
 
-  toBeVisitedPositions.push_back(
-    static_cast<PositionInternal>(input.finalPosition));
+  toBeVisitedPositions.push_back(input.finalPosition);
   while (!toBeVisitedPositions.empty()) {
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
@@ -128,7 +117,7 @@ solve(const Input& input)
                        [](const auto& distance) { return distance.second; })
                        ->second;
 
-  return { distances[static_cast<PositionInternal>(input.startPosition)],
+  return { distances[input.startPosition],
            part2 };
 }
 

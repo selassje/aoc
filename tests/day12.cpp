@@ -4,7 +4,6 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <exception>
 #include <fstream>
 #include <string>
 #include <string_view>
@@ -59,6 +58,7 @@ TEST_CASE("Day12 Input", "[Day12]")
 }
 
 #ifdef ENABLE_FUZZ_TESTS
+#include <exception>
 #include <fuzztest/fuzztest.h>
 
 void

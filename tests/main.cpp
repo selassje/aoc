@@ -1,7 +1,7 @@
 #include <catch2/catch_session.hpp>
 
 #ifdef ENABLE_FUZZ_TESTS
-#include <fuzztest/init_fuzztest.h>
+#include <fuzztest/init_fuzztest.h> //NOLINT
 #include <gtest/gtest.h>
 #endif
 

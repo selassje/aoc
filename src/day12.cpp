@@ -101,9 +101,9 @@ solve(const Input& input)
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getNeighbours(position)) {
       if (isStepPossible(neighbour, position) &&
-          !((visitedPositions.contains(neighbour) ||
+          !(visitedPositions.contains(neighbour) ||
             std::ranges::find(toBeVisitedPositions, neighbour) !=
-              toBeVisitedPositions.end()))) {
+              toBeVisitedPositions.end())) {
         const auto canidateLength = distances[position] + 1;
         if (canidateLength < distances[neighbour]) {
           distances[neighbour] = canidateLength;

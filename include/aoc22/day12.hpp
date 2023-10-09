@@ -28,12 +28,12 @@ struct Input
 
 struct Result
 {
-  std::size_t Part1;
-  std::size_t Part2;
+  std::size_t part1;
+  std::size_t part2;
 };
 
 Result
-solve(const Input& grid);
+solve(const Input& input);
 
 };
 

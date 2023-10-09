@@ -1,12 +1,14 @@
 #include "day12.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <deque>
 #include <functional>
 #include <limits>
 #include <ranges>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 namespace aoc22::day12 {
 struct PositionInternal : Position
@@ -37,7 +39,7 @@ bool
 operator==(const PositionInternal& positionA,
            const PositionInternal& positionB) noexcept
 {
-  return positionA.x  == positionB.x && positionA.y == positionB.y;
+  return positionA.x == positionB.x && positionA.y == positionB.y; // NOLINT
 }
 
 bool
@@ -53,7 +55,7 @@ solve(const Input& input)
   const auto& grid = input.grid;
   const auto height = grid.size();
   const auto width = grid[0].size();
-  const auto maxDistance = std::numeric_limits<decltype(Result::Part1)>::max();
+  const auto maxDistance = std::numeric_limits<decltype(Result::part1)>::max();
 
   std::unordered_set<PositionInternal> visitedPositions{};
   std::deque<PositionInternal> toBeVisitedPositions{};

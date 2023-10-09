@@ -4,10 +4,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <algorithm>
 #include <fstream>
-#include <iterator>
-#include <sstream>
+#include <string>
 #include <string_view>
 #include <vector>
 

@@ -97,7 +97,8 @@
         "rhs": "Linux"
       },
       "environment": {
-        "CXX": "g++"
+        "CXX": "g++",
+        "CC": "gcc"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },
@@ -148,7 +149,8 @@
         "rhs": "Windows"
       },
       "environment": {
-        "CXX": "cl.exe"
+        "CXX": "cl.exe",
+        "CC": "cl.exe"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
     }

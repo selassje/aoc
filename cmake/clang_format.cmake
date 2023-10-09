@@ -3,6 +3,8 @@ file(GLOB_RECURSE
      *.cpp *.hpp *.hpp.in
      )
 
+message("Sources to check " ${ALL_CXX_SOURCE_FILES})
+
 get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)
 
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX ${BINARY_DIR_NAME})
@@ -12,7 +14,10 @@ list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX Catch2)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX fuzztest)
 
 
-message("Sources to check " ${ALL_CXX_SOURCE_FILES})
+if ( "${ALL_CXX_SOURCE_FILES}" STREQUAL "")
+  message(SEND_ERROR "No files to format")
+endif()
+
 
 find_program(CLANG_FORMAT "clang-format")
 

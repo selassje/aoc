@@ -13,8 +13,8 @@
 namespace aoc22::day12 {
 struct PositionInternal : Position
 {
-  PositionInternal(IndexType x, IndexType y)
-    : Position{ x, y } {};
+  PositionInternal(IndexType x_, IndexType y_)
+    : Position{ x_, y_ } {};
   explicit PositionInternal(const Position& position)
     : Position(position){};
 };

@@ -23,8 +23,10 @@ struct std::hash<aoc22::day12::PositionInternal>
 {
   std::size_t operator()(const aoc22::day12::PositionInternal p) const noexcept
   {
+    static_assert(2 * sizeof(aoc22::day12::IndexType) == sizeof(std::size_t));
+
     const std::size_t highY = static_cast<std::size_t>(p.y)
-                              << sizeof(aoc22::day12::IndexType);
+                              << 8 * sizeof(aoc22::day12::IndexType);
     return p.x + highY;
   }
 };
@@ -35,10 +37,7 @@ bool
 operator==(const PositionInternal& positionA,
            const PositionInternal& positionB) noexcept
 {
-  std::hash<aoc22::day12::PositionInternal> myHash{};
-  const auto positionAHash = myHash(positionA);
-  const auto positionBHash = myHash(positionB);
-  return positionAHash == positionBHash;
+  return positionA.x  == positionB.x && positionA.y == positionB.y;
 }
 
 bool

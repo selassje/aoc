@@ -1,25 +1,15 @@
-file(GLOB_RECURSE
+file(GLOB
      ALL_CXX_SOURCE_FILES
-     *.cpp *.hpp *.hpp.in
+     src/*.cpp
+     include/aoc22/*.hpp
+     tests/*.cpp
      )
 
-#message("Sources to check " ${ALL_CXX_SOURCE_FILES})
-
 get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)
-
-message("Bin dir regex " ${BINARY_DIR_NAME})
-
-#list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX ${BINARY_DIR_NAME})
-list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX CMakeCXXCompilerId.cpp)
-list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX inputs.hpp)
-list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX Catch2)
-list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX fuzztest)
-
 
 if ( "${ALL_CXX_SOURCE_FILES}" STREQUAL "")
   message(SEND_ERROR "No files to format")
 endif()
-
 
 find_program(CLANG_FORMAT "clang-format")
 

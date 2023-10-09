@@ -15,7 +15,6 @@ struct Position
 {
   IndexType x;
   IndexType y;
-  std::strong_ordering operator<=>(const Position&) const = default;
 };
 
 using Grid = std::vector<std::vector<char>>;

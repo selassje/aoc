@@ -11,6 +11,9 @@ list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX inputs.hpp)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX Catch2)
 list(FILTER ALL_CXX_SOURCE_FILES EXCLUDE REGEX fuzztest)
 
+
+message("Sources to check " ${ALL_CXX_SOURCE_FILES})
+
 find_program(CLANG_FORMAT "clang-format")
 
 if(CLANG_FORMAT)

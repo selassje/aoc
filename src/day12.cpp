@@ -58,14 +58,14 @@ veryfiInput(const Input& input)
   }
 
   for (std::size_t i = 0; i < height; ++i) {
-    if (grid[i].size() != width)
+    if (grid[i].size() != width) {
       throw Exception{ std::format(
         "{} Grid is ill formed : Row 0 has size {} but row {} has size {} ",
         prefix,
         width,
         i,
         grid[i].size()) };
-
+    }
     for (std::size_t j = 0; j < width; ++j) {
       if (grid[i][j] < 'a' || grid[i][j] > 'z') {
         throw Exception{ std::format(
@@ -77,46 +77,46 @@ veryfiInput(const Input& input)
           i) };
       }
     }
+  }
+  if (input.startPosition.x >= width || input.startPosition.y >= height) {
+    throw Exception{ std::format(
+      "{} Input is ill formed : Start position ({},{}) is outside of the "
+      "grid ( {} x  {}) ",
+      prefix,
+      input.startPosition.x,
+      input.startPosition.y,
+      width,
+      height) };
+  }
+  const auto valueAtStart = grid[input.startPosition.y][input.startPosition.x];
 
-    if ( input.startPosition.x >= width || input.startPosition.y >= height) {
-       throw Exception{ std::format(
-          "{} Input is ill formed : Start position ({},{}) is outside of the grid ( {} x  {}) ",
-          prefix,
-          input.startPosition.x,
-          input.startPosition.y,
-          width,
-          height)};
-    }
-    const auto valueAtStart = grid[input.startPosition.y][input.startPosition.x];
+  if (valueAtStart != 'a') {
+    throw Exception{ std::format("{} Input is ill formed : Value at {} start "
+                                 "position ({},{}) should be 'a'",
+                                 prefix,
+                                 input.startPosition.x,
+                                 input.startPosition.y,
+                                 valueAtStart) };
+  }
 
-    if ( valueAtStart != 'a') {
-       throw Exception{ std::format(
-          "{} Input is ill formed : Value at {} start position ({},{}) should be 'a'",
-          prefix,
-          input.startPosition.x,
-          input.startPosition.y,
-          valueAtStart)};
-    }
-    
-    if ( input.finalPosition.x >= width || input.finalPosition.y >= height) {
-       throw Exception{ std::format(
-          "{} Input is ill formed : Final position ({},{}) is outside of the grid ( {} x  {}) ",
-          prefix,
-          input.finalPosition.x,
-          input.finalPosition.y,
-          width,
-          height)};
-    }
-    const auto valueAtEnd = grid[input.finalPosition.y][input.finalPosition.x];
-    if ( valueAtEnd != 'z') {
-       throw Exception{ std::format(
-          "{} Input is ill formed : Value at {} final position ({},{}) should be 'z'",
-          prefix,
-          input.finalPosition.x,
-          input.finalPosition.y,
-          valueAtEnd)};
-    }
-
+  if (input.finalPosition.x >= width || input.finalPosition.y >= height) {
+    throw Exception{ std::format(
+      "{} Input is ill formed : Final position ({},{}) is outside of the "
+      "grid ( {} x  {}) ",
+      prefix,
+      input.finalPosition.x,
+      input.finalPosition.y,
+      width,
+      height) };
+  }
+  const auto valueAtEnd = grid[input.finalPosition.y][input.finalPosition.x];
+  if (valueAtEnd != 'z') {
+    throw Exception{ std::format("{} Input is ill formed : Value at {} final "
+                                 "position ({},{}) should be 'z'",
+                                 prefix,
+                                 input.finalPosition.x,
+                                 input.finalPosition.y,
+                                 valueAtEnd) };
   }
 }
 

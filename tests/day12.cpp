@@ -65,9 +65,8 @@ void
 fuzzTest(const Input& input)
 {
   try {
-  aoc22::day12::solve(input);
-  } catch (const std::exception &e) { //NOLINT
-
+    aoc22::day12::solve(input);
+  } catch (const std::exception& e) { // NOLINT
   }
 }
 

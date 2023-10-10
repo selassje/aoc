@@ -43,7 +43,7 @@ solve(const Grid& grid)
         return { -1, 0, 0, w };
       case Down:
         return { 1, 0, height - 1, w };
-    };
+    }
     return {};
   };
   // clang-format on

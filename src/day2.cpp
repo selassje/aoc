@@ -87,7 +87,7 @@ nextMove(Move oponent, Outcome desiredOutcome)
       }
       [[fallthrough]];
     default:
-      throw std::exception{};
+      throw ExceptionBase{ "nextMove" };
   }
 }
 
@@ -102,9 +102,7 @@ convertMoveToDesiredOutcome(const Move move)
     case Sciscors:
       return Win;
     default:
-      throw std::exception{
-
-      };
+      throw ExceptionBase{ "convertMoveToDesiredOutcome" };
   }
 };
 };

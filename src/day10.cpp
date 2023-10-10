@@ -39,16 +39,10 @@ solve(const Input& input)
     std::size_t addedCycles = noopCycles;
     std::int64_t addedX = 0;
 
-    const auto& instruction = input[i];
-    switch (instruction.index()) {
-      case 0: {
-        const auto& addX = std::get<AddX>(instruction);
-        addedCycles = addXCycles;
-        addedX = addX.x;
-      } break;
-      case 1:
-      default:
-        break;
+    if (input[i].index() == 0) {
+      const auto& addX = std::get<AddX>(input[i]);
+      addedCycles = addXCycles;
+      addedX = addX.x;
     }
 
     if (cyclesToNextSignalCycle == 0) {

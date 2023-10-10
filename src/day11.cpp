@@ -83,31 +83,37 @@ struct InputErrorNextMonkeyTestPass : ExceptionBase
   }
 };
 
-template<int ROUNDS, int DIVIDE_NEW_LEVEL>
-std::uint64_t
-solveInternal(const Input& input)
+void
+verifyInput(const Input& input)
 {
   if (input.size() < 2) {
     throw InputErrorTooFewMonkeys{ input.size() };
   }
-  {
-    for (std::size_t i = 0; i < input.size(); ++i) {
-      if (input[i].nextMonkeyTestFail >= input.size()) {
-        throw InputErrorNextMonkeyTestFail{ i,
-                                            input[i].nextMonkeyTestFail,
-                                            input.size() };
-      }
-      if (input[i].nextMonkeyTestPass >= input.size()) {
-        throw InputErrorNextMonkeyTestPass{ i,
-                                            input[i].nextMonkeyTestPass,
-                                            input.size() };
-      }
 
-      if (input[i].divisionTest == 0) {
-        throw InputErrorDivisionTest{ i };
-      }
+  for (std::size_t i = 0; i < input.size(); ++i) {
+    if (input[i].nextMonkeyTestFail >= input.size()) {
+      throw InputErrorNextMonkeyTestFail{ i,
+                                          input[i].nextMonkeyTestFail,
+                                          input.size() };
+    }
+    if (input[i].nextMonkeyTestPass >= input.size()) {
+      throw InputErrorNextMonkeyTestPass{ i,
+                                          input[i].nextMonkeyTestPass,
+                                          input.size() };
+    }
+
+    if (input[i].divisionTest == 0) {
+      throw InputErrorDivisionTest{ i };
     }
   }
+}
+
+template<int ROUNDS, int DIVIDE_NEW_LEVEL>
+std::uint64_t
+solveInternal(const Input& input)
+{
+  verifyInput(input);
+
   std::vector<std::vector<std::uint64_t>> worryLevels{};
 
   const auto modulo =

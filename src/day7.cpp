@@ -15,8 +15,7 @@
 
 namespace aoc22::day7 {
 template<typename... Ts>
-// (7)
-struct Overload : Ts...
+struct Overload : Ts... //NOLINT
 {
   using Ts::operator()...;
 };

@@ -15,6 +15,7 @@ if(ENABLE_TESTS)
     target_link_libraries(aoc22 PRIVATE Catch2)
 endif()
 
+setup_msvc_analysis(aoc22)
 setup_compiler_warnings(aoc22)
 setup_std_lib(aoc22)
 setup_clang_tidy(aoc22)

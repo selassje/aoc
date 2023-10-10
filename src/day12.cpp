@@ -120,12 +120,6 @@ veryfiInput(const Input& input)
   }
 }
 
-bool
-operator==(const Position& positionA, const Position& positionB) noexcept
-{
-  return positionA.x == positionB.x && positionA.y == positionB.y; // NOLINT
-}
-
 Result
 solve(const Input& input)
 {
@@ -178,7 +172,7 @@ solve(const Input& input)
   };
 
   auto getEligibleNeighbours =
-    [&](const auto& position) -> std::vector<Position> { //NOLINT
+    [&](const auto& position) -> std::vector<Position> { // NOLINT
     auto filtered =
       getNeighbours(position) |
       std::views::filter([&isStepPossible, &position](const auto& n) {

@@ -15,6 +15,7 @@ struct Position
 {
   IndexType x;
   IndexType y;
+  bool operator==(const Position& position) const noexcept = default;
 };
 
 using Grid = std::vector<std::vector<char>>;

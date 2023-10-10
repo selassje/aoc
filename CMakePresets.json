@@ -131,7 +131,8 @@
       "name": "dev_vs_msvc",
       "generator": "Visual Studio 17 2022",
       "cacheVariables": {
-        "ENABLE_TESTS": "ON"
+        "ENABLE_TESTS": "ON",
+        "ENABLE_MSVC_ANALYSIS":"ON"
       },
       "condition": {
        "type": "equals",
@@ -151,6 +152,9 @@
       "environment": {
         "CXX": "cl.exe",
         "CC": "cl.exe"
+      },
+      "cacheVariables": {
+        "ENABLE_MSVC_ANALYSIS":"ON"
       },
       "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
     }

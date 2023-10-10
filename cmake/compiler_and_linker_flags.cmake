@@ -1,15 +1,6 @@
 
 function(setup_compiler_warnings TARGET)
   if (MSVC)
-    set(RULESET_FILE ${CMAKE_SOURCE_DIR}/.vsAnalyze.ruleset)
-    get_filename_component(CXX_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
-    set(PLUGIN_NAME ${CXX_DIR}/EspXEngine.dll)
-
-    target_compile_definitions(aoc22 PRIVATE CODE_ANALYSIS)
-
-    set_property(
-      TARGET ${TARGET}
-      PROPERTY COMPILE_OPTIONS /analyze /analyze:ruleset${RULESET_FILE} ${ANALYZE_FLAG4} /analyze:plugin${PLUGIN_NAME})
     target_compile_options(${TARGET} PRIVATE /W4 /WX /external:anglebrackets /external:W0 /permissive- /wd4868 /wd5045 /wd4324)
   else()
     target_compile_options(${TARGET} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor -Wold-style-cast

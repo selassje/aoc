@@ -151,11 +151,17 @@ solve(const Input& input)
     }
   }
 
+  auto isStepPossible = [&](const auto& src, const auto& dst) {
+    return grid[src.y][src.x] + 1 >= grid[dst.y][dst.x] &&
+           !(visitedPositions.contains(src) ||
+             std::ranges::find(toBeVisitedPositions, src) !=
+               toBeVisitedPositions.end());
+  };
+
   auto getNeighbours = [&](const auto& position) {
     std::vector<Position> neighbours{};
     neighbours.reserve(4);
     const auto& [x, y] = position;
-
     if (x > 0) {
       neighbours.emplace_back(x - 1, y);
     }
@@ -171,24 +177,25 @@ solve(const Input& input)
     return neighbours;
   };
 
-  auto isStepPossible = [&](const auto& src, const auto& dst) {
-    return grid[src.y][src.x] + 1 >= grid[dst.y][dst.x];
+  auto getEligibleNeighbours =
+    [&](const auto& position) -> std::vector<Position> { //NOLINT
+    auto filtered =
+      getNeighbours(position) |
+      std::views::filter([&isStepPossible, &position](const auto& n) {
+        return isStepPossible(n, position);
+      });
+    return { filtered.begin(), filtered.end() };
   };
 
   toBeVisitedPositions.push_back(input.finalPosition);
   while (!toBeVisitedPositions.empty()) {
     const auto position = toBeVisitedPositions.front();
-    for (const auto& neighbour : getNeighbours(position)) {
-      if (isStepPossible(neighbour, position) &&
-          !(visitedPositions.contains(neighbour) ||
-            std::ranges::find(toBeVisitedPositions, neighbour) !=
-              toBeVisitedPositions.end())) {
-        if (const auto canidateLength = distances[position] + 1;
-            canidateLength < distances[neighbour]) {
-          distances[neighbour] = canidateLength;
-        }
-        toBeVisitedPositions.push_back(neighbour);
+    for (const auto& neighbour : getEligibleNeighbours(position)) {
+      if (const auto canidateLength = distances[position] + 1;
+          canidateLength < distances[neighbour]) {
+        distances[neighbour] = canidateLength;
       }
+      toBeVisitedPositions.push_back(neighbour);
     }
 
     visitedPositions.insert(position);

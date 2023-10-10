@@ -7,6 +7,11 @@
 #include <unordered_map>
 #include <utility>
 
+#ifdef ENABLE_TESTS
+#include <catch2/catch_test_macros.hpp>
+#include <iostream>
+#endif
+
 using enum aoc22::day2::Move;
 
 namespace aoc22::day2 {
@@ -144,9 +149,6 @@ solve(const Guide& guide)
 };
 
 #ifdef ENABLE_TESTS
-
-#include <catch2/catch_test_macros.hpp>
-#include <iostream>
 
 namespace aoc22::day2 {
 

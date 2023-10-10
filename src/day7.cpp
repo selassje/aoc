@@ -14,7 +14,12 @@
 #include <vector>
 
 namespace aoc22::day7 {
-
+template<typename... Ts>
+// (7)
+struct Overload : Ts...
+{
+  using Ts::operator()...;
+};
 class FileTree
 {
 public:
@@ -136,23 +141,16 @@ std::pair<std::size_t, std::size_t>
 solve(const Input& input)
 {
   FileTree ft{};
-  std::size_t i = 0;
-  for (; i < input.size(); ++i) {
-    const auto& record = input[i];
-    switch (record.index()) { // NOLINT
-      case 0: {
-        const auto& cd = std::get<ChangeDirectory>(record);
-        ft.changeDirectory(cd.directory);
-      } break;
-      case 2: {
-        const auto& dir = std::get<Directory>(record);
-        ft.addItem(dir);
-      } break;
-      case 3: {
-        const auto& file = std::get<File>(record);
-        ft.addItem(file);
-      } break;
-    }
+
+  auto recordHandler =
+    Overload{ [&ft](const ChangeDirectory &cd) { ft.changeDirectory(cd.directory); },
+              [&ft](const Directory &dir ) { ft.addItem(dir); },
+              [&ft](const File &file ) { ft.addItem(file); }, 
+              [](const List& ) { /*NOACTION*/ }
+    };
+
+  for (const auto &record : input) {
+   std::visit(recordHandler, record);
   }
 
   auto dirSizes = ft.getDirSizes();

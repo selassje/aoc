@@ -40,7 +40,7 @@ namespace {
 
 enum class Outcome : unsigned char
 {
-  Loss,
+  Loss = 0,
   Draw = 3,
   Win = 6,
 };
@@ -113,19 +113,19 @@ std::pair<unsigned int, unsigned int>
 solve(const Guide& guide)
 {
   for (std::size_t i = 0; i < std::size(guide); ++i) {
-    auto const& pair = guide[i];
+    auto const& [first, second] = guide[i];
     auto checkMove = [](const Move& m) {
       const auto c = static_cast<unsigned char>(m);
       static constexpr auto rock = static_cast<unsigned char>(Rock);
       static constexpr auto scissors = static_cast<unsigned char>(Sciscors);
       return c >= rock && c <= scissors;
     };
-    if (!checkMove(pair.first)) {
-      throw InputErrorMoveOutOfRange{ i, pair.first, true };
+    if (!checkMove(first)) {
+      throw InputErrorMoveOutOfRange{ i, first, true };
     }
-    if (!checkMove(pair.second)) {
-      throw InputErrorMoveOutOfRange{ i, pair.second, false };
-    };
+    if (!checkMove(second)) {
+      throw InputErrorMoveOutOfRange{ i, second, false };
+    }
   }
 
   auto evaluateRound = [](Move oponent, Move you) {
@@ -156,7 +156,7 @@ TEST_CASE("Day2 nextMove", "[Day2]")
 {
   try {
     nextMove(Rock, static_cast<Outcome>(10)); // NOLINT
-  } catch (std::exception&) {
+  } catch (ExceptionBase&) {
     std::cout << "Exception expected\n";
   }
 }
@@ -165,7 +165,7 @@ TEST_CASE("Day2 convertMoveToDesiredOutcome", "[Day2]")
 {
   try {
     convertMoveToDesiredOutcome(static_cast<Move>(10)); // NOLINT
-  } catch (std::exception&) {
+  } catch (ExceptionBase&) {
     std::cout << "Exception expected\n";
   }
 }

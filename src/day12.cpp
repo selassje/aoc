@@ -126,12 +126,6 @@ operator==(const Position& positionA, const Position& positionB) noexcept
   return positionA.x == positionB.x && positionA.y == positionB.y; // NOLINT
 }
 
-bool
-operator!=(const Position& positionA, const Position& positionB) noexcept
-{
-  return !(positionA == positionB);
-}
-
 Result
 solve(const Input& input)
 {

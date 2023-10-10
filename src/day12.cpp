@@ -189,8 +189,8 @@ solve(const Input& input)
           !(visitedPositions.contains(neighbour) ||
             std::ranges::find(toBeVisitedPositions, neighbour) !=
               toBeVisitedPositions.end())) {
-        const auto canidateLength = distances[position] + 1;
-        if (canidateLength < distances[neighbour]) {
+        if (const auto canidateLength = distances[position] + 1;
+            canidateLength < distances[neighbour]) {
           distances[neighbour] = canidateLength;
         }
         toBeVisitedPositions.push_back(neighbour);

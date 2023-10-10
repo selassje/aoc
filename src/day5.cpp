@@ -29,7 +29,7 @@ solve(const Input& input)
       toBeMoved.push_back(crate);
     }
 
-    std::reverse(toBeMoved.begin(), toBeMoved.end());
+    std::ranges::reverse(toBeMoved);
     for (const auto& crate : toBeMoved) {
       stacksPart2[m.to - 1].push(crate);
     }

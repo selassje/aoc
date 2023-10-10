@@ -25,8 +25,8 @@ readInput(const std::string_view path)
   std::string line{};
   while (std::getline(ifs, line)) {
 
-    std::replace(line.begin(), line.end(), '-', ' ');
-    std::replace(line.begin(), line.end(), ',', ' ');
+    std::ranges::replace(line, '-', ' ');
+    std::ranges::replace(line, ',', ' ');
 
     std::istringstream iss{ line };
 

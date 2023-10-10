@@ -14,7 +14,7 @@ struct alignas(32) ChangeDirectory
   std::string directory;
 };
 
-enum List
+enum class List
 {
 };
 

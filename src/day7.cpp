@@ -15,7 +15,7 @@
 
 namespace aoc22::day7 {
 template<typename... Ts>
-struct Overload : Ts... //NOLINT
+struct Overload : Ts... // NOLINT
 {
   using Ts::operator()...;
 };
@@ -141,15 +141,16 @@ solve(const Input& input)
 {
   FileTree ft{};
 
+  // clang-format off
   auto recordHandler =
     Overload{ [&ft](const ChangeDirectory &cd) { ft.changeDirectory(cd.directory); },
               [&ft](const Directory &dir ) { ft.addItem(dir); },
               [&ft](const File &file ) { ft.addItem(file); }, 
               [](const List& ) { /*NOACTION*/ }
     };
-
-  for (const auto &record : input) {
-   std::visit(recordHandler, record);
+  // clang-format on
+  for (const auto& record : input) {
+    std::visit(recordHandler, record);
   }
 
   auto dirSizes = ft.getDirSizes();

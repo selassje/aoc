@@ -28,22 +28,30 @@ public:
 private:
   struct Node;
   using Dir = std::vector<std::shared_ptr<Node>>;
-  using SizeOrDir = std::variant<std::size_t, Dir>;
+  using SizeOrDir = std::variant<Dir, std::size_t>;
   struct alignas(128) Node
   {
     std::string name;
     std::weak_ptr<Node> parentDir;
-    std::variant<std::size_t, Dir> sizeOrDir;
+    SizeOrDir sizeOrDir;
 
-    [[nodiscard]] bool isDir() const noexcept { return sizeOrDir.index() == 1; }
+    [[nodiscard]] bool isDir() const noexcept { return sizeOrDir.index() == 0; }
     [[nodiscard]] const Dir& getDir() const { return std::get<Dir>(sizeOrDir); }
     [[nodiscard]] Dir& getDir() { return std::get<Dir>(sizeOrDir); }
+
+    explicit Node(std::string name_)
+      : name{ std::move(name_) } {};
+
+    explicit Node(std::string name_,
+                  std::weak_ptr<Node> parentDir_,
+                  SizeOrDir sizeOrDir_)
+      : name{ std::move(name_) }
+      , parentDir{ std::move(parentDir_) }
+      , sizeOrDir{ std::move(sizeOrDir_) } {};
   };
 
   std::shared_ptr<Node> m_root =
-    std::make_shared<Node>(Node{ .name = std::string{ ROOT_DIR },
-                                 .parentDir = {},
-                                 .sizeOrDir = Dir{} });
+    std::make_shared<Node>(std::string{ ROOT_DIR });
   std::shared_ptr<Node> m_cwd{ m_root };
 
   static constexpr std::string_view ROOT_DIR = "/";
@@ -65,14 +73,11 @@ FileTree::addItem(const T& item) const
     throw std::runtime_error("Element already exists!");
   }
 
-  std::variant<std::size_t, Dir> sizeOrDir = Dir{};
+  SizeOrDir sizeOrDir = Dir{}; // NOLINT
   if constexpr (std::same_as<File, T>) {
     sizeOrDir = item.size;
   }
-  dir.push_back(
-    std::make_shared<Node>(Node{ .name = std::string{ item.name },
-                                 .parentDir = m_cwd,
-                                 .sizeOrDir = std::move(sizeOrDir) }));
+  dir.emplace_back(std::make_shared<Node>(item.name, m_cwd, sizeOrDir));
 }
 void
 FileTree::changeDirectory(std::string_view dir_name)

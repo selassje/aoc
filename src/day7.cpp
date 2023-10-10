@@ -59,9 +59,9 @@ FileTree::addItem(const T& item) const
 {
   assert(m_cwd->isDir());
   auto& dir = m_cwd->getDir();
-  const auto it = std::ranges::find_if(
-    dir, [item](const auto& node) { return node->name == item.name; });
-  if (it != dir.end()) {
+  if (const auto it = std::ranges::find_if(
+        dir, [&item](const auto& node) { return node->name == item.name; });
+      it != dir.end()) {
     throw std::runtime_error("Element already exists!");
   }
 
@@ -136,15 +136,15 @@ solve(const Input& input)
     const auto& record = input[i];
     switch (record.index()) { // NOLINT
       case 0: {
-        const auto &cd = std::get<ChangeDirectory>(record);
+        const auto& cd = std::get<ChangeDirectory>(record);
         ft.changeDirectory(cd.directory);
       } break;
       case 2: {
-        const auto &dir = std::get<Directory>(record);
+        const auto& dir = std::get<Directory>(record);
         ft.addItem(dir);
       } break;
       case 3: {
-        const auto &file = std::get<File>(record);
+        const auto& file = std::get<File>(record);
         ft.addItem(file);
       } break;
     }

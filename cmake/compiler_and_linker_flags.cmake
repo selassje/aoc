@@ -1,32 +1,15 @@
 
 function(setup_compiler_warnings TARGET)
   if (MSVC)
-    cmake_path(SET RULESET_FILE ${CMAKE_SOURCE_DIR}/.vsAnalyze.ruleset)
-    cmake_path(NATIVE_PATH RULESET_FILE RULESET_FILE)
-    cmake_path(NATIVE_PATH CMAKE_SOURCE_DIR RULESET_DIR)
-    message("PATH " ${RULESET_FILE})
-    set(ANALYZE_FLAG  /analyze:ruleset${RULESET_FILE})
-    set(ANALYZE_FLAG2 /analyze:projectdirectory${RULESET_DIR})
-    set(ANALYZE_FLAG3 /analyze:rulesetdirectory${RULESET_DIR})
-
-
+    set(RULESET_FILE ${CMAKE_SOURCE_DIR}/.vsAnalyze.ruleset)
     get_filename_component(CXX_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
     set(PLUGIN_NAME ${CXX_DIR}/EspXEngine.dll)
 
-    set(ANALYZE_FLAG4 /analyze:plugin${PLUGIN_NAME})
-    message("ANAL " ${ANALYZE_FLAG})
-    #target_compile_options(${TARGET} PRIVATE "${ANALYZE_FLAG}")
-#    target_compile_options(${TARGET} PRIVATE /analyze:ruleset [=["NativeRecommendedRules.ruleset"]=] )
-    configure_file(${CMAKE_SOURCE_DIR}/.vsAnalyze.props.in ${CMAKE_SOURCE_DIR}/.vsAnalyze.props)
-#    set_property(
- #     TARGET ${TARGET}
-  #    PROPERTY VS_USER_PROPS ${CMAKE_SOURCE_DIR}/.vsAnalyze.props)
-
-  target_compile_definitions(aoc22 PRIVATE CODE_ANALYSIS)
+    target_compile_definitions(aoc22 PRIVATE CODE_ANALYSIS)
 
     set_property(
       TARGET ${TARGET}
-      PROPERTY COMPILE_OPTIONS /analyze  ${ANALYZE_FLAG} ${ANALYZE_FLAG4})
+      PROPERTY COMPILE_OPTIONS /analyze /analyze:ruleset${RULESET_FILE} ${ANALYZE_FLAG4} /analyze:plugin${PLUGIN_NAME})
     target_compile_options(${TARGET} PRIVATE /W4 /WX /external:anglebrackets /external:W0 /permissive- /wd4868 /wd5045 /wd4324)
   else()
     target_compile_options(${TARGET} PRIVATE -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnon-virtual-dtor -Wold-style-cast

@@ -53,7 +53,7 @@ TEST_CASE("Day2 Example", "[Day2]")
 {
   const auto input =
     Guide{ { Rock, Paper }, { Paper, Rock }, { Sciscors, Sciscors } };
-  const auto [part_1, part_2] = aoc22::day2::solve(input);
+  const auto &[part_1, part_2] = aoc22::day2::solve(input);
   REQUIRE(part_1 == 15);
   REQUIRE(part_2 == 12);
 }
@@ -61,7 +61,7 @@ TEST_CASE("Day2 Example", "[Day2]")
 TEST_CASE("Day2 Input", "[Day2]")
 {
   const auto input = readInput(inputs::day2::INPUT);
-  const auto [part_1, part_2] = aoc22::day2::solve(input);
+  const auto &[part_1, part_2] = aoc22::day2::solve(input);
   REQUIRE(part_1 == 11767);
   REQUIRE(part_2 == 13886);
 }

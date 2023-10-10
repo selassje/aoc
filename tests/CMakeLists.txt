@@ -30,10 +30,10 @@ foreach(i RANGE 1 12)
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)
 
-    setup_msvc_analysis(${TEST_NAME})
     setup_compiler_warnings(${TEST_NAME})
     setup_std_lib(${TEST_NAME})
     setup_clang_tidy(${TEST_NAME})
+    setup_msvc_analysis(${TEST_NAME})
     setup_tests_flags(${TEST_NAME})
     setup_coverage_report_flags(${TEST_NAME})
 

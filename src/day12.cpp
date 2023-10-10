@@ -140,7 +140,7 @@ solve(const Input& input)
   const auto& grid = input.grid;
   const auto height = grid.size();
   const auto width = grid[0].size();
-  const auto maxDistance = std::numeric_limits<decltype(Result::part1)>::max();
+  static constexpr auto maxDistance = std::numeric_limits<decltype(Result::part1)>::max();
 
   std::unordered_set<Position> visitedPositions{};
   std::deque<Position> toBeVisitedPositions{};

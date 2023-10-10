@@ -15,8 +15,7 @@ function(setup_msvc_analysis TARGET)
     get_filename_component(CXX_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
     set(PLUGIN_NAME ${CXX_DIR}/EspXEngine.dll)
     target_compile_definitions(aoc22 PRIVATE CODE_ANALYSIS)
-    set_property(
-      TARGET ${TARGET}
-      PROPERTY COMPILE_OPTIONS /analyze /analyze:ruleset${RULESET_FILE} /analyze:plugin${PLUGIN_NAME} /analyze:external-)
+    target_compile_options(
+      ${TARGET} PRIVATE /analyze /analyze:ruleset${RULESET_FILE} /analyze:plugin${PLUGIN_NAME} /analyze:external-)
   endif()
 endfunction(setup_msvc_analysis)

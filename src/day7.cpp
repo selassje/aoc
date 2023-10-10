@@ -19,7 +19,7 @@ class FileTree
 {
 public:
   template<typename T>
-  void addItem(const T& item);
+  void addItem(const T& item) const;
 
   void changeDirectory(std::string_view dir_name);
 
@@ -55,7 +55,7 @@ private:
 
 template<typename T>
 void
-FileTree::addItem(const T& item)
+FileTree::addItem(const T& item) const
 {
   assert(m_cwd->isDir());
   auto& dir = m_cwd->getDir();
@@ -136,22 +136,22 @@ solve(const Input& input)
     const auto& record = input[i];
     switch (record.index()) { // NOLINT
       case 0: {
-        const auto cd = std::get<ChangeDirectory>(record);
+        const auto &cd = std::get<ChangeDirectory>(record);
         ft.changeDirectory(cd.directory);
       } break;
       case 2: {
-        const auto dir = std::get<Directory>(record);
+        const auto &dir = std::get<Directory>(record);
         ft.addItem(dir);
       } break;
       case 3: {
-        const auto file = std::get<File>(record);
+        const auto &file = std::get<File>(record);
         ft.addItem(file);
       } break;
     }
   }
 
   auto dirSizes = ft.getDirSizes();
-  std::sort(dirSizes.begin(), dirSizes.end());
+  std::ranges::sort(dirSizes);
 #ifdef _MSC_VER
 #pragma warning(suppress : 5264)
 #endif

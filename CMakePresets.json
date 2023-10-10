@@ -131,8 +131,7 @@
       "name": "dev_vs_msvc",
       "generator": "Visual Studio 17 2022",
       "cacheVariables": {
-        "ENABLE_TESTS": "ON",
-        "ENABLE_MSVC_ANALYSIS":"ON"
+        "ENABLE_TESTS": "ON"
       },
       "condition": {
        "type": "equals",
@@ -140,6 +139,14 @@
         "rhs": "Windows"
       },
       "binaryDir": "${sourceDir}/builds/dev_vs_msvc"
+    },
+    {
+      "name": "dev_vs_msvc_analysis",
+      "inherits": "dev_vs_msvc",
+      "cacheVariables": {
+        "ENABLE_MSVC_ANALYSIS":"ON"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_vs_msvc_analysis"
     },
     {
       "name": "dev_ninja_msvc",
@@ -153,10 +160,15 @@
         "CXX": "cl.exe",
         "CC": "cl.exe"
       },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
+    },
+    {
+      "name": "dev_ninja_msvc_analysis",
+      "inherits" : "dev_ninja_msvc",
       "cacheVariables": {
         "ENABLE_MSVC_ANALYSIS":"ON"
       },
-      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
+      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc_analysis"
     }
   ],
 

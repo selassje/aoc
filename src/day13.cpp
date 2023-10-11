@@ -110,8 +110,8 @@ compare(const Packet& left, const Packet& right)
 Result
 solve(const Input& input)
 {
-  const std::string_view divider1 = "[[2]]";
-  const std::string_view divider2 = "[[6]]";
+  static constexpr std::string_view divider1 = "[[2]]";
+  static constexpr std::string_view divider2 = "[[6]]";
 
   std::size_t resultPart1 = 0;
   std::vector<Packet> packets{};

@@ -1,5 +1,10 @@
 #include "day13.hpp"
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
@@ -124,12 +129,12 @@ solve(const Input& input)
     elements.emplace_back(firstParsed);
     elements.emplace_back(secondParsed);
   }
-
   std::ranges::sort(elements,
                     [](const auto& left, const auto& right) { // NOLINT
                       return compare(left, right) == Lesser;
                     });
 
+#pragma GCC diagnostic push
   auto findIndex = [&elements](const auto& packet) {
     const auto index =
       std::ranges::find_if(elements, [&packet](const auto& packet_) {
@@ -143,5 +148,8 @@ solve(const Input& input)
 
   return { resultPart1, divider1Index * divider2Index };
 }
-
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif

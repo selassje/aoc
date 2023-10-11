@@ -12,7 +12,7 @@ namespace aoc22::day13 {
 
 struct List;
 
-using Element = std::variant<std::unique_ptr<List>, std::size_t>;
+using Element = std::variant<std::shared_ptr<List>, std::size_t>;
 
 struct List
 {
@@ -23,7 +23,7 @@ Element
 parse(std::string_view tokens)
 {
   if (tokens[0] == '[') {
-    auto listPtr = std::make_unique<List>();
+    auto listPtr = std::make_shared<List>();
 
     std::size_t nextElementStart = 0;
     std::size_t level = 0;
@@ -32,7 +32,7 @@ parse(std::string_view tokens)
       if ((tokens[i] == ',' || i == tokens.size() - 1) && level == 0) {
         auto elementStr =
           tokens.substr(nextElementStart + 1, i - nextElementStart - 1);
-        if ( !elementStr.empty()) {
+        if (!elementStr.empty()) {
           listPtr->elements.push_back(parse(elementStr));
         }
         nextElementStart = i;
@@ -94,12 +94,12 @@ compare(const Element& left, const Element& right)
       }
     }
   } else if (left.index() == 1) {
-    auto listPtr = std::make_unique<List>();
-    listPtr->elements.push_back(std::get<1>(left));
+    auto listPtr = std::make_shared<List>();
+    listPtr->elements.emplace_back(std::get<1>(left));
     result = compare(std::move(listPtr), right);
   } else {
-    auto listPtr = std::make_unique<List>();
-    listPtr->elements.push_back(std::get<1>(right));
+    auto listPtr = std::make_shared<List>();
+    listPtr->elements.emplace_back(std::get<1>(right));
     result = compare(left, std::move(listPtr));
   }
   return result;
@@ -108,7 +108,11 @@ compare(const Element& left, const Element& right)
 Result
 solve(const Input& input)
 {
+  const auto divider1 = parse("[[2]]");
+  const auto divider2 = parse("[[6]]");
+
   std::size_t resultPart1 = 0;
+  std::vector elements{ divider1, divider2 };
   for (std::size_t i = 0; i < input.size(); ++i) {
     const auto& [first, second] = input[i];
     auto firstParsed = parse(first);
@@ -116,8 +120,34 @@ solve(const Input& input)
     if (compare(firstParsed, secondParsed) == Lesser) {
       resultPart1 += i + 1;
     }
+    elements.emplace_back(firstParsed);
+    elements.emplace_back(secondParsed);
   }
-  return { resultPart1, resultPart1 };
+
+  std::ranges::sort(elements, [](const auto& left, const auto& right) {
+    return compare(left, right) == Lesser;
+  });
+
+  auto divider1Index_ =
+    std::ranges::find_if(elements,
+                         [&divider1](const auto& packet) {
+                           return compare(packet, divider1) == Equal;
+                         }) -
+    elements.begin();
+
+  auto divider2Index_ =
+    std::ranges::find_if(elements,
+                         [&divider2](const auto& packet) {
+                           return compare(packet, divider2) == Equal;
+                         }) -
+    elements.begin();
+
+  const auto divider1Index = static_cast<std::size_t>(divider1Index_);
+  const auto divider2Index = static_cast<std::size_t>(divider2Index_);
+
+  const auto resultPart2 = (divider1Index + 1) * (divider2Index + 1);
+
+  return { resultPart1, resultPart2 };
 }
 
 }

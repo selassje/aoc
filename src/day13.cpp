@@ -49,7 +49,7 @@ parse(std::string_view packet)
     }
     return listPtr;
   }
-  const auto integerEnd = std::ranges::find_if( // NOLINT
+  const auto *const integerEnd = std::ranges::find_if(
     packet,
     [](char token) { return token == ',' || token == ']'; });
   const std::string integer{ packet.begin(), integerEnd };

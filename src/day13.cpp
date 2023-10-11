@@ -54,9 +54,9 @@ parse(std::string_view tokens)
 
 enum class CmprResult
 {
-  Correct,
-  Incorrect,
-  None,
+  Lesser,
+  Greater,
+  Equal,
 };
 
 using enum CmprResult;
@@ -64,14 +64,14 @@ using enum CmprResult;
 CmprResult
 compare(const Element& left, const Element& right)
 {
-  CmprResult result = None;
+  CmprResult result = Equal;
   if (left.index() == 1 && right.index() == 1) {
     const auto leftInteger = std::get<1>(left);
     const auto rightInteger = std::get<1>(right);
     if (leftInteger < rightInteger) {
-      result = Correct;
+      result = Lesser;
     } else if (leftInteger > rightInteger) {
-      result = Incorrect;
+      result = Greater;
     }
   } else if (left.index() == 0 && right.index() == 0) {
     const auto& leftList = std::get<0>(left);
@@ -81,16 +81,16 @@ compare(const Element& left, const Element& right)
     for (std::size_t i = 0; i < minSize; ++i) {
       const auto cmprResult =
         compare(leftList->elements[i], rightList->elements[i]);
-      if (cmprResult != None) {
+      if (cmprResult != Equal) {
         result = cmprResult;
         break;
       }
     }
-    if (result == None) {
+    if (result == Equal) {
       if (leftList->elements.size() < rightList->elements.size()) {
-        result = Correct;
+        result = Lesser;
       } else if (leftList->elements.size() > rightList->elements.size()) {
-        result = Incorrect;
+        result = Greater;
       }
     }
   } else if (left.index() == 1) {
@@ -113,7 +113,7 @@ solve(const Input& input)
     const auto& [first, second] = input[i];
     auto firstParsed = parse(first);
     auto secondParsed = parse(second);
-    if (compare(firstParsed, secondParsed) == Correct) {
+    if (compare(firstParsed, secondParsed) == Lesser) {
       resultPart1 += i + 1;
     }
   }

@@ -31,8 +31,10 @@ parse(std::string_view tokens)
     for (std::size_t i = 1; i < tokens.size(); ++i) {
       if ((tokens[i] == ',' || i == tokens.size() - 1) && level == 0) {
         auto elementStr =
-          tokens.substr(nextElementStart + 1, i - nextElementStart);
-        listPtr->elements.push_back(parse(elementStr));
+          tokens.substr(nextElementStart + 1, i - nextElementStart - 1);
+        if ( !elementStr.empty()) {
+          listPtr->elements.push_back(parse(elementStr));
+        }
         nextElementStart = i;
       } else if (tokens[i] == '[') {
         ++level;

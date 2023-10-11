@@ -1,10 +1,11 @@
 #include "day13.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdlib>
 #include <memory>
-#include <ranges>
+#include <string>
 #include <string_view>
-#include <utility>
 #include <variant>
 #include <vector>
 
@@ -42,13 +43,14 @@ parse(std::string_view packet)
       }
     }
     return listPtr;
-  } else {
-    const auto integerEnd = std::ranges::find_if(
-      packet, [](char token) { return token == ',' || token == ']'; });
-    std::string integer{ packet.begin(), integerEnd };
-    return static_cast<std::size_t>(
-      std::strtoull(integer.c_str(), nullptr, 10));
   }
+  const auto integerEnd = std::ranges::find_if( // NOLINT
+    packet,
+    [](char token) { return token == ',' || token == ']'; });
+  const std::string integer{ packet.begin(), integerEnd };
+  static constexpr auto base = 10;
+  return static_cast<std::size_t>(
+    std::strtoull(integer.c_str(), nullptr, base));
 }
 
 enum class CmprResult
@@ -64,7 +66,7 @@ CmprResult
 compare(const Packet& left, const Packet& right)
 {
   CmprResult result = Equal;
-  if (left.index() == 1 && right.index() == 1) {
+  if (left.index() == 1 && right.index() == 1) { // NOLINT
     const auto leftInteger = std::get<1>(left);
     const auto rightInteger = std::get<1>(right);
     if (leftInteger < rightInteger) {
@@ -95,11 +97,11 @@ compare(const Packet& left, const Packet& right)
   } else if (left.index() == 1) {
     auto listPtr = std::make_shared<List>();
     listPtr->packets.emplace_back(std::get<1>(left));
-    result = compare(std::move(listPtr), right);
+    result = compare(listPtr, right);
   } else {
     auto listPtr = std::make_shared<List>();
     listPtr->packets.emplace_back(std::get<1>(right));
-    result = compare(left, std::move(listPtr));
+    result = compare(left, listPtr);
   }
   return result;
 }
@@ -123,9 +125,10 @@ solve(const Input& input)
     elements.emplace_back(secondParsed);
   }
 
-  std::ranges::sort(elements, [](const auto& left, const auto& right) {
-    return compare(left, right) == Lesser;
-  });
+  std::ranges::sort(elements,
+                    [](const auto& left, const auto& right) { // NOLINT
+                      return compare(left, right) == Lesser;
+                    });
 
   auto findIndex = [&elements](const auto& packet) {
     const auto index =

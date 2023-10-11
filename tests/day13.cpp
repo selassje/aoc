@@ -7,7 +7,6 @@
 #include <fstream>
 #include <string>
 #include <string_view>
-#include <vector>
 
 using aoc22::day13::Input;
 using aoc22::day13::Pair;
@@ -50,4 +49,3 @@ TEST_CASE("Day13 Input", "[Day13]")
   REQUIRE(part_1 == 5555);
   REQUIRE(part_2 == 22852);
 }
-

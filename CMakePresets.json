@@ -103,6 +103,15 @@
       "binaryDir": "${sourceDir}/builds/dev_ninja_gcc"
     },
     {
+      "name": "rel_ninja_gcc",
+      "inherits" : "dev_ninja_gcc",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"Release",
+        "ENABLE_TESTS":"OFF"
+      },
+      "binaryDir": "${sourceDir}/builds/rel_ninja_gcc"
+    },
+    {
       "name": "coverage_ninja_gcc",
       "inherits" : "dev_ninja_gcc",
       "cacheVariables": {

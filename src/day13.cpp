@@ -48,7 +48,33 @@ parse(std::string_view tokens)
     return static_cast<std::size_t>(
       std::strtoull(strInteger.c_str(), nullptr, 10));
   }
-  return {};
+}
+
+enum class CmprResult {
+  Correct,
+  Incorrect,
+  None,
+};
+
+using enum CmprResult;
+
+CmprResult compare(const Element &left, const Element& right) {
+  CmprResult result = None;
+    if ( left.index() == 1 && right.index() == 1) {
+      const auto leftInteger = std::get<1>(left);
+      const auto rightInteger = std::get<1>(right);
+      if (leftInteger <  rightInteger ) {
+        result = Correct;
+      } else if (leftInteger > rightInteger) {
+        result = Incorrect;
+      }
+    } else if ( left.index() == 0 && right.index() == 0) {
+        const auto& leftList = std::get<0>(left);
+        const auto& rightList = std::get<0>(right);
+        
+
+    }
+  return result;
 }
 
 Result

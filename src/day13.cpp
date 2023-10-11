@@ -49,9 +49,8 @@ parse(std::string_view packet)
     }
     return listPtr;
   }
-  const auto *const integerEnd = std::ranges::find_if(
-    packet,
-    [](char token) { return token == ',' || token == ']'; });
+  const auto* const integerEnd = std::ranges::find_if(
+    packet, [](char token) { return token == ',' || token == ']'; });
   const std::string integer{ packet.begin(), integerEnd };
   static constexpr auto base = 10;
   return static_cast<std::size_t>(
@@ -129,10 +128,9 @@ solve(const Input& input)
     packets.emplace_back(firstParsed);
     packets.emplace_back(secondParsed);
   }
-  std::ranges::sort(packets,
-                    [](const auto& left, const auto& right) { // NOLINT
-                      return compare(left, right) == Lesser;
-                    });
+  std::ranges::sort(packets, [](const auto& left, const auto& right) { // NOLINT
+    return compare(left, right) == Lesser;
+  });
 
   auto findIndex = [&packets](const auto& packet) {
     const auto index =

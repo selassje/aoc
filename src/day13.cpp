@@ -1,16 +1,12 @@
 #include "day13.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <memory>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -18,7 +14,7 @@ namespace aoc22::day13 {
 
 struct List;
 
-using Packet = std::variant<std::shared_ptr<List>, std::size_t>;
+using Packet = std::variant<std::unique_ptr<List>, std::size_t>;
 
 struct List
 {
@@ -29,7 +25,7 @@ Packet
 parse(std::string_view packet)
 {
   if (packet[0] == '[') {
-    auto listPtr = std::make_shared<List>();
+    auto listPtr = std::make_unique<List>();
     std::size_t nextSubpacketStart = 0;
     std::size_t level = 0;
 
@@ -49,8 +45,9 @@ parse(std::string_view packet)
     }
     return listPtr;
   }
-  const auto* const integerEnd = std::ranges::find_if(
-    packet, [](char token) { return token == ',' || token == ']'; });
+  const auto integerEnd = std::ranges::find_if( // NOLINT
+    packet,
+    [](char token) { return token == ',' || token == ']'; });
   const std::string integer{ packet.begin(), integerEnd };
   static constexpr auto base = 10;
   return static_cast<std::size_t>(
@@ -99,13 +96,13 @@ compare(const Packet& left, const Packet& right)
       }
     }
   } else if (left.index() == 1) {
-    auto listPtr = std::make_shared<List>();
+    auto listPtr = std::make_unique<List>();
     listPtr->packets.emplace_back(std::get<1>(left));
-    result = compare(listPtr, right);
+    result = compare(std::move(listPtr), right);
   } else {
-    auto listPtr = std::make_shared<List>();
+    auto listPtr = std::make_unique<List>();
     listPtr->packets.emplace_back(std::get<1>(right));
-    result = compare(left, listPtr);
+    result = compare(left, std::move(listPtr));
   }
   return result;
 }
@@ -113,11 +110,13 @@ compare(const Packet& left, const Packet& right)
 Result
 solve(const Input& input)
 {
-  const auto divider1 = parse("[[2]]");
-  const auto divider2 = parse("[[6]]");
+  const std::string_view divider1 = "[[2]]";
+  const std::string_view divider2 = "[[6]]";
 
   std::size_t resultPart1 = 0;
-  std::vector packets{ divider1, divider2 };
+  std::vector<Packet> packets{};
+  packets.emplace_back(parse(divider1));
+  packets.emplace_back(parse(divider2));
   for (std::size_t i = 0; i < input.size(); ++i) {
     const auto& [first, second] = input[i];
     auto firstParsed = parse(first);
@@ -125,8 +124,8 @@ solve(const Input& input)
     if (compare(firstParsed, secondParsed) == Lesser) {
       resultPart1 += i + 1;
     }
-    packets.emplace_back(firstParsed);
-    packets.emplace_back(secondParsed);
+    packets.emplace_back(std::move(firstParsed));
+    packets.emplace_back(std::move(secondParsed));
   }
   std::ranges::sort(packets, [](const auto& left, const auto& right) { // NOLINT
     return compare(left, right) == Lesser;
@@ -135,7 +134,7 @@ solve(const Input& input)
   auto findIndex = [&packets](const auto& packet) {
     const auto index =
       std::ranges::find_if(packets, [&packet](const auto& packet_) {
-        return compare(packet, packet_) == Equal;
+        return compare(parse(packet), packet_) == Equal;
       });
     return static_cast<std::size_t>(index - packets.begin()) + 1;
   };
@@ -146,7 +145,3 @@ solve(const Input& input)
   return { resultPart1, divider1Index * divider2Index };
 }
 }
-
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif

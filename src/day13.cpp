@@ -118,7 +118,7 @@ solve(const Input& input)
   const auto divider2 = parse("[[6]]");
 
   std::size_t resultPart1 = 0;
-  std::vector elements{ divider1, divider2 };
+  std::vector packets{ divider1, divider2 };
   for (std::size_t i = 0; i < input.size(); ++i) {
     const auto& [first, second] = input[i];
     auto firstParsed = parse(first);
@@ -126,21 +126,20 @@ solve(const Input& input)
     if (compare(firstParsed, secondParsed) == Lesser) {
       resultPart1 += i + 1;
     }
-    elements.emplace_back(firstParsed);
-    elements.emplace_back(secondParsed);
+    packets.emplace_back(firstParsed);
+    packets.emplace_back(secondParsed);
   }
-  std::ranges::sort(elements,
+  std::ranges::sort(packets,
                     [](const auto& left, const auto& right) { // NOLINT
                       return compare(left, right) == Lesser;
                     });
 
-#pragma GCC diagnostic push
-  auto findIndex = [&elements](const auto& packet) {
+  auto findIndex = [&packets](const auto& packet) {
     const auto index =
-      std::ranges::find_if(elements, [&packet](const auto& packet_) {
+      std::ranges::find_if(packets, [&packet](const auto& packet_) {
         return compare(packet, packet_) == Equal;
       });
-    return static_cast<std::size_t>(index - elements.begin()) + 1;
+    return static_cast<std::size_t>(index - packets.begin()) + 1;
   };
 
   const auto divider1Index = findIndex(divider1);

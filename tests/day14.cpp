@@ -6,22 +6,43 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <fstream>
+#include <regex>
 #include <string>
 #include <string_view>
 
 using aoc22::day14::Input;
 using aoc22::day14::Path;
+using aoc22::day14::Point;
 
 Input
-readInput(const std::string_view path)
+readInput(const std::string_view path_)
 {
-  std::ifstream ifs{ path.data() };
+  std::ifstream ifs{ path_.data() };
   Input input{};
-  Path pair{};
+  Path path{};
+  Point point{};
+
+  const std::regex regex("(\\d+)");
+  const auto endRegexIt = std::sregex_iterator();
 
   std::string line{};
   while (std::getline(ifs, line)) {
     if (!line.empty()) {
+      bool nextX = true;
+      auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);   
+      while ( numbersBegin != endRegexIt) {
+        const auto number = std::strtoull(numbersBegin->str().c_str(), nullptr, 10);
+        if (nextX) {
+            point.x = number;          
+        } else {
+            point.y = number;
+            path.push_back(point);
+        }
+        ++numbersBegin;
+        nextX = !nextX;
+      }
+      input.push_back(path);
+      path.clear();
     }
   }
   return input;

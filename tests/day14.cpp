@@ -53,7 +53,7 @@ TEST_CASE("Day14 Example", "[Day14]")
   const auto input = readInput(inputs::day14::EXAMPLE);
   const auto& [part_1, part_2] = aoc22::day14::solve(input);
   REQUIRE(part_1 == 24);
-  REQUIRE(part_2 == 24);
+  REQUIRE(part_2 == 93);
 }
 
 TEST_CASE("Day14 Input", "[Day14]")

@@ -50,14 +50,16 @@ Result
 solve(const Input& input)
 {
   Lines lines{};
+  std::size_t maxY = input[0][0].y;
   for (const auto& path : input) {
     for (std::size_t i = 1; i < path.size(); ++i) {
+      maxY = std::max(maxY,path[i].y);
       lines.emplace_back(path[i - 1], path[i]);
     }
   }
-
+  //const std::size_t floorLevel = maxY + 2; 
   static constexpr Point startPoint = { 500, 0 };
-  std::size_t part1 = 0;
+
 
   auto isAbyssAhead = [&lines](const Point& point) {
     return std::ranges::find_if(lines, [&point](const Line& line) {
@@ -84,12 +86,21 @@ solve(const Input& input)
       lines.emplace_back(point, point);
     }
   };
+  
+  std::size_t sandCount = 0;
+  std::size_t part1 = 0;
+ // std::size_t part2 = 0;
+  bool part1Found = false;
+//  bool part2Found = false;
 
-  while (true) {
+
+  while (!part1Found) {
     Point sand = startPoint;
     while (true) {
-      if (isAbyssAhead(sand)) {
-        goto exit;
+      if (!part1Found && isAbyssAhead(sand)) {
+        part1Found = true;
+        part1 = sandCount;
+        break;
       }
       Point below{ sand.x, sand.y + 1 };
       Point belowLeft{ sand.x - 1, sand.y + 1 };
@@ -103,14 +114,13 @@ solve(const Input& input)
       } else if (!isPointBlocked(belowRight)) {
         sand = belowRight;
       } else {
-        ++part1;
+        ++sandCount;
         assert(lineBelow);
         addBlockedPoint(*lineBelow, sand);
         break;
       }
     }
   }
-exit:
   return { part1, part1 };
 }
 }

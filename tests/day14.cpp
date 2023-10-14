@@ -5,6 +5,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdlib>
 #include <fstream>
 #include <regex>
 #include <string>
@@ -29,14 +30,15 @@ readInput(const std::string_view path_)
   while (std::getline(ifs, line)) {
     if (!line.empty()) {
       bool nextX = true;
-      auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);   
-      while ( numbersBegin != endRegexIt) {
-        const auto number = std::strtoull(numbersBegin->str().c_str(), nullptr, 10);
+      auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);
+      while (numbersBegin != endRegexIt) {
+        const auto number =
+          std::strtoull(numbersBegin->str().c_str(), nullptr, 10);
         if (nextX) {
-            point.x = number;          
+          point.x = number;
         } else {
-            point.y = number;
-            path.push_back(point);
+          point.y = number;
+          path.push_back(point);
         }
         ++numbersBegin;
         nextX = !nextX;

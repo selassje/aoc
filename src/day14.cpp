@@ -1,9 +1,10 @@
 #include "day14.hpp"
 
+#include <algorithm>
 #include <cassert>
-#include <cmath>
-#include <optional>
-#include <ranges>
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 namespace aoc22::day14 {
 
@@ -12,7 +13,7 @@ struct Line
   Point start{};
   Point end{};
 
-  constexpr bool isVertical() const { return start.x == end.x; }
+  [[nodiscard]] constexpr bool isVertical() const { return start.x == end.x; }
 };
 
 using Lines = std::vector<Line>;
@@ -38,7 +39,8 @@ isPointAboveLine(const Point& point, const Line& line)
 {
   if (line.isVertical() && point.x == line.start.x) {
     return point.y < line.start.y;
-  } else if (!line.isVertical()) {
+  }
+  if (!line.isVertical()) {
     const auto minX = std::min(line.start.x, line.end.x);
     const auto maxX = std::max(line.start.x, line.end.x);
     return minX <= point.x && point.x <= maxX && point.y < line.start.y;
@@ -100,17 +102,17 @@ solve(const Input& input)
         part1 = sandCount;
         break;
       }
-      Point below{ sand.x, sand.y + 1 };
-      Point belowLeft{ sand.x - 1, sand.y + 1 };
-      Point belowRight{ sand.x + 1, sand.y + 1 };
+      const Point below{ sand.x, sand.y + 1 };
+      const Point belowLeft{ sand.x - 1, sand.y + 1 };
+      const Point belowRight{ sand.x + 1, sand.y + 1 };
 
       if (sand.y + 1 < floorLevel) {
-        auto lineBelow = isPointBlocked(below);
+        auto* const lineBelow = isPointBlocked(below);
         if (lineBelow == nullptr) {
           sand = below;
-        } else if (!isPointBlocked(belowLeft)) {
+        } else if (isPointBlocked(belowLeft) == nullptr) {
           sand = belowLeft;
-        } else if (!isPointBlocked(belowRight)) {
+        } else if (isPointBlocked(belowRight) == nullptr) {
           sand = belowRight;
         } else {
           ++sandCount;

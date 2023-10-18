@@ -3,6 +3,7 @@
 #define AOC22_DAY15_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <utility>
 #include <vector>
 
@@ -10,8 +11,8 @@ namespace aoc22::day15 {
 
 struct Point
 {
-  std::size_t x;
-  std::size_t y;
+  std::int32_t x;
+  std::int32_t y;
 };
 
 struct Record

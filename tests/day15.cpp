@@ -22,7 +22,7 @@ readInput(const std::string_view path_)
   Input input{};
   Record record{};
 
-  const std::regex regex("(\\d+)");
+  const std::regex regex("(\\-?\\d+)");
   const auto endRegexIt = std::sregex_iterator();
 
   std::string line{};
@@ -31,7 +31,7 @@ readInput(const std::string_view path_)
       auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);
       for (std::size_t i = 0; i < 4; ++i) {
         const auto number =
-          std::strtoull(numbersBegin->str().c_str(), nullptr, 10);
+          std::stoi(numbersBegin->str().c_str());
         if (i == 0) {
           record.sensor.x = number;
         }
@@ -54,13 +54,13 @@ readInput(const std::string_view path_)
 
 namespace aoc22::day15 {
 
-template<typename std::size_t>
+template<typename std::int32_t>
 Result
 solve(const Input&);
 
 };
 
-TEST_CASE("Day14 Example", "[Day14]")
+TEST_CASE("Day15 Example", "[Day15]")
 {
   const auto input = readInput(inputs::day15::EXAMPLE);
   const auto& [part_1, part_2] = aoc22::day15::solve<10>(input);

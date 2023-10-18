@@ -25,7 +25,7 @@ if(ENABLE_FUZZ_TESTS)
 
 endif()
 
-foreach(i RANGE 1 14)
+foreach(i RANGE 1 15)
     set(TEST_NAME day${i})
 
     add_executable(${TEST_NAME} ${TEST_NAME}.cpp main.cpp)

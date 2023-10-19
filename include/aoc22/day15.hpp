@@ -13,6 +13,8 @@ struct Point
 {
   std::int32_t x;
   std::int32_t y;
+
+  auto operator<=>(const Point&) const noexcept = default;
 };
 
 struct Record

@@ -2,6 +2,12 @@
 
 #include <algorithm>
 #include <optional>
+#include <utility>
+#include <cassert>
+#include <map>
+#include <set>
+
+using BeaconCountAt = std::unordered_map<std::int32_t,std::size_t>;
 
 namespace aoc22::day15 {
 
@@ -44,10 +50,10 @@ getNonBeaconRanges(const Input& input, const std::int32_t y)
       Point end = { sensor.x + static_cast<std::int32_t>(radiusAtY), y };
 
       if (start == beacon) {
-        start.x += 1;
+       // start.x += 1;
       }
       if (end == beacon) {
-        end.x -= 1;
+       // end.x -= 1;
       }
       lines.emplace_back(start, end);
     }
@@ -82,17 +88,68 @@ template<typename std::int32_t Y, typename std::int32_t B>
 Result
 solve(const Input& input)
 {
+  //
+
+  std::set<Point> uniqueBeacons;
+  BeaconCountAt beaconCountAt{};
+  for (const auto& [_, beacon] : input) {
+    if (!uniqueBeacons.contains(beacon)) {
+      ++beaconCountAt[beacon.y];
+      uniqueBeacons.insert(beacon);
+    }
+  }
+
   std::optional<std::size_t> part1 = std::nullopt;
-  for (std::int32_t y = 0; y < B && !part1; ++y) {
+  std::optional<std::size_t> part2 = std::nullopt;
+  for (std::int32_t y = 0; y < B && !(part1 && part2); ++y) {
     auto nonBeaconRanges = getNonBeaconRanges(input, y);
     if (y == Y) {
       part1 = 0;
       for (const auto& line : nonBeaconRanges) {
-        *part1 += static_cast<std::size_t>(line.end.x - line.start.x + 1);
+        *part1 += static_cast<std::size_t>(line.end.x - line.start.x + 1) - beaconCountAt[y];
+      }
+    }
+    std::vector<Line> potentialBeaconRanges{};
+    if (nonBeaconRanges.empty()) {
+      Line range = { { 0, y }, { B, y } };
+      potentialBeaconRanges.emplace_back(range);
+    } else {
+      if (nonBeaconRanges[0].start.x <= 0) {
+        nonBeaconRanges[0].start.x = 0;
+      } else {
+        Line range = { { 0, y }, { nonBeaconRanges[0].start.x - 1, y } };
+        potentialBeaconRanges.emplace_back(range);
+      }
+      auto &b = nonBeaconRanges.back();
+      assert(b.start.x <= b.end.x); 
+      if (nonBeaconRanges.back().end.x > B) {
+        nonBeaconRanges.back().end.x = B;
+      } else {
+        Line range = { { nonBeaconRanges.back().end.x + 1, y }, { B, y } };
+        potentialBeaconRanges.emplace_back(range);
+      }
+      if (nonBeaconRanges.size() > 1) {
+        for (std::size_t i = 1; i < nonBeaconRanges.size(); ++i) {
+          const auto space =
+            nonBeaconRanges[i].start.x - nonBeaconRanges[i - 1].end.x;
+          if (space > 1) {
+            Line range = { { nonBeaconRanges[i - 1].end.x + 1, y },
+                           { nonBeaconRanges[i].start.x - 1, y } };
+            potentialBeaconRanges.emplace_back(range);
+          }
+        }
+      }
+
+      for (const auto& range : potentialBeaconRanges) {
+          if ( range.start.x == range.end.x) {
+              static constexpr std::size_t freqMultiplier = 4000000;
+              part2 = static_cast<std::size_t>(y) + static_cast<std::size_t>(range.start.x)*freqMultiplier;
+              break;
+          }
       }
     }
   }
-  return { *part1, *part1 };
+  return { *part1, *part2 };
 }
 
 Result

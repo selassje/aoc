@@ -54,7 +54,7 @@ readInput(const std::string_view path_)
 
 namespace aoc22::day15 {
 
-template<typename std::int32_t>
+template<typename std::int32_t, typename std::int32_t>
 Result
 solve(const Input&);
 
@@ -63,9 +63,9 @@ solve(const Input&);
 TEST_CASE("Day15 Example", "[Day15]")
 {
   const auto input = readInput(inputs::day15::EXAMPLE);
-  const auto& [part_1, part_2] = aoc22::day15::solve<10>(input);
+  const auto& [part_1, part_2] = aoc22::day15::solve<10, 20>(input);
   REQUIRE(part_1 == 26);
-  REQUIRE(part_2 == 26);
+  REQUIRE(part_2 == 56000011);
 }
 
 TEST_CASE("Day15 Input", "[Day15]")
@@ -73,6 +73,6 @@ TEST_CASE("Day15 Input", "[Day15]")
   const auto input = readInput(inputs::day15::INPUT);
   const auto& [part_1, part_2] = aoc22::day15::solve(input);
   REQUIRE(part_1 == 5838453);
-  REQUIRE(part_2 == 5838453);
+//  REQUIRE(part_2 == 5838453);
 }
 

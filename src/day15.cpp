@@ -27,7 +27,7 @@ tryMergeLines(Line& target, const Line& source)
   return false;
 }
 
-template<typename std::int32_t Y>
+template<typename std::int32_t Y, typename std::int32_t B>
 Result
 solve(const Input& input)
 {
@@ -81,11 +81,11 @@ outer:
 Result
 solve(const Input& input)
 {
-  return solve<2000000>(input);
+  return solve<2000000, 4000000>(input);
 }
 
 #ifdef ENABLE_TESTS
 template Result
-solve<10>(const Input&);
+solve<10,20>(const Input&);
 #endif
 }

@@ -1,5 +1,8 @@
 #include "day15.hpp"
 
+#include <algorithm>
+#include <optional>
+
 namespace aoc22::day15 {
 
 [[nodiscard]] constexpr std::size_t
@@ -27,19 +30,18 @@ tryMergeLines(Line& target, const Line& source)
   return false;
 }
 
-template<typename std::int32_t Y, typename std::int32_t B>
-Result
-solve(const Input& input)
+std::vector<Line>
+getNonBeaconRanges(const Input& input, const std::int32_t y)
 {
   std::vector<Line> lines{};
   for (const auto& [sensor, beacon] : input) {
     const auto radius = getDistance(sensor, beacon);
     const auto distanceToY =
-      static_cast<std::size_t>(std::max(sensor.y, Y) - std::min(sensor.y, Y));
+      static_cast<std::size_t>(std::max(sensor.y, y) - std::min(sensor.y, y));
     if (radius >= distanceToY) {
       const auto radiusAtY = radius - distanceToY;
-      Point start = { sensor.x - static_cast<std::int32_t>(radiusAtY), Y };
-      Point end = { sensor.x + static_cast<std::int32_t>(radiusAtY), Y };
+      Point start = { sensor.x - static_cast<std::int32_t>(radiusAtY), y };
+      Point end = { sensor.x + static_cast<std::int32_t>(radiusAtY), y };
 
       if (start == beacon) {
         start.x += 1;
@@ -70,12 +72,27 @@ outer:
     onlyDisjointeLeft = true;
   }
 
-  std::size_t part1 = 0;
-  for (const auto& line : lines) {
-    part1 += static_cast<std::size_t>(line.end.x - line.start.x + 1);
-  }
+  std::ranges::sort(lines, [](const auto& line1, const auto& line2) {
+    return line1.start.x < line2.start.x;
+  });
+  return lines;
+}
 
-  return { part1, part1 };
+template<typename std::int32_t Y, typename std::int32_t B>
+Result
+solve(const Input& input)
+{
+  std::optional<std::size_t> part1 = std::nullopt;
+  for (std::int32_t y = 0; y < B && !part1; ++y) {
+    auto nonBeaconRanges = getNonBeaconRanges(input, y);
+    if (y == Y) {
+      part1 = 0;
+      for (const auto& line : nonBeaconRanges) {
+        *part1 += static_cast<std::size_t>(line.end.x - line.start.x + 1);
+      }
+    }
+  }
+  return { *part1, *part1 };
 }
 
 Result
@@ -86,6 +103,6 @@ solve(const Input& input)
 
 #ifdef ENABLE_TESTS
 template Result
-solve<10,20>(const Input&);
+solve<10, 20>(const Input&);
 #endif
 }

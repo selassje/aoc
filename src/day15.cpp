@@ -42,23 +42,28 @@ solve(const Input& input)
       Point end = { sensor.x + static_cast<std::int32_t>(radiusAtY), Y };
 
       if (start == beacon) {
-          start.x += 1;
+        start.x += 1;
       }
       if (end == beacon) {
-          end.x -= 1;
+        end.x -= 1;
       }
       lines.emplace_back(start, end);
     }
   }
 
   bool onlyDisjointeLeft = false;
-  outer:
+outer:
   while (!onlyDisjointeLeft) {
-    for(auto  itLine1 = lines.begin(); itLine1 != lines.end() ; ++itLine1 ) {
-      for(auto  itLine2 = lines.begin(); itLine2 != lines.end() && itLine1 != itLine2 ; ++itLine2 ) {
-        if ( tryMergeLines(*itLine1, *itLine2)) {
-            lines.erase(itLine2);
-            goto outer;
+    for (auto itLine1 = lines.begin(); itLine1 != lines.end(); ++itLine1) {
+      for (auto itLine2 = lines.begin();
+           itLine2 != lines.end() && itLine1 != itLine2;
+           ++itLine2) {
+        if (tryMergeLines(*itLine1, *itLine2)) {
+          lines.erase(itLine2);
+          goto outer;
+        } else if (tryMergeLines(*itLine2, *itLine1)) {
+          lines.erase(itLine1);
+          goto outer;
         }
       }
     }

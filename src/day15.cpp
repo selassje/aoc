@@ -1,12 +1,12 @@
 #include "day15.hpp"
 
 #include <algorithm>
-#include <cassert>
+#include <numeric>
 #include <optional>
+#include <ranges>
 #include <set>
 #include <unordered_map>
 #include <utility>
-
 
 namespace aoc22::day15 {
 
@@ -102,13 +102,12 @@ solve(const Input& input)
     const auto nonBeaconRanges = getNonBeaconRanges(input, y);
     if (y == Y) {
       part1 = 0;
-      for (const auto& range : nonBeaconRanges) {
-        *part1 += range.length() - beaconCountAtY.at(y);
-      }
     }
-
-    for (std::size_t i = 1; i < nonBeaconRanges.size(); ++i) {
-      if (nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end == 2) {
+    for (std::size_t i = 0; i < nonBeaconRanges.size(); ++i) {
+      if (y == Y) {
+        *part1 += nonBeaconRanges[i].length() - beaconCountAtY.at(y);
+      }
+      if (i > 0 && nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end == 2) {
         static constexpr std::size_t freqMultiplier = 4000000;
         part2 = static_cast<std::size_t>(y) +
                 static_cast<std::size_t>(nonBeaconRanges[i - 1].end + 1) *

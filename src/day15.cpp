@@ -22,6 +22,8 @@ struct Range
 {
   std::int32_t start;
   std::int32_t end;
+
+  auto operator<=>(const Range&) const noexcept = default;
 };
 
 bool
@@ -70,9 +72,7 @@ outer:
     onlyDisjointeLeft = true;
   }
 
-  std::ranges::sort(ranges, [](const auto& range1, const auto& range2) {
-    return range1.start < range2.start;
-  });
+  std::ranges::sort(ranges);
   return ranges;
 }
 

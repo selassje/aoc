@@ -1,12 +1,11 @@
 #include "day15.hpp"
 
 #include <algorithm>
-#include <numeric>
-#include <optional>
-#include <ranges>
+#include <cstddef>
+#include <cstdint>
 #include <set>
 #include <unordered_map>
-#include <utility>
+#include <vector>
 
 namespace aoc22::day15 {
 
@@ -24,7 +23,7 @@ struct Range
 
   constexpr auto operator<=>(const Range&) const noexcept = default;
 
-  constexpr std::size_t length() const noexcept
+  [[nodiscard]] constexpr std::size_t length() const noexcept
   {
     return static_cast<std::size_t>(end) - static_cast<std::size_t>(start) + 1;
   }
@@ -57,8 +56,9 @@ getNonBeaconRanges(const Input& input, const std::int32_t y)
       static_cast<std::size_t>(std::max(sensor.y, y) - std::min(sensor.y, y));
     if (radius >= distanceToY) {
       const auto radiusAtY = radius - distanceToY;
-      std::int32_t start = sensor.x - static_cast<std::int32_t>(radiusAtY);
-      std::int32_t end = sensor.x + static_cast<std::int32_t>(radiusAtY);
+      const std::int32_t start =
+        sensor.x - static_cast<std::int32_t>(radiusAtY);
+      const std::int32_t end = sensor.x + static_cast<std::int32_t>(radiusAtY);
       ranges.emplace_back(start, end);
     }
   }
@@ -96,32 +96,35 @@ solve(const Input& input)
     return beaconCountAtY_;
   }();
 
-  std::optional<std::size_t> part1 = std::nullopt;
-  std::optional<std::size_t> part2 = std::nullopt;
-  for (std::int32_t y = 0; y < B && !(part1 && part2); ++y) {
+  std::size_t part1 = 0;
+  std::size_t part2 = 0;
+  bool part1Found = false;
+  bool part2Found = false;
+  for (std::int32_t y = 0; y < B && !(part1Found && part2Found); ++y) {
     const auto nonBeaconRanges = getNonBeaconRanges(input, y);
-    if (y == Y) {
-      part1 = 0;
-    }
     for (std::size_t i = 0; i < nonBeaconRanges.size(); ++i) {
       if (y == Y) {
-        *part1 += nonBeaconRanges[i].length() - beaconCountAtY.at(y);
+        part1 += nonBeaconRanges[i].length() - beaconCountAtY.at(y);
+        part1Found = true;
       }
       if (i > 0 && nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end == 2) {
         static constexpr std::size_t freqMultiplier = 4000000;
         part2 = static_cast<std::size_t>(y) +
                 static_cast<std::size_t>(nonBeaconRanges[i - 1].end + 1) *
                   freqMultiplier;
+        part2Found = true;
       }
     }
   }
-  return { *part1, *part2 };
+  return { part1, part2 };
 }
 
 Result
 solve(const Input& input)
 {
-  return solve<2000000, 4000000>(input);
+  static constexpr std::int32_t row = 2000000;
+  static constexpr std::int32_t limit = 4000000;
+  return solve<row, limit>(input);
 }
 
 #ifdef ENABLE_TESTS

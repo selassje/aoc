@@ -4,6 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstdint>
 #include <cstdlib>
 #include <fstream>
 #include <regex>
@@ -11,9 +12,7 @@
 #include <string_view>
 
 using aoc22::day15::Input;
-using aoc22::day15::Point;
 using aoc22::day15::Record;
-using aoc22::day15::Result;
 
 Input
 readInput(const std::string_view path_)
@@ -30,7 +29,7 @@ readInput(const std::string_view path_)
     if (!line.empty()) {
       auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);
       for (std::size_t i = 0; i < 4; ++i) {
-        const auto number = std::stoi(numbersBegin->str().c_str());
+        const auto number = std::stoi(numbersBegin->str());
         if (i == 0) {
           record.sensor.x = number;
         }
@@ -61,8 +60,10 @@ solve(const Input&);
 
 TEST_CASE("Day15 Example", "[Day15]")
 {
+  static constexpr std::int32_t row = 10;
+  static constexpr std::int32_t limit = 20;
   const auto input = readInput(inputs::day15::EXAMPLE);
-  const auto& [part_1, part_2] = aoc22::day15::solve<10, 20>(input);
+  const auto& [part_1, part_2] = aoc22::day15::solve<row, limit>(input);
   REQUIRE(part_1 == 26);
   REQUIRE(part_2 == 56000011);
 }

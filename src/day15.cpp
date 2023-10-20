@@ -70,7 +70,7 @@ outer:
            ++itRange2) {
         if (itRange1 != itRange2 && tryMergeRanges(*itRange1, *itRange2)) {
           ranges.erase(itRange2);
-          goto outer;
+          goto outer; //NOLINT
         }
       }
     }
@@ -86,7 +86,7 @@ solve(const Input& input)
 {
   const auto beaconCountAtY = [&input]() {
     std::set<Point> uniqueBeacons;
-    std::unordered_map<std::int32_t, std::size_t> beaconCountAtY_{};
+    std::unordered_map<std::int32_t, std::size_t> beaconCountAtY_{}; //NOLINT
     for (const auto& [_, beacon] : input) {
       if (!uniqueBeacons.contains(beacon)) {
         ++beaconCountAtY_[beacon.y];

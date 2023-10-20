@@ -57,14 +57,10 @@ getNonBeaconRanges(const Input& input, const std::int32_t y)
 outer:
   while (!onlyDisjointeLeft) {
     for (auto itRange1 = ranges.begin(); itRange1 != ranges.end(); ++itRange1) {
-      for (auto itRange2 = ranges.begin();
-           itRange2 != ranges.end() && itRange1 != itRange2;
+      for (auto itRange2 = ranges.begin(); itRange2 != ranges.end();
            ++itRange2) {
-        if (tryMergeRanges(*itRange1, *itRange2)) {
+        if (itRange1 != itRange2 && tryMergeRanges(*itRange1, *itRange2)) {
           ranges.erase(itRange2);
-          goto outer;
-        } else if (tryMergeRanges(*itRange2, *itRange1)) {
-          ranges.erase(itRange1);
           goto outer;
         }
       }
@@ -121,7 +117,7 @@ solve(const Input& input)
         for (std::size_t i = 1; i < nonBeaconRanges.size(); ++i) {
           const auto space =
             nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end;
-          if (space > 1) {
+          if (space == 2) {
             Range range = { nonBeaconRanges[i - 1].end + 1,
                             nonBeaconRanges[i].start - 1 };
             potentialBeaconRanges.emplace_back(range);
@@ -130,12 +126,12 @@ solve(const Input& input)
       }
 
       for (const auto& range : potentialBeaconRanges) {
-          if ( range.start == range.end) {
+        if (range.start == range.end) {
           static constexpr std::size_t freqMultiplier = 4000000;
           part2 = static_cast<std::size_t>(y) +
                   static_cast<std::size_t>(range.start) * freqMultiplier;
           break;
-          }
+        }
       }
     }
   }

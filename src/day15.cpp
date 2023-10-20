@@ -1,13 +1,13 @@
 #include "day15.hpp"
 
 #include <algorithm>
-#include <optional>
-#include <utility>
 #include <cassert>
 #include <map>
+#include <optional>
 #include <set>
+#include <utility>
 
-using BeaconCountAt = std::unordered_map<std::int32_t,std::size_t>;
+using BeaconCountAt = std::unordered_map<std::int32_t, std::size_t>;
 
 namespace aoc22::day15 {
 
@@ -18,59 +18,51 @@ getDistance(const Point& p1, const Point& p2) noexcept
                                   std::max(p1.y, p2.y) - std::min(p1.y, p2.y));
 }
 
-struct Line
+struct Range
 {
-  Point start;
-  Point end;
+  std::int32_t start;
+  std::int32_t end;
 };
 
 bool
-tryMergeLines(Line& target, const Line& source)
+tryMergeRanges(Range& target, const Range& source)
 {
-  if ((source.start.x <= target.start.x && target.start.x <= source.end.x) ||
-      (source.start.x <= target.end.x && target.end.x <= source.end.x)) {
-    target.start.x = std::min(target.start.x, source.start.x);
-    target.end.x = std::max(target.end.x, source.end.x);
+  if ((source.start <= target.start && target.start <= source.end) ||
+      (source.start <= target.end && target.end <= source.end)) {
+    target.start = std::min(target.start, source.start);
+    target.end = std::max(target.end, source.end);
     return true;
   }
   return false;
 }
 
-std::vector<Line>
+std::vector<Range>
 getNonBeaconRanges(const Input& input, const std::int32_t y)
 {
-  std::vector<Line> lines{};
+  std::vector<Range> ranges{};
   for (const auto& [sensor, beacon] : input) {
     const auto radius = getDistance(sensor, beacon);
     const auto distanceToY =
       static_cast<std::size_t>(std::max(sensor.y, y) - std::min(sensor.y, y));
     if (radius >= distanceToY) {
       const auto radiusAtY = radius - distanceToY;
-      Point start = { sensor.x - static_cast<std::int32_t>(radiusAtY), y };
-      Point end = { sensor.x + static_cast<std::int32_t>(radiusAtY), y };
-
-      if (start == beacon) {
-       // start.x += 1;
-      }
-      if (end == beacon) {
-       // end.x -= 1;
-      }
-      lines.emplace_back(start, end);
+      std::int32_t start = sensor.x - static_cast<std::int32_t>(radiusAtY);
+      std::int32_t end = sensor.x + static_cast<std::int32_t>(radiusAtY);
+      ranges.emplace_back(start, end);
     }
   }
-
   bool onlyDisjointeLeft = false;
 outer:
   while (!onlyDisjointeLeft) {
-    for (auto itLine1 = lines.begin(); itLine1 != lines.end(); ++itLine1) {
-      for (auto itLine2 = lines.begin();
-           itLine2 != lines.end() && itLine1 != itLine2;
-           ++itLine2) {
-        if (tryMergeLines(*itLine1, *itLine2)) {
-          lines.erase(itLine2);
+    for (auto itRange1 = ranges.begin(); itRange1 != ranges.end(); ++itRange1) {
+      for (auto itRange2 = ranges.begin();
+           itRange2 != ranges.end() && itRange1 != itRange2;
+           ++itRange2) {
+        if (tryMergeRanges(*itRange1, *itRange2)) {
+          ranges.erase(itRange2);
           goto outer;
-        } else if (tryMergeLines(*itLine2, *itLine1)) {
-          lines.erase(itLine1);
+        } else if (tryMergeRanges(*itRange2, *itRange1)) {
+          ranges.erase(itRange1);
           goto outer;
         }
       }
@@ -78,18 +70,16 @@ outer:
     onlyDisjointeLeft = true;
   }
 
-  std::ranges::sort(lines, [](const auto& line1, const auto& line2) {
-    return line1.start.x < line2.start.x;
+  std::ranges::sort(ranges, [](const auto& range1, const auto& range2) {
+    return range1.start < range2.start;
   });
-  return lines;
+  return ranges;
 }
 
 template<typename std::int32_t Y, typename std::int32_t B>
 Result
 solve(const Input& input)
 {
-  //
-
   std::set<Point> uniqueBeacons;
   BeaconCountAt beaconCountAt{};
   for (const auto& [_, beacon] : input) {
@@ -105,46 +95,46 @@ solve(const Input& input)
     auto nonBeaconRanges = getNonBeaconRanges(input, y);
     if (y == Y) {
       part1 = 0;
-      for (const auto& line : nonBeaconRanges) {
-        *part1 += static_cast<std::size_t>(line.end.x - line.start.x + 1) - beaconCountAt[y];
+      for (const auto& range : nonBeaconRanges) {
+        *part1 += static_cast<std::size_t>(range.end - range.start + 1) -
+                  beaconCountAt[y];
       }
     }
-    std::vector<Line> potentialBeaconRanges{};
+    std::vector<Range> potentialBeaconRanges{};
     if (nonBeaconRanges.empty()) {
-      Line range = { { 0, y }, { B, y } };
+      Range range = { 0, B };
       potentialBeaconRanges.emplace_back(range);
     } else {
-      if (nonBeaconRanges[0].start.x <= 0) {
-        nonBeaconRanges[0].start.x = 0;
+      if (nonBeaconRanges[0].start <= 0) {
+        nonBeaconRanges[0].start = 0;
       } else {
-        Line range = { { 0, y }, { nonBeaconRanges[0].start.x - 1, y } };
+        Range range = { 0, nonBeaconRanges[0].start - 1 };
         potentialBeaconRanges.emplace_back(range);
       }
-      auto &b = nonBeaconRanges.back();
-      assert(b.start.x <= b.end.x); 
-      if (nonBeaconRanges.back().end.x > B) {
-        nonBeaconRanges.back().end.x = B;
+      if (nonBeaconRanges.back().end > B) {
+        nonBeaconRanges.back().end = B;
       } else {
-        Line range = { { nonBeaconRanges.back().end.x + 1, y }, { B, y } };
+        Range range = { nonBeaconRanges.back().end + 1, B };
         potentialBeaconRanges.emplace_back(range);
       }
       if (nonBeaconRanges.size() > 1) {
         for (std::size_t i = 1; i < nonBeaconRanges.size(); ++i) {
           const auto space =
-            nonBeaconRanges[i].start.x - nonBeaconRanges[i - 1].end.x;
+            nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end;
           if (space > 1) {
-            Line range = { { nonBeaconRanges[i - 1].end.x + 1, y },
-                           { nonBeaconRanges[i].start.x - 1, y } };
+            Range range = { nonBeaconRanges[i - 1].end + 1,
+                            nonBeaconRanges[i].start - 1 };
             potentialBeaconRanges.emplace_back(range);
           }
         }
       }
 
       for (const auto& range : potentialBeaconRanges) {
-          if ( range.start.x == range.end.x) {
-              static constexpr std::size_t freqMultiplier = 4000000;
-              part2 = static_cast<std::size_t>(y) + static_cast<std::size_t>(range.start.x)*freqMultiplier;
-              break;
+          if ( range.start == range.end) {
+          static constexpr std::size_t freqMultiplier = 4000000;
+          part2 = static_cast<std::size_t>(y) +
+                  static_cast<std::size_t>(range.start) * freqMultiplier;
+          break;
           }
       }
     }

@@ -30,8 +30,7 @@ readInput(const std::string_view path_)
     if (!line.empty()) {
       auto numbersBegin = std::sregex_iterator(line.begin(), line.end(), regex);
       for (std::size_t i = 0; i < 4; ++i) {
-        const auto number =
-          std::stoi(numbersBegin->str().c_str());
+        const auto number = std::stoi(numbersBegin->str().c_str());
         if (i == 0) {
           record.sensor.x = number;
         }
@@ -62,10 +61,10 @@ solve(const Input&);
 
 TEST_CASE("Day15 Example", "[Day15]")
 {
-    const auto input = readInput(inputs::day15::EXAMPLE);
-    const auto& [part_1, part_2] = aoc22::day15::solve<10, 20>(input);
-    REQUIRE(part_1 == 26);
-    REQUIRE(part_2 == 56000011);
+  const auto input = readInput(inputs::day15::EXAMPLE);
+  const auto& [part_1, part_2] = aoc22::day15::solve<10, 20>(input);
+  REQUIRE(part_1 == 26);
+  REQUIRE(part_2 == 56000011);
 }
 
 TEST_CASE("Day15 Input", "[Day15]")

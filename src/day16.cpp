@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <numeric>
 #include <optional>
 #include <ranges>
 #include <string>
@@ -15,8 +16,12 @@ constexpr std::size_t valveIndex(std::string_view name) {
 
 constexpr auto maxValves = valveIndex("ZZ") + 1;
 constexpr std::size_t totalMinutes = 30;
+constexpr std::size_t actionMove = 0;
+constexpr std::size_t actionOpen = 1;
 
-using Dp = std::optional<std::size_t>[totalMinutes][maxValves]; 
+using Dp = std::optional<std::size_t>[totalMinutes][maxValves][actionOpen + 1];
+
+constexpr Dp dp{};
 
 
 Valve&
@@ -69,7 +74,18 @@ maxPressureRelease(std::string valveName,
 Result
 solve(const Input& input)
 {
-  const auto part1 = maxPressureRelease("AA", 10, input);
+  std::size_t part1 = 0;
+  //part1 = maxPressureRelease("AA", 10, input);
+  for( std::size_t valve = 0 ; valve < maxValves ; ++valve) {
+    for( std::size_t minute = 0 ; minute < totalMinutes ; ++minute) {
+      const auto d = dp[minute][valve][actionOpen];
+      if ( d) {
+        part1 = std::max(part1, *d);
+      }
+    }
+  }
+
+
   return { part1, part1 };
 }
 

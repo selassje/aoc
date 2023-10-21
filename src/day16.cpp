@@ -1,10 +1,23 @@
 #include "day16.hpp"
 
 #include <algorithm>
+#include <array>
+#include <optional>
 #include <ranges>
 #include <string>
 
 namespace aoc22::day16 {
+
+constexpr std::size_t valveIndex(std::string_view name) {
+  auto toIndex = [](const char c) {return static_cast<std::size_t>(c - 'A');};
+  return toIndex(name[0]) * toIndex(name[1]);
+};
+
+constexpr auto maxValves = valveIndex("ZZ") + 1;
+constexpr std::size_t totalMinutes = 30;
+
+using Dp = std::optional<std::size_t>[totalMinutes][maxValves]; 
+
 
 Valve&
 getValve(std::string_view name, Input& input)
@@ -40,9 +53,13 @@ maxPressureRelease(std::string valveName,
     {
       for (const auto& connectedValve :
            getValve(valveName, input).connectedValves) {
+      //if ( getValve(connectedValve, input).flowRate != 0) 
+        {
         const auto moveResult =
           maxPressureRelease(connectedValve, minutes - 1, input);
          subResults.push_back(moveResult);
+        }
+      
       }
     }
     return std::ranges::max(subResults);
@@ -52,7 +69,7 @@ maxPressureRelease(std::string valveName,
 Result
 solve(const Input& input)
 {
-  const auto part1 = maxPressureRelease("AA", 30, input);
+  const auto part1 = maxPressureRelease("AA", 10, input);
   return { part1, part1 };
 }
 

@@ -9,8 +9,10 @@
 
 namespace aoc22::day16 {
 
-constexpr std::size_t valveIndex(std::string_view name) {
-  auto toIndex = [](const char c) {return static_cast<std::size_t>(c - 'A');};
+constexpr std::size_t
+valveIndex(std::string_view name)
+{
+  auto toIndex = [](const char c) { return static_cast<std::size_t>(c - 'A'); };
   return toIndex(name[0]) * toIndex(name[1]);
 };
 
@@ -22,7 +24,6 @@ constexpr std::size_t actionOpen = 1;
 using Dp = std::optional<std::size_t>[totalMinutes][maxValves][actionOpen + 1];
 
 constexpr Dp dp{};
-
 
 Valve&
 getValve(std::string_view name, Input& input)
@@ -46,7 +47,7 @@ maxPressureRelease(std::string valveName,
   } else if (minutes == 2) {
     return getValve(valveName, input).flowRate;
   } else {
-    std::vector<std::size_t> subResults{0};
+    std::vector<std::size_t> subResults{ 0 };
     if (getValve(valveName, input).flowRate != 0) {
       Input newInput = input;
       auto& flowRate = getValve(valveName, newInput).flowRate;
@@ -58,13 +59,12 @@ maxPressureRelease(std::string valveName,
     {
       for (const auto& connectedValve :
            getValve(valveName, input).connectedValves) {
-      //if ( getValve(connectedValve, input).flowRate != 0) 
+        // if ( getValve(connectedValve, input).flowRate != 0)
         {
-        const auto moveResult =
-          maxPressureRelease(connectedValve, minutes - 1, input);
-         subResults.push_back(moveResult);
+          const auto moveResult =
+            maxPressureRelease(connectedValve, minutes - 1, input);
+          subResults.push_back(moveResult);
         }
-      
       }
     }
     return std::ranges::max(subResults);
@@ -74,19 +74,23 @@ maxPressureRelease(std::string valveName,
 Result
 solve(const Input& input)
 {
+  for (std::size_t minute = 0; minute < totalMinutes; ++minute) {
+    for (std::size_t valve = 0; valve < maxValves; ++valve) {
+      for (std::size_t action = 0; action <= actionOpen; ++action) {
+      }
+    }
+  }
   std::size_t part1 = 0;
-  //part1 = maxPressureRelease("AA", 10, input);
-  for( std::size_t valve = 0 ; valve < maxValves ; ++valve) {
-    for( std::size_t minute = 0 ; minute < totalMinutes ; ++minute) {
+  // part1 = maxPressureRelease("AA", 10, input);
+  for (std::size_t minute = 0; minute < totalMinutes; ++minute) {
+    for (std::size_t valve = 0; valve < maxValves; ++valve) {
       const auto d = dp[minute][valve][actionOpen];
-      if ( d) {
+      if (d) {
         part1 = std::max(part1, *d);
       }
     }
   }
 
-
   return { part1, part1 };
 }
-
 };

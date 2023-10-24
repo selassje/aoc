@@ -101,41 +101,48 @@ maxPressureRelease2(std::size_t valve1,
   const auto& distances1 = distMap.at(valve1);
   const auto& distances2 = distMap.at(valve2);
   for (const auto& [k, d] : distances1) {
-    for (const auto& [k2, d2] : distances2) 
-    {
-      //const auto k2 = k;
-      //const auto d2 = d;
+    for (const auto& [k2, d2] : distances2) {
+      // const auto k2 = k;
+      // const auto d2 = d
 
       const auto flowRate1 = getValve(indexToName(k), input).flowRate;
       const auto flowRate2 = getValve(indexToName(k2), input).flowRate;
-      const auto minutesSpent1 = d + 1;
-      const auto minutesSpent2 = d2 + 1;
-      std::size_t result1 = 0;
-      std::size_t result2 = 0;
-      if (k != valve1 && !openedValves.contains(k) && flowRate1 > 0) {
-        if (minutes1 > minutesSpent1) {
-          result1 = flowRate1 * (minutes1 - minutesSpent1);
+      if (k != valve1 && k2 != valve2 && flowRate1 > 0 && flowRate2 > 0) {
+
+        const auto minutesSpent1 = d + 1;
+        const auto minutesSpent2 = d2 + 1;
+        std::size_t result1 = 0;
+        std::size_t result2 = 0;
+        if (k != valve1 && !openedValves_.contains(k) && flowRate1 > 0) {
+          if (minutes1 > minutesSpent1) {
+            result1 = flowRate1 * (minutes1 - minutesSpent1);
+          }
         }
-      }
-      if (k2 != valve2 && !openedValves.contains(k2) && flowRate2 > 0) {
-        if (minutes2 > minutesSpent2) {
-          result2 = flowRate2 * (minutes2 - minutesSpent2);
+        if (k2 != valve2 && !openedValves_.contains(k2) && flowRate2 > 0) {
+          if (minutes2 > minutesSpent2) {
+            result2 = flowRate2 * (minutes2 - minutesSpent2);
+          }
         }
-      }
-      if (result1 != 0 && result2 != 0) {
-        auto result = result1 + maxPressureRelease2(k,
-                                                    k2,
-                                                    minutes1 - minutesSpent1,
-                                                    minutes2 - minutesSpent2,
-                                                    openedValves_,
-                                                    distMap,
-                                                    input);
-        if (k != k2) {
-          result += result2;
+        auto str1 = indexToName(k);
+        auto str2 = indexToName(k2);
+        const auto totalRes = result1 + result2;
+        if (result1 != 0 && result2 != 0 && k != k2) {
+          auto result = maxPressureRelease2(k,
+                                            k2,
+                                            minutes1 - minutesSpent1,
+                                            minutes2 - minutesSpent2,
+                                            openedValves_,
+                                            distMap,
+                                            input);
+          if (k != k2) {
+            result += result2 + result1;
+          } else {
+            result += std::max({ result1, result2 });
+          }
+          results.push_back(result);
+        } else {
+          int z = 3;
         }
-        results.push_back(result);
-      } else {
-        int z = 3;
       }
     }
   }

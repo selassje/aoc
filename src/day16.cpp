@@ -38,6 +38,8 @@ constexpr std::size_t actionNone = 2;
 
 using Dp = std::optional<std::size_t>[totalMinutes][maxValves][actionNone + 1];
 
+using DistMap = std::map<std::size_t, std::map<std::size_t, std::size_t>>;
+
 Valve&
 getValve(std::string_view name, Input& input)
 {
@@ -58,37 +60,29 @@ getValve(std::string_view name, const Input& input)
 }
 
 std::size_t
-maxPressureRelease(std::string valveName,
+maxPressureRelease(std::size_t valve,
                    std::size_t minutes,
+                   const std::set<std::size_t>& openedValves,
+                   const DistMap& distMap,
                    const Input& input)
 {
-  if (minutes == 1) {
-    return 0;
-  } else if (minutes == 2) {
-    return getValve(valveName, input).flowRate;
-  } else {
-    std::vector<std::size_t> subResults{ 0 };
-    if (getValve(valveName, input).flowRate != 0) {
-      Input newInput = input;
-      auto& flowRate = getValve(valveName, newInput).flowRate;
-      auto openingResult = (minutes - 1) * flowRate;
-      flowRate = 0;
-      openingResult += maxPressureRelease(valveName, minutes - 1, newInput);
-      subResults.push_back(openingResult);
-    }
-    {
-      for (const auto& connectedValve :
-           getValve(valveName, input).connectedValves) {
-        // if ( getValve(connectedValve, input).flowRate != 0)
-        {
-          const auto moveResult =
-            maxPressureRelease(connectedValve, minutes - 1, input);
-          subResults.push_back(moveResult);
-        }
+  std::vector<std::size_t> results{ 0 };
+  auto openedValves_ = openedValves;
+  openedValves_.insert(valve);
+  const auto& distances = distMap.at(valve);
+  for (const auto& [k, d] : distances) {
+    const auto& valveObj = getValve(indexToName(k), input);
+    if (k != valve && !openedValves.contains(k) && valveObj.flowRate > 0) {
+      const auto minutesSpent = d + 1;
+      if (minutes > minutesSpent) {
+        const auto result =
+          valveObj.flowRate * (minutes - minutesSpent) +
+          maxPressureRelease(k, minutes - minutesSpent, openedValves_, distMap, input);
+        results.push_back(result);
       }
     }
-    return std::ranges::max(subResults);
   }
+  return std::ranges::max(results);
 }
 
 std::size_t
@@ -108,9 +102,9 @@ findShortestPath(std::size_t src, const Input& input)
   std::deque<std::size_t> toBeVisitedValves{};
   std::map<std::size_t, std::size_t> distances{};
 
-  for(const auto& valve: input) {
+  for (const auto& valve : input) {
     const auto valveIndex = valveToIndex(valve.name);
-    if ( valveIndex == src) {
+    if (valveIndex == src) {
       distances[valveIndex] = 0;
     } else {
       distances[valveIndex] = maxDistance;
@@ -151,6 +145,11 @@ solve(const Input& input)
     input, [](const auto& valve) { return valve.flowRate > 0; }));
 
   std::size_t part1 = 0;
+
+  part1 = maxPressureRelease(0,30,{},distances,input);
+  return {part1,part1};
+
+
   auto currentValve = 0;
   auto minutesLeft = static_cast<int>(totalMinutes);
   std::set<std::size_t> openedValves{};
@@ -235,7 +234,7 @@ solve2(const Input& input)
     }
   }
   std::size_t part1 = 0;
-  part1 = maxPressureRelease("AA", 30, input);
+  //  part1 = maxPressureRelease("AA", 30, input);
   for (std::size_t minute = 0; minute < totalMinutes; ++minute) {
     for (std::size_t valve = 0; valve < maxValves; ++valve) {
       const auto d = dp[minute][valve][actionOpen];

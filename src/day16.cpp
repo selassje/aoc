@@ -19,6 +19,10 @@ static constexpr std::size_t maxValveCount = letterCount * letterCount;
 
 using ValveSet = std::bitset<maxValveCount>;
 
+using Distances =
+  std::array<std::array<std::size_t, maxValveCount>, maxValveCount>;
+Distances D{};
+
 struct ValveEx : Valve
 {
   [[nodiscard]] std::size_t index() const noexcept
@@ -61,9 +65,10 @@ private:
 
 using DistanceMap = std::map<std::size_t, std::map<std::size_t, std::size_t>>;
 
-using DistancePair = std::pair<std::size_t,std::size_t>;
+using DistancePair = std::pair<std::size_t, std::size_t>;
 
-using DistanceMap2 = std::map<std::size_t, std::vector<DistancePair>>;
+using Pairs = std::vector<std::pair<std::size_t, std::size_t>>;
+Pairs P{};
 
 auto
 findShortestPath(std::size_t src, const InputEx& input)
@@ -110,7 +115,6 @@ findShortestPath(std::size_t src, const InputEx& input)
                                             nonZeroDistances.end());
 }
 
-
 std::size_t
 maxPressureReleasePart1(std::size_t valve,
                         std::size_t minutes,
@@ -153,45 +157,45 @@ maxPressureReleasePart2(std::size_t valve1,
   openedValves_.set(valve2, true);
   const auto& distances1 = distMap.at(valve1);
   const auto& distances2 = distMap.at(valve2);
-  for (const auto& [nextValve1, d1] : distances1) {
-    for (const auto& [nextValve2, d2] : distances2) {
-      if (nextValve1 != valve1 && nextValve2 != valve2 &&
-          !openedValves_.test(nextValve1) && !openedValves_.test(nextValve2)) {
-        const auto flowRate1 = input[nextValve1].flowRate;
-        const auto flowRate2 = input[nextValve2].flowRate;
-        const auto minutesSpent1 = d1 + 1;
-        const auto minutesSpent2 = d2 + 1;
+  for (const auto& [nextValve1, nextValve2] : P) {
+    if (nextValve1 != valve1 && nextValve2 != valve2 &&
+        !openedValves_.test(nextValve1) && !openedValves_.test(nextValve2)) {
+      const auto flowRate1 = input[nextValve1].flowRate;
+      const auto flowRate2 = input[nextValve2].flowRate;
+      const auto d1 = D[valve1][nextValve1];
+      const auto d2 = D[valve2][nextValve2];
+      const auto minutesSpent1 = d1 + 1;
+      const auto minutesSpent2 = d2 + 1;
 
-        auto releasedPressure = [&openedValves_](auto valve,
-                                                 auto minutes,
-                                                 auto minutesSpent,
-                                                 auto flowRate) {
-          return !openedValves_.test(valve) && minutes > minutesSpent
-                   ? flowRate * (minutes - minutesSpent)
-                   : 0;
-        };
+      auto releasedPressure = [&openedValves_](auto valve,
+                                               auto minutes,
+                                               auto minutesSpent,
+                                               auto flowRate) {
+        return !openedValves_.test(valve) && minutes > minutesSpent
+                 ? flowRate * (minutes - minutesSpent)
+                 : 0;
+      };
 
-        const std::size_t releasedPressure1 =
-          releasedPressure(nextValve1, minutes1, minutesSpent1, flowRate1);
-        const std::size_t releasedPressure2 =
-          releasedPressure(nextValve2, minutes2, minutesSpent2, flowRate2);
-        if (releasedPressure1 != 0 && releasedPressure2 != 0) {
-          auto totalReleasedPressure =
-            maxPressureReleasePart2(nextValve1,
-                                    nextValve2,
-                                    minutes1 - minutesSpent1,
-                                    minutes2 - minutesSpent2,
-                                    openedValves_,
-                                    distMap,
-                                    input);
-          if (nextValve1 != nextValve2) {
-            totalReleasedPressure += releasedPressure2 + releasedPressure1;
-          } else {
-            totalReleasedPressure +=
-              std::max({ releasedPressure1, releasedPressure2 });
-          }
-          results.push_back(totalReleasedPressure);
+      const std::size_t releasedPressure1 =
+        releasedPressure(nextValve1, minutes1, minutesSpent1, flowRate1);
+      const std::size_t releasedPressure2 =
+        releasedPressure(nextValve2, minutes2, minutesSpent2, flowRate2);
+      if (releasedPressure1 != 0 && releasedPressure2 != 0) {
+        auto totalReleasedPressure =
+          maxPressureReleasePart2(nextValve1,
+                                  nextValve2,
+                                  minutes1 - minutesSpent1,
+                                  minutes2 - minutesSpent2,
+                                  openedValves_,
+                                  distMap,
+                                  input);
+        if (nextValve1 != nextValve2) {
+          totalReleasedPressure += releasedPressure2 + releasedPressure1;
+        } else {
+          totalReleasedPressure +=
+            std::max({ releasedPressure1, releasedPressure2 });
         }
+        results.push_back(totalReleasedPressure);
       }
     }
   }
@@ -207,8 +211,18 @@ solve(const Input& input)
     const auto valveIndex = valve.index();
     if (valveIndex == 0 || valve.flowRate > 0) {
       distances[valveIndex] = findShortestPath(valveIndex, inputEx);
+      for (const auto& [k, v] : distances[valveIndex]) {
+        D[valveIndex][k] = v;
+      }
     }
   }
+  P.clear();
+  for (const auto& valve1 : inputEx)
+    for (const auto& valve2 : inputEx) {
+      if (valve1.flowRate > 0 && valve2.flowRate > 0) {
+        P.emplace_back(valve1.index(), valve2.index());
+      }
+    }
 
   std::size_t part1 = 0;
   part1 = maxPressureReleasePart1(0, 30, {}, distances, inputEx);

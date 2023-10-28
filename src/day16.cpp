@@ -1,14 +1,15 @@
 #include "day16.hpp"
 
 #include <algorithm>
-#include <array>
+#include <cstddef>
 #include <deque>
+#include <iterator>
+#include <limits>
 #include <map>
-#include <numeric>
-#include <optional>
 #include <ranges>
 #include <set>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace aoc22::day16 {
@@ -30,29 +31,29 @@ class InputEx
 public:
   explicit InputEx(const Input& input)
   {
-    mInput.reserve(input.size());
+    m_input.reserve(input.size());
     std::ranges::transform(input,
-                           std::back_inserter(mInput),
+                           std::back_inserter(m_input),
                            [](const auto& v) { return ValveEx{ v }; });
   }
   const ValveEx& operator[](std::string_view name) const noexcept
   {
-    return *std::ranges::find(mInput, name, &ValveEx::name);
+    return *std::ranges::find(m_input, name, &ValveEx::name);
   }
 
   const ValveEx& operator[](std::size_t index) const noexcept
   {
     static constexpr std::size_t divider = 'Z' - 'A' + 1;
-    const char hi = static_cast<char>(index / divider) + 'A';
-    const char lo = static_cast<char>(index % divider) + 'A';
+    const char hi = static_cast<char>(index / divider + 'A');
+    const char lo = static_cast<char>(index % divider + 'A');
     return (*this)[std::string{ hi, lo }];
   }
 
-  auto begin() const noexcept { return mInput.begin(); }
-  auto end() const noexcept { return mInput.end(); }
+  [[nodiscard]] auto begin() const noexcept { return m_input.begin(); }
+  [[nodiscard]] auto end() const noexcept { return m_input.end(); }
 
 private:
-  std::vector<ValveEx> mInput;
+  std::vector<ValveEx> m_input;
 };
 
 auto
@@ -81,7 +82,6 @@ findShortestPath(std::size_t src, const InputEx& input)
     for (const auto& neighbour : valve.connectedValves) {
       const auto neighbourIndex = input[neighbour].index();
       if (!visitedValves.contains(neighbourIndex)) {
-        const auto neighbourValve = input[neighbour];
         if (const auto canidateLength = distances[valveIndex] + 1;
             canidateLength < distances[neighbourIndex]) {
           distances[neighbourIndex] = canidateLength;
@@ -103,14 +103,14 @@ findShortestPath(std::size_t src, const InputEx& input)
 using DistanceMap = std::map<std::size_t, std::map<std::size_t, std::size_t>>;
 
 std::size_t
-maxPressureReleasePart1(std::size_t valve,
+maxPressureReleasePart1(std::size_t valve, // NOLINT
                         std::size_t minutes,
                         const std::set<std::size_t>& openedValves,
                         const DistanceMap& distMap,
                         const InputEx& input)
 {
   std::vector<std::size_t> results{ 0 };
-  auto openedValves_ = openedValves;
+  auto openedValves_ = openedValves; // NOLINT
   openedValves_.insert(valve);
   const auto str = input[valve].name;
   const auto& distances = distMap.at(valve);
@@ -131,7 +131,7 @@ maxPressureReleasePart1(std::size_t valve,
 }
 std::size_t
 maxPressureReleasePart2(std::size_t valve1,
-                        std::size_t valve2,
+                        std::size_t valve2, // NOLINT
                         std::size_t minutes1,
                         std::size_t minutes2,
                         const std::set<std::size_t>& openedValves,
@@ -139,7 +139,7 @@ maxPressureReleasePart2(std::size_t valve1,
                         const InputEx& input)
 {
   std::vector<std::size_t> results{ 0 };
-  auto openedValves_ = openedValves;
+  auto openedValves_ = openedValves; // NOLINT
   openedValves_.insert(valve1);
   openedValves_.insert(valve2);
   const auto& distances1 = distMap.at(valve1);
@@ -166,17 +166,19 @@ maxPressureReleasePart2(std::size_t valve1,
         const std::size_t releasedPressure2 =
           releasedPressure(nextValve2, minutes2, minutesSpent2, flowRate2);
         if (releasedPressure1 != 0 && releasedPressure2 != 0) {
-          auto totalReleasedPressure = maxPressureReleasePart2(nextValve1,
-                                                nextValve2,
-                                                minutes1 - minutesSpent1,
-                                                minutes2 - minutesSpent2,
-                                                openedValves_,
-                                                distMap,
-                                                input);
+          auto totalReleasedPressure =
+            maxPressureReleasePart2(nextValve1,
+                                    nextValve2,
+                                    minutes1 - minutesSpent1,
+                                    minutes2 - minutesSpent2,
+                                    openedValves_,
+                                    distMap,
+                                    input);
           if (nextValve1 != nextValve2) {
             totalReleasedPressure += releasedPressure2 + releasedPressure1;
           } else {
-            totalReleasedPressure += std::max({ releasedPressure1, releasedPressure2 });
+            totalReleasedPressure +=
+              std::max({ releasedPressure1, releasedPressure2 });
           }
           results.push_back(totalReleasedPressure);
         }
@@ -198,11 +200,14 @@ solve(const Input& input)
     }
   }
 
+  static constexpr std::size_t totalMinutesPart1 = 30;
   std::size_t part1 = 0;
-  part1 = maxPressureReleasePart1(0, 30, {}, distances, inputEx);
+  part1 = maxPressureReleasePart1(0, totalMinutesPart1, {}, distances, inputEx);
 
+  static constexpr std::size_t totalMinutesPart2 = 26;
   std::size_t part2 = 0;
-  part2 = maxPressureReleasePart2(0, 0, 26, 26, {}, distances, inputEx);
+  part2 = maxPressureReleasePart2(
+    0, 0, totalMinutesPart2, totalMinutesPart2, {}, distances, inputEx);
 
   return { part1, part2 };
 }

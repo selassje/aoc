@@ -8,7 +8,8 @@
 
 namespace aoc22::day16 {
 
-struct Valve {
+struct Valve
+{
   std::string name;
   std::size_t flowRate;
   std::vector<std::string> connectedValves;
@@ -16,7 +17,8 @@ struct Valve {
 
 using Input = std::vector<Valve>;
 
-struct Result {
+struct Result
+{
   std::size_t part1;
   std::size_t part2;
 };

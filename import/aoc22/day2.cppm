@@ -1,11 +1,11 @@
-
-#ifndef AOC22_DAY2_HPP
-#define AOC22_DAY2_HPP
+module;
 
 #include <utility>
 #include <vector>
 
-namespace aoc22::day2 {
+export module aoc22.day2;
+
+export namespace aoc22::day2 {
 
 enum class Move : unsigned char
 {
@@ -20,5 +20,3 @@ std::pair<unsigned int, unsigned int>
 solve(const Guide& guide);
 
 }
-
-#endif

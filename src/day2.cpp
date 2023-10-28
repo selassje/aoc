@@ -1,4 +1,4 @@
-#include "day2.hpp"
+module;
 
 #include <cstddef>
 #include <exception>
@@ -11,6 +11,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #endif
+
+module aoc22.day2;
 
 using enum aoc22::day2::Move;
 

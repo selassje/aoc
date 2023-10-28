@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.28)
 
 project(AoC22 LANGUAGES CXX)
 
@@ -16,6 +16,7 @@ include(cmake/clang_format.cmake)
 include(cmake/coverage_report.cmake)
 
 add_subdirectory(src)
+add_subdirectory(import/aoc22)
 
 if(ENABLE_TESTS)
     set_property(GLOBAL PROPERTY CTEST_TARGETS_ADDED 1)

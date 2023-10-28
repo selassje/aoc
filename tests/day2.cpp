@@ -1,4 +1,4 @@
-#include "day2.hpp"
+
 #include "inputs.hpp"
 
 #include <catch2/catch_test_macros.hpp>
@@ -9,6 +9,8 @@
 #include <string>
 #include <string_view>
 #include <utility>
+
+import aoc22.day2;
 
 using aoc22::day2::Guide;
 

@@ -2,6 +2,7 @@
 add_library(aoc22)
 
 set(INCLUDE ${CMAKE_CURRENT_LIST_DIR}/../include/aoc22)
+set(IMPORT ${CMAKE_CURRENT_LIST_DIR}/../import/aoc22)
 
 file(GLOB HEADER_FILES ${INCLUDE}/*.hpp)
 file(GLOB SOURCE_FILES *.cpp)

@@ -1,0 +1,3 @@
+
+file(GLOB MODULE_FILES *.cppm)
+target_sources(aoc22 PUBLIC FILE_SET CXX_MODULES FILES ${MODULE_FILES})

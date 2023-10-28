@@ -1,7 +1,5 @@
-
-#include "inputs.hpp"
-
 #include <catch2/catch_test_macros.hpp>
+#include "inputs.hpp"
 
 #include <exception>
 #include <fstream>

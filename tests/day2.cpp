@@ -1,5 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
+// clang-format off
 #include "inputs.hpp"
+// clang-format on
 
 #include <exception>
 #include <fstream>

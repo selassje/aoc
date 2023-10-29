@@ -12,7 +12,7 @@ module;
 #include <iostream>
 #endif
 
-module aoc22.day2;
+module aoc22.day2; //NOLINT
 
 using enum aoc22::day2::Move;
 

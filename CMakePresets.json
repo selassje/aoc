@@ -199,6 +199,9 @@
         "include": {
           "name" : "day"
         } 
+      },
+      "environment": {
+        "LD_LIBRARY_PATH": "g++"
       }
     },
     {

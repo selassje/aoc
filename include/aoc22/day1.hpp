@@ -28,9 +28,7 @@ getTopThreeCaloriesPerElf(const nested_unsigned_range auto& input)
       std::reduce(inner.begin(), inner.end(), 0U);
     caloriesPefElf.push_back(currentElfCalories);
   }
-  std::ranges::partial_sort(caloriesPefElf,
-                            caloriesPefElf.begin() + 3,
-                            [](auto a, auto b) { return a > b; });
+  std::ranges::sort(caloriesPefElf, [](auto a, auto b) { return a > b; });
   return std::vector<unsigned int>{ caloriesPefElf.begin(),
                                     caloriesPefElf.begin() + 3 };
 }

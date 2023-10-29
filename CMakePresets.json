@@ -107,7 +107,7 @@
       "inherits" : "dev_ninja_gcc",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Release",
-        "ENABLE_TESTS":"OFF"
+        "ENABLE_TESTS":"ON"
       },
       "binaryDir": "${sourceDir}/builds/rel_ninja_gcc"
     },

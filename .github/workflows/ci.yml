@@ -22,6 +22,8 @@ jobs:
            cxx: g++
          - os: ubuntu-latest 
            cxx: cl.exe
+         - os: ubuntu-latest 
+           cxx: g++
         
     runs-on: ${{ matrix.os }}
     env:
@@ -102,3 +104,11 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
+  build_and_test_on_gcc_14:
+    runs-on: ubuntu-latest
+    container: selassje/aoc22_gcc14:initial_version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          submodules: true

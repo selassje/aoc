@@ -30,24 +30,24 @@ struct Square : RockCommon
 using Rock =
   std::variant<HorizontalLine, Cross, ReversedL, VerticalLine, Square>;
 
-auto getNextRock = [i = std::size_t{0}](const Point& leftBottomEdge) mutable -> Rock {
-  switch(i) {
+auto getNextRock =
+  [i = std::size_t{ 0 }](const Point& leftBottomEdge) mutable -> Rock {
+  switch (i) {
     case 0:
-      return HorizontalLine{leftBottomEdge};
+      return HorizontalLine{ leftBottomEdge };
     case 1:
-      return Cross{leftBottomEdge};
+      return Cross{ leftBottomEdge };
     case 2:
-      return ReversedL{leftBottomEdge};
+      return ReversedL{ leftBottomEdge };
     case 3:
-      return VerticalLine{leftBottomEdge};
+      return VerticalLine{ leftBottomEdge };
     case 4:
-      return Square{leftBottomEdge};
+      return Square{ leftBottomEdge };
     default:
       std::abort();
   }
-  i =  (i + 1) % std::variant_size_v<Rock>;
+  i = (i + 1) % std::variant_size_v<Rock>;
 };
-
 
 Result
 solve(const Input& input)
@@ -58,11 +58,12 @@ solve(const Input& input)
 
   std::size_t heighestRock = 0;
   std::vector<Rock> stoppedRocks{};
+  return { heighestRock, heighestRock };
   static constexpr std::size_t leftEdge = 2;
-  while ( stoppedRocks.size() < targetStoppedRocksCount) {
-    auto rock = getNextRock({leftEdge, heighestRock + 4});
+  while (stoppedRocks.size() < targetStoppedRocksCount) {
+    auto rock = getNextRock({ leftEdge, heighestRock + 4 });
     std::size_t i = 0;
-    while(true) {
+    while (true) {
       const auto jet = input[i];
       i = (i + 1) % jetCount;
     }

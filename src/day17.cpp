@@ -25,11 +25,13 @@ struct Line
 
     if (isVertical() == line.isVertical()) {
       if (isVertical()) {
-        return inRange(start.y, line.start.y, end.y) ||
-               inRange(start.y, line.end.y, end.y);
+        return start.x == line.start.x &&
+               (inRange(start.y, line.start.y, end.y) ||
+                inRange(start.y, line.end.y, end.y));
       }
-      return inRange(start.x, line.start.x, end.x) ||
-             inRange(start.x, line.end.x, end.x);
+      return start.y == line.start.y &&
+             (inRange(start.x, line.start.x, end.x) ||
+              inRange(start.x, line.end.x, end.x));
     } else {
       if (isVertical()) {
         return inRange(line.start.x, start.x, line.end.x) &&
@@ -119,9 +121,9 @@ struct GetHeight
 {
   auto operator()(const HorizontalLine&) { return 1U; }
 
-  auto operator()(const Cross& ) { return 3U; }
+  auto operator()(const Cross&) { return 3U; }
 
-  auto operator()(const ReversedL& ) { return 3U; }
+  auto operator()(const ReversedL&) { return 3U; }
 
   auto operator()(const VerticalLine&) { return 4U; }
 
@@ -138,33 +140,14 @@ struct MoveRight
 
 using Move = std::variant<MoveLeft, MoveRight>;
 
-auto getNextRock =
-  [i = std::size_t{ 0 }](const Point& leftBottomEdge) mutable -> Rock {
-  switch (i) {
-    case 0:
-      return HorizontalLine{ leftBottomEdge };
-    case 1:
-      return Cross{ leftBottomEdge };
-    case 2:
-      return ReversedL{ leftBottomEdge };
-    case 3:
-      return VerticalLine{ leftBottomEdge };
-    case 4:
-      return Square{ leftBottomEdge };
-    default:
-      std::abort();
-  }
-  i = (i + 1) % std::variant_size_v<Rock>;
-};
-
 auto moveSideways = []<typename R, typename M>(R& rock, M&) {
   auto movedRock = rock;
-  if constexpr (std::is_same<M, MoveLeft>::value) {
-    if (movedRock.bottomLeft.x > 0) {
-      movedRock.x -= 1;
+  if constexpr (std::is_same<std::decay_t<M>, MoveLeft>::value == true) {
+    if (movedRock.bottomLeft.x > 1) {
+      movedRock.bottomLeft.x -= 1;
     }
   } else {
-    const auto rightEdge = std::visit(GetRightEdge{}, Rock{movedRock});
+    const auto rightEdge = std::visit(GetRightEdge{}, Rock{ movedRock });
     static constexpr std::size_t chamberWidth = 7;
     if (rightEdge < chamberWidth) {
       movedRock.bottomLeft.x += 1;
@@ -179,16 +162,14 @@ auto moveDown = []<typename R>(R& rock) {
   return Rock{ movedRock };
 };
 
-auto getBottom = []<typename R>(R& rock) {
-  return rock.bottomLeft.y;
-};
+auto getBottom = []<typename R>(R& rock) { return rock.bottomLeft.y; };
 
 bool
 isMovePossible(const std::vector<Rock>& rocks, const Rock& movedRock)
 {
+  const auto lines2 = std::visit(GetLines{}, movedRock);
   for (const auto& rock : rocks) {
     const auto lines1 = std::visit(GetLines{}, rock);
-    const auto lines2 = std::visit(GetLines{}, movedRock);
     for (const auto& line1 : lines1) {
       for (const auto& line2 : lines2)
         if (line1.isOverlapping(line2)) {
@@ -202,32 +183,50 @@ isMovePossible(const std::vector<Rock>& rocks, const Rock& movedRock)
 Result
 solve(const Input& input)
 {
+  auto getNextRock = [i = static_cast<std::size_t>(-1)](
+                       const Point& leftBottomEdge) mutable -> Rock {
+    i = (i + 1) % std::variant_size_v<Rock>;
+    switch (i) {
+      case 0:
+        return HorizontalLine{ leftBottomEdge };
+      case 1:
+        return Cross{ leftBottomEdge };
+      case 2:
+        return ReversedL{ leftBottomEdge };
+      case 3:
+        return VerticalLine{ leftBottomEdge };
+      case 4:
+        return Square{ leftBottomEdge };
+      default:
+        std::abort();
+    }
+  };
   static constexpr std::size_t targetStoppedRocksCount = 2022;
   const std::size_t jetCount = input.size();
 
   std::size_t heighestRock = 0;
   std::vector<Rock> stoppedRocks{};
   static constexpr std::size_t leftEdge = 3;
+  std::size_t i = 0;
   while (stoppedRocks.size() < targetStoppedRocksCount) {
     auto rock = getNextRock({ leftEdge, heighestRock + 4 });
-    std::size_t i = 0;
     while (true) {
       const auto jet =
         input[i] == JetDir::Left ? Move{ MoveLeft{} } : Move{ MoveRight{} };
+      i = (i + 1) % jetCount;
       const auto movedRock = std::visit(moveSideways, rock, jet);
       if (isMovePossible(stoppedRocks, movedRock)) {
         rock = std::move(movedRock);
       }
-      const auto movedDownRock = std::visit(moveDown, rock );
+      const auto movedDownRock = std::visit(moveDown, rock);
       const auto bottom = std::visit(getBottom, movedDownRock);
-      if ( bottom == 0  || !isMovePossible(stoppedRocks, movedDownRock)) {
-          const auto height = std::visit(GetHeight{}, movedDownRock);
-          heighestRock = std::max(heighestRock, bottom + height);
-          break;
+      if (bottom == 0 || !isMovePossible(stoppedRocks, movedDownRock)) {
+        const auto height = std::visit(GetHeight{}, movedDownRock);
+        heighestRock = std::max(heighestRock, bottom + height);
+        break;
       } else {
         rock = std::move(movedDownRock);
       }
-      i = (i + 1) % jetCount;
     }
     stoppedRocks.emplace_back(rock);
   }

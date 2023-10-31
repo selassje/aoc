@@ -11,6 +11,33 @@ struct Point
   std::size_t y;
 };
 
+struct Line
+{
+  Point start;
+  Point end;
+  constexpr bool isVertical() const noexcept { return start.x == end.x; }
+  bool isOverlapping(const Line& line) const noexcept
+  {
+    static constexpr auto inRange = [](const auto &min, const auto& val,  const auto &max) {
+      return min <= val && val <= max;
+    };
+
+    if (isVertical() == line.isVertical()) {
+      if (isVertical()) {
+         return inRange(start.y, line.start.y, end.y) ||  inRange(start.y, line.end.y, end.y);
+      } 
+      return inRange(start.x, line.start.x, end.x) ||  inRange(start.x, line.end.x, end.x);
+    } else {
+        if (isVertical()) {
+          return inRange(line.start.x, start.x, line.end.x) && inRange(start.y, line.start.y, end.y);
+        }
+        return inRange(line.start.y, start.y, line.end.y) && inRange(start.x, line.start.x, end.x);
+    }
+  }
+};
+
+using Lines = std::vector<Line>;
+
 struct RockCommon
 {
   Point bottomLeft;
@@ -27,8 +54,8 @@ struct VerticalLine : RockCommon
 struct Square : RockCommon
 {};
 
-using Rock =
-  std::variant<HorizontalLine, Cross, ReversedL, VerticalLine, Square>;
+  using Rock =
+    std::variant<HorizontalLine, Cross, ReversedL, VerticalLine, Square>;
 
 auto getNextRock =
   [i = std::size_t{ 0 }](const Point& leftBottomEdge) mutable -> Rock {

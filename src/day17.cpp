@@ -45,6 +45,12 @@ struct Line
 
 using Lines = std::vector<Line>;
 
+struct MoveLeft
+{};
+struct MoveRight
+{};
+
+using Move = std::variant<MoveLeft, MoveRight>;
 struct RockCommon
 {
   Point bottomLeft;
@@ -132,13 +138,6 @@ struct GetHeight
 
 using Rock =
   std::variant<HorizontalLine, Cross, ReversedL, VerticalLine, Square>;
-
-struct MoveLeft
-{};
-struct MoveRight
-{};
-
-using Move = std::variant<MoveLeft, MoveRight>;
 
 auto moveSideways = []<typename R, typename M>(R& rock, M&) {
   auto movedRock = rock;

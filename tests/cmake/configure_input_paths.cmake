@@ -10,5 +10,6 @@ foreach(i RANGE 1 17)
 endforeach()
 
 set_path(9 example2)
+set_path(17 input2)
 
 configure_file(inputs.hpp.in inputs.hpp)

@@ -1,5 +1,6 @@
 #include "day17.hpp"
 
+#include <cassert>
 #include <cstddef>
 #include <variant>
 
@@ -171,7 +172,7 @@ isMovePossible(const std::vector<Rock>& rocks, const Rock& movedRock)
     const auto lines1 = std::visit(GetLines{}, rock);
     for (const auto& line1 : lines1) {
       for (const auto& line2 : lines2)
-        if (line1.isOverlapping(line2)) {
+        if (line1.isOverlapping(line2) || line2.isOverlapping(line1)) {
           return false;
         }
     }
@@ -222,14 +223,14 @@ solve(const Input& input)
       if (bottom == 0 || !isMovePossible(stoppedRocks, movedDownRock)) {
         const auto height = std::visit(GetHeight{}, movedDownRock);
         heighestRock = std::max(heighestRock, bottom + height);
+        stoppedRocks.emplace_back(rock);
         break;
       } else {
         rock = std::move(movedDownRock);
       }
     }
-    stoppedRocks.emplace_back(rock);
   }
-
+  assert(stoppedRocks.size() == targetStoppedRocksCount);
   return { heighestRock, heighestRock };
 }
 

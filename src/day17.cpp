@@ -1,5 +1,6 @@
 #include "day17.hpp"
 
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <variant>
@@ -12,307 +13,139 @@ struct Point
   std::size_t y;
 };
 
-struct Line
+enum class RockType : std::size_t
 {
-  Point start;
-  Point end;
-  constexpr bool isVertical() const noexcept { return start.x == end.x; }
-  bool isOverlapping(const Line& line) const noexcept
-  {
-    static constexpr auto inRange =
-      [](const auto& min, const auto& val, const auto& max) {
-        return min <= val && val <= max;
-      };
-
-    if (isVertical() == line.isVertical()) {
-      if (isVertical()) {
-        return start.x == line.start.x &&
-               (inRange(start.y, line.start.y, end.y) ||
-                inRange(start.y, line.end.y, end.y));
-      }
-      return start.y == line.start.y &&
-             (inRange(start.x, line.start.x, end.x) ||
-              inRange(start.x, line.end.x, end.x));
-    } else {
-      if (isVertical()) {
-        return inRange(line.start.x, start.x, line.end.x) &&
-               inRange(start.y, line.start.y, end.y);
-      }
-      return inRange(line.start.y, start.y, line.end.y) &&
-             inRange(start.x, line.start.x, end.x);
-    }
-  }
+  HorizontalLine = 0,
+  Cross = 1,
+  ReversedL = 2,
+  VerticalLine = 3,
+  Square = 4,
+  TypeCount = 5
 };
 
-using Lines = std::vector<Line>;
+constexpr std::array<std::uint16_t,
+                     static_cast<std::size_t>(RockType::TypeCount)>
+  rocksAsIntegers = { 0b0000000000001111,
+                      0b0000010011100100,
+                      0b0000001000101110,
+                      0b1000100010001000,
+                      0b0000000011001100 };
 
-struct MoveLeft
-{};
-struct MoveRight
-{};
+constexpr std::array<std::size_t, static_cast<std::size_t>(RockType::TypeCount)>
+  rocksHeights = { 1, 3, 3, 4, 2 };
 
-using Move = std::variant<MoveLeft, MoveRight>;
-struct RockCommon
+constexpr std::array<std::size_t, static_cast<std::size_t>(RockType::TypeCount)>
+  rocksWidth = { 4, 3, 3, 1, 2 };
+
+inline constexpr std::byte
+operator"" _B(unsigned long long arg) noexcept
 {
-  Point bottomLeft;
-};
-
-struct HorizontalLine : RockCommon
-{};
-struct Cross : RockCommon
-{};
-struct ReversedL : RockCommon
-{};
-struct VerticalLine : RockCommon
-{};
-struct Square : RockCommon
-{};
-
-struct GetLines
-{
-
-  Lines operator()(const HorizontalLine& rock)
-  {
-    return { { { rock.bottomLeft.x, rock.bottomLeft.y },
-               { rock.bottomLeft.x + 3, rock.bottomLeft.y } } };
-  }
-
-  Lines operator()(const Cross& rock)
-  {
-    const Line horizontal = { { rock.bottomLeft.x, rock.bottomLeft.y + 1 },
-                              { rock.bottomLeft.x + 2,
-                                rock.bottomLeft.y + 1 } };
-    const Line vertical = { { rock.bottomLeft.x + 1, rock.bottomLeft.y },
-                            { rock.bottomLeft.x + 1, rock.bottomLeft.y + 2 } };
-    return { horizontal, vertical };
-  }
-
-  Lines operator()(const ReversedL& rock)
-  {
-    const Line horizontal = { { rock.bottomLeft.x, rock.bottomLeft.y },
-                              { rock.bottomLeft.x + 2, rock.bottomLeft.y } };
-    const Line vertical = { { rock.bottomLeft.x + 2, rock.bottomLeft.y },
-                            { rock.bottomLeft.x + 2, rock.bottomLeft.y + 2 } };
-    return { horizontal, vertical };
-  }
-
-  Lines operator()(const VerticalLine& rock)
-  {
-    return { { { rock.bottomLeft.x, rock.bottomLeft.y },
-               { rock.bottomLeft.x, rock.bottomLeft.y + 3 } } };
-  }
-
-  Lines operator()(const Square& rock)
-  {
-    const Line horizontal1 = { { rock.bottomLeft.x, rock.bottomLeft.y },
-                               { rock.bottomLeft.x + 1, rock.bottomLeft.y } };
-    const Line horizontal2 = { { rock.bottomLeft.x, rock.bottomLeft.y + 1 },
-                               { rock.bottomLeft.x + 1,
-                                 rock.bottomLeft.y + 1 } };
-    return { horizontal1, horizontal2 };
-  }
-};
-struct GetRightEdge
-{
-  auto operator()(const HorizontalLine& rock) { return rock.bottomLeft.x + 3; }
-
-  auto operator()(const Cross& rock) { return rock.bottomLeft.x + 2; }
-
-  auto operator()(const ReversedL& rock) { return rock.bottomLeft.x + 2; }
-
-  auto operator()(const VerticalLine& rock) { return rock.bottomLeft.x; }
-
-  auto operator()(const Square& rock) { return rock.bottomLeft.x + 1; }
-};
-struct GetHeight
-{
-  auto operator()(const HorizontalLine&) { return 1U; }
-
-  auto operator()(const Cross&) { return 3U; }
-
-  auto operator()(const ReversedL&) { return 3U; }
-
-  auto operator()(const VerticalLine&) { return 4U; }
-
-  auto operator()(const Square&) { return 2U; }
-};
-
-using Rock =
-  std::variant<HorizontalLine, Cross, ReversedL, VerticalLine, Square>;
-
-auto moveSideways = []<typename R, typename M>(R& rock, M&) {
-  auto movedRock = rock;
-  if constexpr (std::is_same<std::decay_t<M>, MoveLeft>::value == true) {
-    if (movedRock.bottomLeft.x > 1) {
-      movedRock.bottomLeft.x -= 1;
-    }
-  } else {
-    const auto rightEdge = std::visit(GetRightEdge{}, Rock{ movedRock });
-    static constexpr std::size_t chamberWidth = 7;
-    if (rightEdge < chamberWidth) {
-      movedRock.bottomLeft.x += 1;
-    }
-  }
-  return Rock{ movedRock };
-};
-
-auto moveDown = []<typename R>(R& rock) {
-  auto movedRock = rock;
-  movedRock.bottomLeft.y -= 1;
-  return Rock{ movedRock };
-};
-
-auto getBottom = []<typename R>(R& rock) { return rock.bottomLeft.y; };
-
-bool
-isMovePossible(const std::vector<Rock>& rocks, const Rock& movedRock)
-{
-  const auto lines2 = std::visit(GetLines{}, movedRock);
-  for (const auto& rock : rocks) {
-    const auto lines1 = std::visit(GetLines{}, rock);
-    for (const auto& line1 : lines1) {
-      for (const auto& line2 : lines2)
-        if (line1.isOverlapping(line2) || line2.isOverlapping(line1)) {
-          return false;
-        }
-    }
-  }
-  return true;
+  return static_cast<std::byte>(arg);
 }
-void
-findCycle(const Input& input)
-{
-  auto getNextRock = [i = static_cast<std::size_t>(-1)](
-                       const Point& leftBottomEdge) mutable -> Rock {
-    i = (i + 1) % std::variant_size_v<Rock>;
-    switch (i) {
-      case 0:
-        return HorizontalLine{ leftBottomEdge };
-      case 1:
-        return Cross{ leftBottomEdge };
-      case 2:
-        return ReversedL{ leftBottomEdge };
-      case 3:
-        return VerticalLine{ leftBottomEdge };
-      case 4:
-        return Square{ leftBottomEdge };
-      default:
-        std::abort();
-    }
-  };
 
-  const std::size_t jetCount = input.size();
-  std::vector<Rock> stoppedRocks{};
-  static constexpr std::size_t leftEdge = 3;
-  std::size_t heighestRock = 0;
-  std::size_t i = 0;
-  Lines floor{};
-  floor.reserve(7);
-  auto newFloorFound = [&](const auto y) {
-    int pointsFound = 0;
-    for (std::size_t x = 1; x <= 7; ++x) {
-      floor.emplace_back(Line{ { x, y }, { x, y } });
-    }
-    for (const auto& line2 : floor) {
-      for (const auto& rock : stoppedRocks) {
-        const auto lines1 = std::visit(GetLines{}, rock);
-        for (const auto& line1 : lines1) {
-          if (line1.isOverlapping(line2) || line2.isOverlapping(line1)) {
-            pointsFound++;
-            goto outer;
-          }
-        }
-      }
-      outer:
-      continue;
-    }
-    return pointsFound == 7;
-  };
-  while (true) {
-    auto rock = getNextRock({ leftEdge, heighestRock + 4 });
-    while (true) {
-      const auto jet =
-        input[i] == JetDir::Left ? Move{ MoveLeft{} } : Move{ MoveRight{} };
-      i = (i + 1) % jetCount;
-      const auto movedRock = std::visit(moveSideways, rock, jet);
-      if (isMovePossible(stoppedRocks, movedRock)) {
-        rock = std::move(movedRock);
-      }
-      const auto movedDownRock = std::visit(moveDown, rock);
-      const auto bottom = std::visit(getBottom, movedDownRock);
-      if (bottom == 0 || !isMovePossible(stoppedRocks, movedDownRock)) {
-        const auto height = std::visit(GetHeight{}, movedDownRock);
-        heighestRock = std::max(heighestRock, bottom + height);
-        stoppedRocks.emplace_back(rock);
-        break;
-      } else {
-        rock = std::move(movedDownRock);
-      }
-    }
-    if (newFloorFound(heighestRock)) {
-      break;
-    }
-  }
+constexpr std::uint16_t
+nibbleToUint16(std::uint16_t n3,
+               std::uint16_t n2,
+               std::uint16_t n1,
+               std::uint16_t n0)
+{
+  return n0 + (n1 << 4) + (n2 << 8) + (n3 << 12);
 }
+
+class Tower
+{
+public:
+  std::uint16_t getBitMapAt(Point bottomLeft) const
+  {
+    std::uint16_t result = 0;
+    const int shift = 4 - static_cast<int>(bottomLeft.x);
+    for (auto y = 0; y < 4 ; ++y) {
+      const auto y_ = bottomLeft.y + y;
+      std::uint16_t row =
+        static_cast<std::uint16_t>(rows[y_] & rowMasks[bottomLeft.x - 1]);
+      row = shift >= 0 ? row >> shift : row << std::abs(shift);
+      result += row << 4 * y;
+    }
+    return result;
+  }
+
+  void setBitMapAt(Point bottomLeft, RockType type)
+  {
+    const auto typeIndex = static_cast<std::size_t>(type);
+    const auto val = rocksAsIntegers[typeIndex];
+    const int shift = 4 - static_cast<int>(bottomLeft.x);
+    for (auto y = 0; y < 4 ; ++y) {
+      const auto y_ = bottomLeft.y + y;
+      auto row = static_cast<std::byte>((val & (0xF << 4 * y)) >> 4 * y);
+      row = shift >= 0 ? row << shift : row >> std::abs(shift);
+      rows[y_] = rows[y_] | row;
+    }
+    height = std::max(height, bottomLeft.y + rocksHeights[typeIndex] - 1);
+    resize();
+    ++rocksCount;
+  }
+  bool isCollision(Point bottomLeft, RockType type)
+  {
+    const auto typeIndex = static_cast<std::size_t>(type);
+    return bottomLeft.y == 0 || bottomLeft.x == 0 ||
+           bottomLeft.x + rocksWidth[typeIndex]  > 8 ||
+           (getBitMapAt(bottomLeft) & rocksAsIntegers[typeIndex]);
+  }
+
+  void resize() { rows.resize(rows.size() + 8); }
+
+  std::size_t getHeight() const { return height; }
+  std::size_t getRocksCount() const { return rocksCount; }
+
+private:
+  std::size_t height{};
+  std::vector<std::byte> rows = std::vector<std::byte>(8);
+  std::size_t rocksCount{};
+  static inline std::size_t rowWidth = 7;
+
+  static inline std::byte rowMasks[] = { 0b01111000_B, 0b00111100_B,
+                                         0b00011110_B, 0b00001111_B,
+                                         0b00000111_B, 0b00000011_B,
+                                         0b00000001_B };
+};
 
 Result
 solve(const Input& input)
 {
-  findCycle(input);
 
-  auto getNextRock = [i = static_cast<std::size_t>(-1)](
-                       const Point& leftBottomEdge) mutable -> Rock {
-    i = (i + 1) % std::variant_size_v<Rock>;
-    switch (i) {
-      case 0:
-        return HorizontalLine{ leftBottomEdge };
-      case 1:
-        return Cross{ leftBottomEdge };
-      case 2:
-        return ReversedL{ leftBottomEdge };
-      case 3:
-        return VerticalLine{ leftBottomEdge };
-      case 4:
-        return Square{ leftBottomEdge };
-      default:
-        std::abort();
-    }
-  };
   static constexpr std::size_t targetStoppedRocksCountPart1 = 2022;
   static constexpr std::size_t targetStoppedRocksCountPart2 = 1000000000000;
   const std::size_t jetCount = input.size();
 
-  std::size_t part1 = 0;
-  std::size_t heighestRock = 0;
-  std::vector<Rock> stoppedRocks{};
+  Tower tower{};
+
   static constexpr std::size_t leftEdge = 3;
   std::size_t i = 0;
-  while (stoppedRocks.size() < targetStoppedRocksCountPart2) {
-    auto rock = getNextRock({ leftEdge, heighestRock + 4 });
+  RockType rock = RockType::HorizontalLine;
+  while (tower.getRocksCount() < targetStoppedRocksCountPart1) {
+    std::size_t x = 3;
+    std::size_t y = tower.getHeight() + 4;
     while (true) {
-      const auto jet =
-        input[i] == JetDir::Left ? Move{ MoveLeft{} } : Move{ MoveRight{} };
+      const auto jet = input[i];
       i = (i + 1) % jetCount;
-      const auto movedRock = std::visit(moveSideways, rock, jet);
-      if (isMovePossible(stoppedRocks, movedRock)) {
-        rock = std::move(movedRock);
-      }
-      const auto movedDownRock = std::visit(moveDown, rock);
-      const auto bottom = std::visit(getBottom, movedDownRock);
-      if (bottom == 0 || !isMovePossible(stoppedRocks, movedDownRock)) {
-        const auto height = std::visit(GetHeight{}, movedDownRock);
-        heighestRock = std::max(heighestRock, bottom + height);
-        stoppedRocks.emplace_back(rock);
-        if ((stoppedRocks.size() == targetStoppedRocksCountPart1)) {
-          part1 = heighestRock;
+
+      if (jet == JetDir::Left) {
+        if (!tower.isCollision({ x - 1, y }, rock)) {
+          --x;
         }
+      } else if (!tower.isCollision({ x + 1, y }, rock)) {
+        ++x;
+      }
+      if (tower.isCollision({ x, y - 1 }, rock)) {
+        tower.setBitMapAt({ x, y }, rock);
         break;
       } else {
-        rock = std::move(movedDownRock);
+        --y;
       }
     }
+    rock = static_cast<RockType>((static_cast<std::size_t>(rock) + 1) %
+                                 static_cast<std::size_t>(RockType::TypeCount));
   }
-  return { part1, heighestRock };
+  return { tower.getHeight(), tower.getHeight() };
 }
-
 }

@@ -1,6 +1,8 @@
 #include "day17.hpp"
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 
@@ -38,11 +40,12 @@ public:
     const auto typeIndex = static_cast<std::size_t>(type);
     const auto val = rockInfos[typeIndex].bitMap;
     const int shift = 4 - static_cast<int>(bottomLeft.x);
-    for (std::size_t y = 0; y < 4; ++y) {
-      const auto y_ = bottomLeft.y + y;
-      auto row = static_cast<std::byte>((val & (0xF << 4 * y)) >> 4 * y);
+    for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
+      const auto y = bottomLeft.y + bitMapRowIndex;
+      auto row = static_cast<std::byte>((val & (0xF << 4 * bitMapRowIndex)) >>
+                                        4 * bitMapRowIndex);
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
-      mRows[y_] = mRows[y_] | row;
+      mRows[y] = mRows[y] | row;
     }
     mHeight = std::max(mHeight, bottomLeft.y + rockInfos[typeIndex].height - 1);
     resizeForNextRock();
@@ -57,23 +60,23 @@ public:
            (getBitMapAt(bottomLeft) & rockInfos[typeIndex].bitMap);
   }
 
-  std::size_t height() const { return mHeight; }
-  std::size_t rocksCount() const { return mRocksCount; }
+  [[nodiscard]] std::size_t height() const { return mHeight; }
+  [[nodiscard]] std::size_t rocksCount() const { return mRocksCount; }
 
 private:
   void resizeForNextRock() { mRows.resize(mRows.size() + 8); }
 
-  std::uint16_t getBitMapAt(Point bottomLeft) const
+  [[nodiscard]] std::uint16_t getBitMapAt(Point bottomLeft) const
   {
     std::uint16_t result = 0;
     const int shift = 4 - static_cast<int>(bottomLeft.x);
-    for (std::size_t y = 0; y < 4; ++y) {
-      const auto y_ = bottomLeft.y + y;
+    for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
+      const auto y = bottomLeft.y + bitMapRowIndex;
       std::uint16_t row =
-        static_cast<std::uint16_t>(mRows[y_] & rowMasks[bottomLeft.x - 1]);
+        static_cast<std::uint16_t>(mRows[y] & rowMasks[bottomLeft.x - 1]);
       row = shift >= 0 ? row >> shift
                        : static_cast<std::uint16_t>(row << abs(shift));
-      result += row << 4 * y;
+      result += row << 4 * bitMapRowIndex;
     }
     return result;
   }
@@ -128,9 +131,8 @@ solve(const Input& input)
       if (tower.isCollision({ x, y - 1 }, rock)) {
         tower.setBitMapAt({ x, y }, rock);
         break;
-      } else {
-        --y;
       }
+      --y;
     }
     rock = static_cast<Rock>((rock + 1) % Rock::Count);
   }

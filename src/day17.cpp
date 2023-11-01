@@ -38,7 +38,7 @@ public:
   void setBitMapAt(Point bottomLeft, Rock type)
   {
     const auto typeIndex = static_cast<std::size_t>(type);
-    const auto val = rockInfos[typeIndex].bitMap;
+    const auto val = ROCK_INFOS[typeIndex].bitMap;
     const int shift = 4 - static_cast<int>(bottomLeft.x);
     for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
       const auto y = bottomLeft.y + bitMapRowIndex;
@@ -47,7 +47,7 @@ public:
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
       mRows[y] = mRows[y] | row;
     }
-    mHeight = std::max(mHeight, bottomLeft.y + rockInfos[typeIndex].height - 1);
+    mHeight = std::max(mHeight, bottomLeft.y + ROCK_INFOS[typeIndex].height - 1);
     resizeForNextRock();
     ++mRocksCount;
   }
@@ -56,8 +56,8 @@ public:
   {
     const auto typeIndex = static_cast<std::size_t>(type);
     return bottomLeft.y == 0 || bottomLeft.x == 0 ||
-           bottomLeft.x + rockInfos[typeIndex].width > rowWidth + 1 ||
-           (getBitMapAt(bottomLeft) & rockInfos[typeIndex].bitMap);
+           bottomLeft.x + ROCK_INFOS[typeIndex].width > ROW_WIDTH + 1 ||
+           (getBitMapAt(bottomLeft) & ROCK_INFOS[typeIndex].bitMap);
   }
 
   [[nodiscard]] std::size_t height() const { return mHeight; }
@@ -72,8 +72,8 @@ private:
     const int shift = 4 - static_cast<int>(bottomLeft.x);
     for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
       const auto y = bottomLeft.y + bitMapRowIndex;
-      std::uint16_t row =
-        static_cast<std::uint16_t>(mRows[y] & rowMasks[bottomLeft.x - 1]);
+      auto row =
+        static_cast<std::uint16_t>(mRows[y] & ROW_MASKS[bottomLeft.x - 1]);
       row = shift >= 0 ? row >> shift
                        : static_cast<std::uint16_t>(row << abs(shift));
       result += row << 4 * bitMapRowIndex;
@@ -83,9 +83,9 @@ private:
   std::size_t mHeight{};
   std::vector<std::byte> mRows{};
   std::size_t mRocksCount{};
-  static constexpr inline std::size_t rowWidth = 7;
+  static constexpr inline std::size_t ROW_WIDTH = 7;
 
-  static constexpr inline std::byte rowMasks[] = { 0b01111000_B, 0b00111100_B,
+  static constexpr inline std::byte ROW_MASKS[] = { 0b01111000_B, 0b00111100_B,
                                                    0b00011110_B, 0b00001111_B,
                                                    0b00000111_B, 0b00000011_B,
                                                    0b00000001_B };
@@ -96,7 +96,7 @@ private:
     std::uint16_t bitMap;
   };
 
-  static constexpr inline std::array<RockInfo, Rock::Count> rockInfos = {
+  static constexpr inline std::array<RockInfo, Rock::Count> ROCK_INFOS = {
     RockInfo{ 1, 4, 0b0000000000001111 },
     { 3, 3, 0b0000010011100100 },
     { 3, 3, 0b0000001000101110 },

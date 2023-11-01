@@ -23,8 +23,7 @@ enum class Rock : std::size_t
   Count = 5
 };
 
-constexpr std::array<std::uint16_t,
-                     static_cast<std::size_t>(Rock::Count)>
+constexpr std::array<std::uint16_t, static_cast<std::size_t>(Rock::Count)>
   rocksAsIntegers = { 0b0000000000001111,
                       0b0000010011100100,
                       0b0000001000101110,
@@ -46,21 +45,6 @@ operator"" _B(unsigned long long arg) noexcept
 class Tower
 {
 public:
-  std::uint16_t getBitMapAt(Point bottomLeft) const
-  {
-    std::uint16_t result = 0;
-    const int shift = 4 - static_cast<int>(bottomLeft.x);
-    for (std::size_t y = 0; y < 4; ++y) {
-      const auto y_ = bottomLeft.y + y;
-      std::uint16_t row =
-        static_cast<std::uint16_t>(rows[y_] & rowMasks[bottomLeft.x - 1]);
-      row = shift >= 0 ? row >> shift
-                       : static_cast<std::uint16_t>(row << abs(shift));
-      result += row << 4 * y;
-    }
-    return result;
-  }
-
   void setBitMapAt(Point bottomLeft, Rock type)
   {
     const auto typeIndex = static_cast<std::size_t>(type);
@@ -85,21 +69,35 @@ public:
            (getBitMapAt(bottomLeft) & rocksAsIntegers[typeIndex]);
   }
 
-  void resize() { rows.resize(rows.size() + 8); }
-
   std::size_t height() const { return mHeight; }
   std::size_t rocksCount() const { return mRocksCount; }
 
 private:
+  void resize() { rows.resize(rows.size() + 8); }
+
+  std::uint16_t getBitMapAt(Point bottomLeft) const
+  {
+    std::uint16_t result = 0;
+    const int shift = 4 - static_cast<int>(bottomLeft.x);
+    for (std::size_t y = 0; y < 4; ++y) {
+      const auto y_ = bottomLeft.y + y;
+      std::uint16_t row =
+        static_cast<std::uint16_t>(rows[y_] & rowMasks[bottomLeft.x - 1]);
+      row = shift >= 0 ? row >> shift
+                       : static_cast<std::uint16_t>(row << abs(shift));
+      result += row << 4 * y;
+    }
+    return result;
+  }
   std::size_t mHeight{};
   std::vector<std::byte> rows = std::vector<std::byte>(8);
   std::size_t mRocksCount{};
-  static inline std::size_t rowWidth = 7;
+  static constexpr inline std::size_t rowWidth = 7;
 
-  static inline std::byte rowMasks[] = { 0b01111000_B, 0b00111100_B,
-                                         0b00011110_B, 0b00001111_B,
-                                         0b00000111_B, 0b00000011_B,
-                                         0b00000001_B };
+  static constexpr inline std::byte rowMasks[] = { 0b01111000_B, 0b00111100_B,
+                                                   0b00011110_B, 0b00001111_B,
+                                                   0b00000111_B, 0b00000011_B,
+                                                   0b00000001_B };
 };
 
 Result
@@ -135,7 +133,7 @@ solve(const Input& input)
       }
     }
     rock = static_cast<Rock>((static_cast<std::size_t>(rock) + 1) %
-                                 static_cast<std::size_t>(Rock::Count));
+                             static_cast<std::size_t>(Rock::Count));
   }
   return { tower.height(), tower.height() };
 }

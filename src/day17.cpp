@@ -5,6 +5,9 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <format>
+#include <iostream>
+#include <string>
 #include <vector>
 
 namespace aoc22::day17 {
@@ -53,6 +56,11 @@ public:
     }
     m_height =
       std::max(m_height, bottomLeft.y + ROCK_INFOS[typeIndex].height - 1);
+    for (std::size_t i = 0; i < 4; ++i) {
+      m_topRocks[bottomLeft.x + i] = std::max(
+        bottomLeft.x + i, bottomLeft.y + ROCK_INFOS[typeIndex].heights[i] - 1);
+    }
+
     resizeForNextRock();
     ++m_rocksCount;
   }
@@ -67,6 +75,17 @@ public:
 
   [[nodiscard]] std::size_t height() const { return m_height; }
   [[nodiscard]] std::size_t rocksCount() const { return m_rocksCount; }
+  [[nodiscard]] bool floorFound() const { return m_rows[m_height] == FLOOR; }
+
+  [[nodiscard]] auto topRocks() const
+  {
+    const auto minTop = std::ranges::min(m_topRocks);
+    decltype(m_topRocks) relativeTopRocks{};
+    for (std::size_t i = 0; i < m_topRocks.size(); ++i) {
+      relativeTopRocks[i] = m_topRocks[i] - minTop;
+    }
+    return relativeTopRocks;
+  }
 
 private:
   void resizeForNextRock() { m_rows.resize(m_rows.size() + 8); }
@@ -89,7 +108,10 @@ private:
   std::size_t m_height{};
   std::vector<std::byte> m_rows{};
   std::size_t m_rocksCount{};
+  std::array<std::size_t, 7> m_topRocks{};
   static constexpr std::size_t ROW_WIDTH = 7;
+
+  static constexpr std::byte FLOOR = 0b01111111_B;
 
   static constexpr std::array<std::byte, ROW_WIDTH> ROW_MASKS = {
     0b01111000_B, 0b00111100_B, 0b00011110_B, 0b00001111_B,
@@ -101,48 +123,75 @@ private:
     std::size_t height;
     std::size_t width;
     std::uint16_t bitMap;
+    std::size_t heights[4];
   };
 
   static constexpr std::array<RockInfo, Rock::Count> ROCK_INFOS = {
-    RockInfo{ 1, 4, 0b0000000000001111 },
-    { 3, 3, 0b0000010011100100 },
-    { 3, 3, 0b0000001000101110 },
-    { 4, 1, 0b1000100010001000 },
-    { 2, 2, 0b0000000011001100 }
+    RockInfo{ 1, 4, 0b0000000000001111, { 1, 1, 1, 1 } },
+    { 3, 3, 0b0000010011100100, { 2, 3, 2, 0 } },
+    { 3, 3, 0b0000001000101110, { 1, 1, 3, 0 } },
+    { 4, 1, 0b1000100010001000, { 4, 0, 0, 0 } },
+    { 2, 2, 0b0000000011001100, { 2, 2, 0, 0 } }
   };
 };
+
+void
+processNextRock(const Input& input,
+                Tower& tower,
+                std::size_t& jetIndex,
+                Rock& rock)
+{
+  const std::size_t jetCount = input.size();
+  std::size_t x = 3;
+  std::size_t y = tower.height() + 4;
+  while (true) {
+    const auto jet = input[jetIndex];
+    jetIndex = (jetIndex + 1) % jetCount;
+    if (jet == JetDir::Left) {
+      if (!tower.isCollision({ x - 1, y }, rock)) {
+        --x;
+      }
+    } else if (!tower.isCollision({ x + 1, y }, rock)) {
+      ++x;
+    }
+    if (tower.isCollision({ x, y - 1 }, rock)) {
+      tower.setBitMapAt({ x, y }, rock);
+      break;
+    }
+    --y;
+  }
+  rock = static_cast<Rock>((rock + 1) % Rock::Count);
+}
 
 Result
 solve(const Input& input)
 {
+  std::size_t part1 = 0;
   static constexpr std::size_t targetStoppedRocksCountPart1 = 2022;
-  const std::size_t jetCount = input.size();
+  static constexpr std::size_t targetStoppedRocksCountPart2 = 1000000000000;
   Tower tower{};
-
-  std::size_t i = 0;
+  std::size_t jetIndex = 0;
   Rock rock = Rock::HorizontalLine;
-  while (tower.rocksCount() < targetStoppedRocksCountPart1) {
-    std::size_t x = 3;
-    std::size_t y = tower.height() + 4;
-    while (true) {
-      const auto jet = input[i];
-      i = (i + 1) % jetCount;
-
-      if (jet == JetDir::Left) {
-        if (!tower.isCollision({ x - 1, y }, rock)) {
-          --x;
-        }
-      } else if (!tower.isCollision({ x + 1, y }, rock)) {
-        ++x;
-      }
-      if (tower.isCollision({ x, y - 1 }, rock)) {
-        tower.setBitMapAt({ x, y }, rock);
-        break;
-      }
-      --y;
+  while (tower.rocksCount() < targetStoppedRocksCountPart2) {
+    if (tower.rocksCount() == targetStoppedRocksCountPart1) {
+      part1 = tower.height();
     }
-    rock = static_cast<Rock>((rock + 1) % Rock::Count);
+    std::string topRocksStr = "[";
+    const auto topRocks = tower.topRocks();
+    for (const auto& top : topRocks) {
+      topRocksStr += std::to_string(top) + ",";
+    }
+    topRocksStr.back() = ']';
+    {
+      std::cout << std::format(
+        "TopRocks={} rockCount={} jetIndex={} rock={} \n",
+        topRocksStr,
+        tower.rocksCount(),
+        jetIndex,
+        static_cast<std::size_t>(rock));
+    }
+    processNextRock(input, tower, jetIndex, rock);
   }
-  return { tower.height(), tower.height() };
+  return { part1, tower.height() };
 }
 }

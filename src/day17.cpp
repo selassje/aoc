@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 namespace aoc22::day17 {
 
@@ -45,11 +46,12 @@ public:
       auto row = static_cast<std::byte>((val & (0xF << 4 * bitMapRowIndex)) >>
                                         4 * bitMapRowIndex);
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
-      mRows[y] = mRows[y] | row;
+      m_rows[y] = m_rows[y] | row;
     }
-    mHeight = std::max(mHeight, bottomLeft.y + ROCK_INFOS[typeIndex].height - 1);
+    m_height =
+      std::max(m_height, bottomLeft.y + ROCK_INFOS[typeIndex].height - 1);
     resizeForNextRock();
-    ++mRocksCount;
+    ++m_rocksCount;
   }
 
   bool isCollision(Point bottomLeft, Rock type)
@@ -60,11 +62,11 @@ public:
            (getBitMapAt(bottomLeft) & ROCK_INFOS[typeIndex].bitMap);
   }
 
-  [[nodiscard]] std::size_t height() const { return mHeight; }
-  [[nodiscard]] std::size_t rocksCount() const { return mRocksCount; }
+  [[nodiscard]] std::size_t height() const { return m_height; }
+  [[nodiscard]] std::size_t rocksCount() const { return m_rocksCount; }
 
 private:
-  void resizeForNextRock() { mRows.resize(mRows.size() + 8); }
+  void resizeForNextRock() { m_rows.resize(m_rows.size() + 8); }
 
   [[nodiscard]] std::uint16_t getBitMapAt(Point bottomLeft) const
   {
@@ -73,22 +75,22 @@ private:
     for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
       const auto y = bottomLeft.y + bitMapRowIndex;
       auto row =
-        static_cast<std::uint16_t>(mRows[y] & ROW_MASKS[bottomLeft.x - 1]);
+        static_cast<std::uint16_t>(m_rows[y] & ROW_MASKS[bottomLeft.x - 1]);
       row = shift >= 0 ? row >> shift
                        : static_cast<std::uint16_t>(row << abs(shift));
       result += row << 4 * bitMapRowIndex;
     }
     return result;
   }
-  std::size_t mHeight{};
-  std::vector<std::byte> mRows{};
-  std::size_t mRocksCount{};
+  std::size_t m_height{};
+  std::vector<std::byte> m_rows{};
+  std::size_t m_rocksCount{};
   static constexpr inline std::size_t ROW_WIDTH = 7;
 
-  static constexpr inline std::byte ROW_MASKS[] = { 0b01111000_B, 0b00111100_B,
-                                                   0b00011110_B, 0b00001111_B,
-                                                   0b00000111_B, 0b00000011_B,
-                                                   0b00000001_B };
+  static constexpr inline std::array<std::byte, ROW_WIDTH> ROW_MASKS = {
+    0b01111000_B, 0b00111100_B, 0b00011110_B, 0b00001111_B,
+    0b00000111_B, 0b00000011_B, 0b00000001_B
+  };
   struct RockInfo
   {
     std::size_t height;

@@ -4,9 +4,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cstdlib>
 #include <fstream>
 #include <string>
+#include <string_view>
 
 using aoc22::day17::Input;
 using aoc22::day17::JetDir;

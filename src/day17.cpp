@@ -1,9 +1,8 @@
 #include "day17.hpp"
 
 #include <array>
-#include <cassert>
 #include <cstddef>
-#include <variant>
+#include <cstdint>
 
 namespace aoc22::day17 {
 
@@ -24,7 +23,7 @@ enum Rock : std::size_t
 };
 
 inline constexpr std::byte
-operator"" _B(unsigned long long arg) noexcept
+operator"" _B(std::uint64_t arg) noexcept
 {
   return static_cast<std::byte>(arg);
 }

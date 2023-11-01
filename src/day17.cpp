@@ -26,7 +26,7 @@ enum Rock : std::size_t
 };
 
 inline constexpr std::byte
-operator"" _B(std::uint64_t arg) noexcept
+operator"" _B(unsigned long long arg) noexcept // NOLINT
 {
   return static_cast<std::byte>(arg);
 }
@@ -82,7 +82,7 @@ private:
       row = shift >= 0 ? row >> static_cast<std::uint16_t>(shift)
                        : static_cast<std::uint16_t>(
                            row << static_cast<std::uint16_t>(abs(shift)));
-      result += row << 4 * bitMapRowIndex;
+      result += static_cast<std::uint16_t>(row << 4 * bitMapRowIndex);
     }
     return result;
   }

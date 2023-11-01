@@ -42,9 +42,11 @@ public:
     const auto val = ROCK_INFOS[typeIndex].bitMap;
     const int shift = 4 - static_cast<int>(bottomLeft.x);
     for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
+      const auto valShift = 4 * bitMapRowIndex;
+      const std::uint16_t nibble = 0xF;
       const auto y = bottomLeft.y + bitMapRowIndex;
-      auto row = static_cast<std::byte>((val & (0xF << 4 * bitMapRowIndex)) >>
-                                        4 * bitMapRowIndex);
+      auto row =
+        static_cast<std::byte>((val & (nibble << valShift)) >> valShift);
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
       m_rows[y] = m_rows[y] | row;
     }
@@ -59,7 +61,7 @@ public:
     const auto typeIndex = static_cast<std::size_t>(type);
     return bottomLeft.y == 0 || bottomLeft.x == 0 ||
            bottomLeft.x + ROCK_INFOS[typeIndex].width > ROW_WIDTH + 1 ||
-           (getBitMapAt(bottomLeft) & ROCK_INFOS[typeIndex].bitMap);
+           (getBitMapAt(bottomLeft) & ROCK_INFOS[typeIndex].bitMap) != 0;
   }
 
   [[nodiscard]] std::size_t height() const { return m_height; }
@@ -76,8 +78,9 @@ private:
       const auto y = bottomLeft.y + bitMapRowIndex;
       auto row =
         static_cast<std::uint16_t>(m_rows[y] & ROW_MASKS[bottomLeft.x - 1]);
-      row = shift >= 0 ? row >> shift
-                       : static_cast<std::uint16_t>(row << abs(shift));
+      row = shift >= 0 ? row >> static_cast<std::uint16_t>(shift)
+                       : static_cast<std::uint16_t>(
+                           row << static_cast<std::uint16_t>(abs(shift)));
       result += row << 4 * bitMapRowIndex;
     }
     return result;

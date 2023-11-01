@@ -55,8 +55,6 @@ public:
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
       m_rows[y] = m_rows[y] | row;
     }
-    m_height =
-      std::max(m_height, bottomLeft.y + ROCK_INFOS[typeIndex].height - 1);
     for (std::size_t i = 0; i < 4; ++i) {
       const auto x = bottomLeft.x + i;
       if (x <= ROW_WIDTH) {
@@ -77,15 +75,18 @@ public:
            (getBitMapAt(bottomLeft) & ROCK_INFOS[typeIndex].bitMap) != 0;
   }
 
-  [[nodiscard]] std::size_t height() const { return m_height; }
+  [[nodiscard]] std::size_t height() const
+  {
+    return std::ranges::max(m_towerHeights);
+  }
   [[nodiscard]] std::size_t rocksCount() const { return m_rocksCount; }
 
   [[nodiscard]] auto relativeTowerHeights() const
   {
-    const auto minTop = std::ranges::min(m_towerHeights);
-    decltype(m_towerHeights) relativeTowerHeights{};
+    const auto minTopHeight = std::ranges::min(m_towerHeights);
+    TowerHeights relativeTowerHeights{};
     for (std::size_t i = 0; i < m_towerHeights.size(); ++i) {
-      relativeTowerHeights[i] = m_towerHeights[i] - minTop;
+      relativeTowerHeights[i] = m_towerHeights[i] - minTopHeight;
     }
     return relativeTowerHeights;
   }
@@ -108,7 +109,6 @@ private:
     }
     return result;
   }
-  std::size_t m_height{};
   std::vector<std::byte> m_rows{};
   std::size_t m_rocksCount{};
   TowerHeights m_towerHeights{};

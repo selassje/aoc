@@ -7,19 +7,22 @@
 
 namespace aoc22::day17 {
 
-enum class JetDir {
+enum class JetDir
+{
   Left,
   Right
 };
 
 using Input = std::vector<JetDir>;
 
-struct Result {
+struct Result
+{
   std::size_t part1;
   std::size_t part2;
 };
 
-Result solve(const Input& input);
+Result
+solve(const Input& input);
 
 }
 #endif

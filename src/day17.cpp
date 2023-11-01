@@ -42,11 +42,12 @@ public:
     const auto val = ROCK_INFOS[typeIndex].bitMap;
     const int shift = 4 - static_cast<int>(bottomLeft.x);
     for (std::size_t bitMapRowIndex = 0; bitMapRowIndex < 4; ++bitMapRowIndex) {
-      const auto valShift = 4 * bitMapRowIndex;
-      const std::uint16_t nibble = 0xF;
+      const auto valShift = static_cast<std::uint16_t>(4 * bitMapRowIndex);
+      static constexpr std::uint16_t nibble = 0xF;
       const auto y = bottomLeft.y + bitMapRowIndex;
-      auto row =
-        static_cast<std::byte>((val & (nibble << valShift)) >> valShift);
+      const auto nibbleShift = static_cast<std::uint16_t>(nibble << valShift);
+      auto row = static_cast<std::byte>(
+        static_cast<std::uint16_t>(val & nibbleShift) >> valShift);
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
       m_rows[y] = m_rows[y] | row;
     }
@@ -94,6 +95,7 @@ private:
     0b01111000_B, 0b00111100_B, 0b00011110_B, 0b00001111_B,
     0b00000111_B, 0b00000011_B, 0b00000001_B
   };
+
   struct RockInfo
   {
     std::size_t height;

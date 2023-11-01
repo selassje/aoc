@@ -53,7 +53,7 @@ public:
       const auto y_ = bottomLeft.y + y;
       auto row = static_cast<std::byte>((val & (0xF << 4 * y)) >> 4 * y);
       row = shift >= 0 ? row << shift : row >> std::abs(shift);
-      rows[y_] = rows[y_] | row;
+      mRows[y_] = mRows[y_] | row;
     }
     mHeight = std::max(mHeight, bottomLeft.y + rocksHeights[typeIndex] - 1);
     resize();
@@ -72,7 +72,7 @@ public:
   std::size_t rocksCount() const { return mRocksCount; }
 
 private:
-  void resize() { rows.resize(rows.size() + 8); }
+  void resize() { mRows.resize(mRows.size() + 8); }
 
   std::uint16_t getBitMapAt(Point bottomLeft) const
   {
@@ -81,7 +81,7 @@ private:
     for (std::size_t y = 0; y < 4; ++y) {
       const auto y_ = bottomLeft.y + y;
       std::uint16_t row =
-        static_cast<std::uint16_t>(rows[y_] & rowMasks[bottomLeft.x - 1]);
+        static_cast<std::uint16_t>(mRows[y_] & rowMasks[bottomLeft.x - 1]);
       row = shift >= 0 ? row >> shift
                        : static_cast<std::uint16_t>(row << abs(shift));
       result += row << 4 * y;
@@ -89,7 +89,7 @@ private:
     return result;
   }
   std::size_t mHeight{};
-  std::vector<std::byte> rows = std::vector<std::byte>(8);
+  std::vector<std::byte> mRows = std::vector<std::byte>(8);
   std::size_t mRocksCount{};
   static constexpr inline std::size_t rowWidth = 7;
 
@@ -102,9 +102,7 @@ private:
 Result
 solve(const Input& input)
 {
-
   static constexpr std::size_t targetStoppedRocksCountPart1 = 2022;
-  // static constexpr std::size_t targetStoppedRocksCountPart2 = 1000000000000;
   const std::size_t jetCount = input.size();
   Tower tower{};
 

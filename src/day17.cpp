@@ -25,7 +25,7 @@ enum Rock : std::size_t
   Count = 5
 };
 
-inline constexpr std::byte
+consteval std::byte
 operator"" _B(unsigned long long arg) noexcept // NOLINT
 {
   return static_cast<std::byte>(arg);
@@ -57,7 +57,7 @@ public:
     ++m_rocksCount;
   }
 
-  bool isCollision(Point bottomLeft, Rock type)
+  [[nodiscard]] bool isCollision(Point bottomLeft, Rock type) const
   {
     const auto typeIndex = static_cast<std::size_t>(type);
     return bottomLeft.y == 0 || bottomLeft.x == 0 ||
@@ -89,9 +89,9 @@ private:
   std::size_t m_height{};
   std::vector<std::byte> m_rows{};
   std::size_t m_rocksCount{};
-  static constexpr inline std::size_t ROW_WIDTH = 7;
+  static constexpr std::size_t ROW_WIDTH = 7;
 
-  static constexpr inline std::array<std::byte, ROW_WIDTH> ROW_MASKS = {
+  static constexpr std::array<std::byte, ROW_WIDTH> ROW_MASKS = {
     0b01111000_B, 0b00111100_B, 0b00011110_B, 0b00001111_B,
     0b00000111_B, 0b00000011_B, 0b00000001_B
   };
@@ -103,7 +103,7 @@ private:
     std::uint16_t bitMap;
   };
 
-  static constexpr inline std::array<RockInfo, Rock::Count> ROCK_INFOS = {
+  static constexpr std::array<RockInfo, Rock::Count> ROCK_INFOS = {
     RockInfo{ 1, 4, 0b0000000000001111 },
     { 3, 3, 0b0000010011100100 },
     { 3, 3, 0b0000001000101110 },

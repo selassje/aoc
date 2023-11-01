@@ -179,9 +179,8 @@ isMovePossible(const std::vector<Rock>& rocks, const Rock& movedRock)
   }
   return true;
 }
-
-Result
-solve(const Input& input)
+void
+findCycle(const Input& input)
 {
   auto getNextRock = [i = static_cast<std::size_t>(-1)](
                        const Point& leftBottomEdge) mutable -> Rock {
@@ -201,14 +200,35 @@ solve(const Input& input)
         std::abort();
     }
   };
-  static constexpr std::size_t targetStoppedRocksCount = 2022;
-  const std::size_t jetCount = input.size();
 
-  std::size_t heighestRock = 0;
+  const std::size_t jetCount = input.size();
   std::vector<Rock> stoppedRocks{};
   static constexpr std::size_t leftEdge = 3;
+  std::size_t heighestRock = 0;
   std::size_t i = 0;
-  while (stoppedRocks.size() < targetStoppedRocksCount) {
+  Lines floor{};
+  floor.reserve(7);
+  auto newFloorFound = [&](const auto y) {
+    int pointsFound = 0;
+    for (std::size_t x = 1; x <= 7; ++x) {
+      floor.emplace_back(Line{ { x, y }, { x, y } });
+    }
+    for (const auto& line2 : floor) {
+      for (const auto& rock : stoppedRocks) {
+        const auto lines1 = std::visit(GetLines{}, rock);
+        for (const auto& line1 : lines1) {
+          if (line1.isOverlapping(line2) || line2.isOverlapping(line1)) {
+            pointsFound++;
+            goto outer;
+          }
+        }
+      }
+      outer:
+      continue;
+    }
+    return pointsFound == 7;
+  };
+  while (true) {
     auto rock = getNextRock({ leftEdge, heighestRock + 4 });
     while (true) {
       const auto jet =
@@ -229,9 +249,70 @@ solve(const Input& input)
         rock = std::move(movedDownRock);
       }
     }
+    if (newFloorFound(heighestRock)) {
+      break;
+    }
   }
-  assert(stoppedRocks.size() == targetStoppedRocksCount);
-  return { heighestRock, heighestRock };
+}
+
+Result
+solve(const Input& input)
+{
+  findCycle(input);
+
+  auto getNextRock = [i = static_cast<std::size_t>(-1)](
+                       const Point& leftBottomEdge) mutable -> Rock {
+    i = (i + 1) % std::variant_size_v<Rock>;
+    switch (i) {
+      case 0:
+        return HorizontalLine{ leftBottomEdge };
+      case 1:
+        return Cross{ leftBottomEdge };
+      case 2:
+        return ReversedL{ leftBottomEdge };
+      case 3:
+        return VerticalLine{ leftBottomEdge };
+      case 4:
+        return Square{ leftBottomEdge };
+      default:
+        std::abort();
+    }
+  };
+  static constexpr std::size_t targetStoppedRocksCountPart1 = 2022;
+  static constexpr std::size_t targetStoppedRocksCountPart2 = 1000000000000;
+  const std::size_t jetCount = input.size();
+
+  std::size_t part1 = 0;
+  std::size_t heighestRock = 0;
+  std::vector<Rock> stoppedRocks{};
+  static constexpr std::size_t leftEdge = 3;
+  std::size_t i = 0;
+  while (stoppedRocks.size() < targetStoppedRocksCountPart2) {
+    auto rock = getNextRock({ leftEdge, heighestRock + 4 });
+    while (true) {
+      const auto jet =
+        input[i] == JetDir::Left ? Move{ MoveLeft{} } : Move{ MoveRight{} };
+      i = (i + 1) % jetCount;
+      const auto movedRock = std::visit(moveSideways, rock, jet);
+      if (isMovePossible(stoppedRocks, movedRock)) {
+        rock = std::move(movedRock);
+      }
+      const auto movedDownRock = std::visit(moveDown, rock);
+      const auto bottom = std::visit(getBottom, movedDownRock);
+      if (bottom == 0 || !isMovePossible(stoppedRocks, movedDownRock)) {
+        const auto height = std::visit(GetHeight{}, movedDownRock);
+        heighestRock = std::max(heighestRock, bottom + height);
+        stoppedRocks.emplace_back(rock);
+        if ((stoppedRocks.size() == targetStoppedRocksCountPart1)) {
+          part1 = heighestRock;
+        }
+        break;
+      } else {
+        rock = std::move(movedDownRock);
+      }
+    }
+  }
+  return { part1, heighestRock };
 }
 
 }

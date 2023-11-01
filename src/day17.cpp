@@ -13,7 +13,7 @@ struct Point
   std::size_t y;
 };
 
-enum class Rock : std::size_t
+enum Rock : std::size_t
 {
   HorizontalLine = 0,
   Cross = 1,
@@ -23,18 +23,17 @@ enum class Rock : std::size_t
   Count = 5
 };
 
-constexpr std::array<std::uint16_t, static_cast<std::size_t>(Rock::Count)>
-  rocksAsIntegers = { 0b0000000000001111,
-                      0b0000010011100100,
-                      0b0000001000101110,
-                      0b1000100010001000,
-                      0b0000000011001100 };
+constexpr std::array<std::uint16_t, Rock::Count> rocksBitMaps = {
+  0b0000000000001111,
+  0b0000010011100100,
+  0b0000001000101110,
+  0b1000100010001000,
+  0b0000000011001100
+};
 
-constexpr std::array<std::size_t, static_cast<std::size_t>(Rock::Count)>
-  rocksHeights = { 1, 3, 3, 4, 2 };
+constexpr std::array<std::size_t, Rock::Count> rocksHeights = { 1, 3, 3, 4, 2 };
 
-constexpr std::array<std::size_t, static_cast<std::size_t>(Rock::Count)>
-  rocksWidth = { 4, 3, 3, 1, 2 };
+constexpr std::array<std::size_t, Rock::Count> rocksWidth = { 4, 3, 3, 1, 2 };
 
 inline constexpr std::byte
 operator"" _B(unsigned long long arg) noexcept
@@ -48,7 +47,7 @@ public:
   void setBitMapAt(Point bottomLeft, Rock type)
   {
     const auto typeIndex = static_cast<std::size_t>(type);
-    const auto val = rocksAsIntegers[typeIndex];
+    const auto val = rocksBitMaps[typeIndex];
     const int shift = 4 - static_cast<int>(bottomLeft.x);
     for (std::size_t y = 0; y < 4; ++y) {
       const auto y_ = bottomLeft.y + y;
@@ -66,7 +65,7 @@ public:
     const auto typeIndex = static_cast<std::size_t>(type);
     return bottomLeft.y == 0 || bottomLeft.x == 0 ||
            bottomLeft.x + rocksWidth[typeIndex] > 8 ||
-           (getBitMapAt(bottomLeft) & rocksAsIntegers[typeIndex]);
+           (getBitMapAt(bottomLeft) & rocksBitMaps[typeIndex]);
   }
 
   std::size_t height() const { return mHeight; }
@@ -132,8 +131,7 @@ solve(const Input& input)
         --y;
       }
     }
-    rock = static_cast<Rock>((static_cast<std::size_t>(rock) + 1) %
-                             static_cast<std::size_t>(Rock::Count));
+    rock = static_cast<Rock>((rock + 1) % Rock::Count);
   }
   return { tower.height(), tower.height() };
 }

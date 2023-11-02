@@ -3,9 +3,9 @@
 namespace aoc22::day18 {
 
 Result
-solve(const Input&)
+solve(const Input& input)
 {
-  return { 0, 0 };
+  return { input.size(), 0 };
 }
 
 }

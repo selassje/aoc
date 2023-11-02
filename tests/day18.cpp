@@ -20,7 +20,7 @@ readInput(const std::string_view path_)
   Input input{};
   Cube cube{};
 
-  const std::array indexToCoord = { &Cube::x, &Cube::y, &Cube::z };
+  static constexpr std::array indexToCoord = { &Cube::x, &Cube::y, &Cube::z };
 
   const std::regex numberRegex{ "(\\d+)" };
   const auto endRegexIt = std::sregex_iterator();
@@ -29,8 +29,9 @@ readInput(const std::string_view path_)
   while (std::getline(ifs, line)) {
     std::size_t index = 0;
     auto coordIt = std::sregex_iterator(line.begin(), line.end(), numberRegex);
-    while (++coordIt != endRegexIt) {
+    while (coordIt != endRegexIt) {
       cube.*indexToCoord[index++] = std::stoi(coordIt->str());
+      ++coordIt;
     }
     input.push_back(cube);
   }

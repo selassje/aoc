@@ -9,10 +9,15 @@
 
 namespace aoc22::day18 {
 
-struct CubeEx : public Cube
+struct CubeEx
 {
+  std::int32_t x;
+  std::int32_t y;
+  std::int32_t z;
+  
   constexpr CubeEx(const Cube& cube)
-    : Cube(cube){};
+    : x{cube.x}, y{cube.y}, z{cube.z} {};
+  
   constexpr CubeEx(std::initializer_list<int> list)
   {
     auto it = list.begin();

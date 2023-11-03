@@ -13,8 +13,6 @@ struct Cube
   std::int32_t x;
   std::int32_t y;
   std::int32_t z;
-
-  constexpr auto operator<=>(const Cube&) const noexcept = default;
 };
 
 using Input = std::vector<Cube>;

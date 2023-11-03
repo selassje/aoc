@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <array>
+#include <queue>
 #include <ranges>
 #include <vector>
+
 
 namespace aoc22::day18 {
 
@@ -49,16 +51,13 @@ constexpr std::array<CubeEx, 6> SHIFTS = { CubeEx{ 1, 0, 0 }, { -1, 0, 0 },
                                            { 0, 0, 1 },       { 0, 0, -1 } };
 
 Cubes
-getNeighbouringAirCubes(const CubeEx& cube,
-                        const Cubes& dropletCubes,
-                        const RectangularPrism& boundaries)
+getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
 {
   Cubes airCubes{};
   airCubes.reserve(6);
   for (const auto& shift : SHIFTS) {
     const auto neighbour = cube + shift;
-    if (boundaries.contains(neighbour) &&
-        std::ranges::find(dropletCubes, neighbour) == dropletCubes.end()) {
+    if (std::ranges::find(dropletCubes, neighbour) == dropletCubes.end()) {
       airCubes.push_back(neighbour);
     }
   }
@@ -75,7 +74,7 @@ solve(const Input& input)
     return std::ranges::max(cubes, {}, proj).*proj;
   };
   auto min = [&cubes](const auto& proj) {
-    return std::ranges::max(cubes, {}, proj).*proj;
+    return std::ranges::min(cubes, {}, proj).*proj;
   };
 
   const RectangularPrism boundaries = {
@@ -83,14 +82,13 @@ solve(const Input& input)
     { max(&CubeEx::x), max(&CubeEx::y), max(&CubeEx::z) }
   };
 
+  auto airCubes = [&cubes](const auto& cube) {
+      return getNeighbouringAirCubes(cube, cubes);
+  };
+
   std::size_t part1 = 0;
   for (const auto& cube : cubes) {
-    for (const auto& shift : SHIFTS) {
-      const auto shifted = cube + shift;
-      if (std::ranges::find(cubes, shifted) == cubes.end()) {
-        ++part1;
-      }
-    }
+    part1 += airCubes(cube).size();
   }
   return { part1, part1 };
 }

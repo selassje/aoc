@@ -6,7 +6,6 @@
 #include <ranges>
 #include <vector>
 
-
 namespace aoc22::day18 {
 
 struct CubeEx : public Cube
@@ -28,6 +27,14 @@ struct CubeEx : public Cube
   }
 };
 
+using Cubes = std::vector<CubeEx>;
+
+bool
+contains(const Cubes& cubes, const CubeEx& cube)
+{
+  return std::ranges::find(cubes, cube) != cubes.end();
+}
+
 struct RectangularPrism
 {
   CubeEx cornerMin;
@@ -44,8 +51,6 @@ struct RectangularPrism
   }
 };
 
-using Cubes = std::vector<CubeEx>;
-
 constexpr std::array<CubeEx, 6> SHIFTS = { CubeEx{ 1, 0, 0 }, { -1, 0, 0 },
                                            { 0, 1, 0 },       { 0, -1, 0 },
                                            { 0, 0, 1 },       { 0, 0, -1 } };
@@ -57,7 +62,7 @@ getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
   airCubes.reserve(6);
   for (const auto& shift : SHIFTS) {
     const auto neighbour = cube + shift;
-    if (std::ranges::find(dropletCubes, neighbour) == dropletCubes.end()) {
+    if (!contains(dropletCubes, neighbour)) {
       airCubes.push_back(neighbour);
     }
   }
@@ -82,15 +87,42 @@ solve(const Input& input)
     { max(&CubeEx::x), max(&CubeEx::y), max(&CubeEx::z) }
   };
 
-  auto airCubes = [&cubes](const auto& cube) {
-      return getNeighbouringAirCubes(cube, cubes);
+  auto getAirCubes = [&cubes](const auto& cube) {
+    return getNeighbouringAirCubes(cube, cubes);
   };
 
+  auto airCubesBounded = [&cubes, &boundaries](const auto& cube) {
+    return getNeighbouringAirCubes(cube, cubes) |
+           std::views::filter([&](const auto& innerCube) {
+             return boundaries.contains(innerCube);
+           });
+  };
+
+  Cubes cubesToBeSearched{};
   std::size_t part1 = 0;
   for (const auto& cube : cubes) {
-    part1 += airCubes(cube).size();
+    const auto airCubes = getAirCubes(cube);
+    part1 += airCubes.size();
+    for (const auto& airCube : airCubes) {
+      if (boundaries.contains(airCube)) {
+        cubesToBeSearched.push_back(airCube);
+      }
+    }
   }
-  return { part1, part1 };
+
+  Cubes internalAirCubes{};
+  Cubes externalAirCubes{};
+
+  std::size_t part2 = 0;
+  for (const auto& cube : cubes) {
+    const auto airCubes = getAirCubes(cube);
+    for (const auto& airCube : airCubes) {
+      if (!contains(internalAirCubes, airCube)) {
+        ++part2;
+      }
+    }
+  }
+  return { part1, part2 };
 }
 
 }

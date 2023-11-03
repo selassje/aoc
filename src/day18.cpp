@@ -14,10 +14,12 @@ struct CubeEx
   std::int32_t x;
   std::int32_t y;
   std::int32_t z;
-  
+
   constexpr CubeEx(const Cube& cube)
-    : x{cube.x}, y{cube.y}, z{cube.z} {};
-  
+    : x{ cube.x }
+    , y{ cube.y }
+    , z{ cube.z } {};
+
   constexpr CubeEx(std::initializer_list<int> list)
   {
     auto it = list.begin();
@@ -27,19 +29,29 @@ struct CubeEx
   }
   constexpr bool operator==(const CubeEx&) const noexcept = default;
 
-  CubeEx operator+(const CubeEx& cube) const
+  [[nodiscard]] CubeEx operator+(const CubeEx& cube) const
   {
     return { x + cube.x, y + cube.y, z + cube.z };
   }
 };
 
-using Cubes = std::vector<CubeEx>;
-
-bool
-contains(const Cubes& cubes, const CubeEx& cube)
+struct Cubes : public std::vector<CubeEx>
 {
-  return std::ranges::find(cubes, cube) != cubes.end();
-}
+  using Base = std::vector<CubeEx>;
+  using Iterator = Input::const_iterator;
+
+  Cubes() {}
+  Cubes(Iterator begin, Iterator end)
+    : Base(begin, end)
+  {
+  }
+
+  bool contains(const CubeEx& cube) const
+  {
+    return std::ranges::find(*this, cube) != end();
+  }
+};
+
 struct Boundaries
 {
   CubeEx cornerMin;
@@ -67,7 +79,7 @@ getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
   airCubes.reserve(6);
   for (const auto& shift : SHIFTS) {
     const auto neighbour = cube + shift;
-    if (!contains(dropletCubes, neighbour)) {
+    if (!dropletCubes.contains(neighbour)) {
       airCubes.push_back(neighbour);
     }
   }
@@ -90,19 +102,19 @@ scanForAirCubes(const CubeEx& cube,
   };
   bool isInternal = true;
   Cubes scannedCubes{};
-  std::queue<CubeEx> toBeScanned{};
-  toBeScanned.push(cube);
-  while(!toBeScanned.empty()) {
-      const auto current = toBeScanned.back();
-      for(const auto& neighbourAirCube : getAirCubes(current)) {
-          if (!boundaries.contains(neighbourAirCube)) {
-            isInternal = false;
-          } else if(!contains(scannedCubes, neighbourAirCube)) {
-            toBeScanned.push(neighbourAirCube);
-          }
+  std::queue<CubeEx> toBeScannedCubes{};
+  toBeScannedCubes.push(cube);
+  while (!toBeScannedCubes.empty()) {
+    const auto currentCube = toBeScannedCubes.back();
+    for (const auto& neighbourAirCube : getAirCubes(currentCube)) {
+      if (!boundaries.contains(neighbourAirCube)) {
+        isInternal = false;
+      } else if (!scannedCubes.contains(neighbourAirCube)) {
+        toBeScannedCubes.push(neighbourAirCube);
       }
-      scannedCubes.push_back(current);
-      toBeScanned.pop();
+    }
+    scannedCubes.push_back(currentCube);
+    toBeScannedCubes.pop();
   }
   return { isInternal, scannedCubes };
 };
@@ -148,8 +160,7 @@ solve(const Input& input)
   };
 
   for (const auto& cube : cubesToBeSearched) {
-    if (!contains(internalAirCubes, cube) &&
-        !contains(externalAirCubes, cube)) {
+    if (!internalAirCubes.contains(cube) && !externalAirCubes.contains(cube)) {
       const auto scanResult = scan(cube);
       auto& cubesToAppendTo =
         scanResult.isInternal ? internalAirCubes : externalAirCubes;
@@ -161,7 +172,7 @@ solve(const Input& input)
   for (const auto& cube : cubes) {
     const auto airCubes = getAirCubes(cube);
     for (const auto& airCube : airCubes) {
-      if (!contains(internalAirCubes, airCube)) {
+      if (!internalAirCubes.contains(airCube)) {
         ++part2;
       }
     }

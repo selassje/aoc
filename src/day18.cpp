@@ -69,6 +69,22 @@ getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
   return airCubes;
 }
 
+struct ScanResult
+{
+  bool isInternal;
+  Cubes cubes;
+};
+
+ScanResult
+scanForAirCubes(const CubeEx& cube,
+                const Cubes& internalAirCubes,
+                const Cubes& externalAirCubes)
+{
+  bool isInternal = true;
+  Cubes scannedCubes{};
+  return { isInternal, scannedCubes };
+};
+
 Result
 solve(const Input& input)
 {
@@ -112,6 +128,17 @@ solve(const Input& input)
 
   Cubes internalAirCubes{};
   Cubes externalAirCubes{};
+
+  auto scan = [&](const auto& cube) {
+    return scanForAirCubes(cube,internalAirCubes,externalAirCubes);
+  };
+
+  for (const auto& cube : cubesToBeSearched) {
+    if (!contains(internalAirCubes, cube) &&
+        !contains(externalAirCubes, cube)) {
+        const auto scanResult = scan(cube);
+    }
+  }
 
   std::size_t part2 = 0;
   for (const auto& cube : cubes) {

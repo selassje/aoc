@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <iterator>
 #include <queue>
 #include <ranges>
 #include <vector>
@@ -34,7 +35,6 @@ contains(const Cubes& cubes, const CubeEx& cube)
 {
   return std::ranges::find(cubes, cube) != cubes.end();
 }
-
 struct RectangularPrism
 {
   CubeEx cornerMin;
@@ -77,11 +77,28 @@ struct ScanResult
 
 ScanResult
 scanForAirCubes(const CubeEx& cube,
-                const Cubes& internalAirCubes,
-                const Cubes& externalAirCubes)
+                const Cubes& dropletCubes,
+                const RectangularPrism& boundaries)
 {
+  auto getAirCubes = [&dropletCubes](const auto& cube) {
+    return getNeighbouringAirCubes(cube, dropletCubes);
+  };
   bool isInternal = true;
   Cubes scannedCubes{};
+  std::queue<CubeEx> toBeScanned{};
+  toBeScanned.push(cube);
+  while(!toBeScanned.empty()) {
+      const auto current = toBeScanned.back();
+      for(const auto& neighbourAirCube : getAirCubes(current)) {
+          if (!boundaries.contains(neighbourAirCube)) {
+            isInternal = false;
+          } else if(!contains(scannedCubes, neighbourAirCube)) {
+            toBeScanned.push(neighbourAirCube);
+          }
+      }
+      scannedCubes.push_back(current);
+      toBeScanned.pop();
+  }
   return { isInternal, scannedCubes };
 };
 
@@ -107,13 +124,6 @@ solve(const Input& input)
     return getNeighbouringAirCubes(cube, cubes);
   };
 
-  auto airCubesBounded = [&cubes, &boundaries](const auto& cube) {
-    return getNeighbouringAirCubes(cube, cubes) |
-           std::views::filter([&](const auto& innerCube) {
-             return boundaries.contains(innerCube);
-           });
-  };
-
   Cubes cubesToBeSearched{};
   std::size_t part1 = 0;
   for (const auto& cube : cubes) {
@@ -130,13 +140,16 @@ solve(const Input& input)
   Cubes externalAirCubes{};
 
   auto scan = [&](const auto& cube) {
-    return scanForAirCubes(cube,internalAirCubes,externalAirCubes);
+    return scanForAirCubes(cube, cubes, boundaries);
   };
 
   for (const auto& cube : cubesToBeSearched) {
     if (!contains(internalAirCubes, cube) &&
         !contains(externalAirCubes, cube)) {
-        const auto scanResult = scan(cube);
+      const auto scanResult = scan(cube);
+      auto& cubesToAppendTo =
+        scanResult.isInternal ? internalAirCubes : externalAirCubes;
+      std::ranges::copy(scanResult.cubes, std::back_inserter(cubesToAppendTo));
     }
   }
 

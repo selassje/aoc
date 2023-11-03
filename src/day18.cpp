@@ -2,9 +2,11 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <cstdint>
+#include <initializer_list>
 #include <iterator>
 #include <queue>
-#include <ranges>
 #include <vector>
 
 namespace aoc22::day18 {
@@ -15,14 +17,14 @@ struct CubeEx
   std::int32_t y;
   std::int32_t z;
 
-  constexpr CubeEx(const Cube& cube)
+  explicit constexpr CubeEx(const Cube& cube)
     : x{ cube.x }
     , y{ cube.y }
     , z{ cube.z } {};
 
   constexpr CubeEx(std::initializer_list<int> list)
   {
-    auto it = list.begin();
+    auto it = list.begin(); // NOLINT
     x = *it++;
     y = *it++;
     z = *it;
@@ -40,13 +42,13 @@ struct Cubes : public std::vector<CubeEx>
   using Base = std::vector<CubeEx>;
   using Iterator = Input::const_iterator;
 
-  Cubes() {}
+  Cubes() = default;
   Cubes(Iterator begin, Iterator end)
     : Base(begin, end)
   {
   }
 
-  bool contains(const CubeEx& cube) const
+  [[nodiscard]] bool contains(const CubeEx& cube) const
   {
     return std::ranges::find(*this, cube) != end();
   }
@@ -57,7 +59,7 @@ struct Boundaries
   CubeEx cornerMin;
   CubeEx cornerMax;
 
-  bool contains(const CubeEx& cube) const
+  [[nodiscard]] bool contains(const CubeEx& cube) const
   {
     auto inRange = [](const auto& min, const auto& val, const auto& max) {
       return min <= val && val <= max;
@@ -76,7 +78,7 @@ Cubes
 getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
 {
   Cubes airCubes{};
-  airCubes.reserve(6);
+  airCubes.reserve(SHIFTS.max_size());
   for (const auto& shift : SHIFTS) {
     const auto neighbour = cube + shift;
     if (!dropletCubes.contains(neighbour)) {
@@ -88,8 +90,8 @@ getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
 
 struct ScanResult
 {
-  bool isInternal;
-  Cubes cubes;
+  bool isInternal{};
+  Cubes cubes{};
 };
 
 ScanResult
@@ -140,16 +142,12 @@ solve(const Input& input)
     return getNeighbouringAirCubes(cube, cubes);
   };
 
-  Cubes cubesToBeSearched{};
+  Cubes adjacentAirCubes{};
   std::size_t part1 = 0;
   for (const auto& cube : cubes) {
     const auto airCubes = getAirCubes(cube);
     part1 += airCubes.size();
-    for (const auto& airCube : airCubes) {
-      if (boundaries.contains(airCube)) {
-        cubesToBeSearched.push_back(airCube);
-      }
-    }
+    std::ranges::copy(airCubes, std::back_inserter(adjacentAirCubes));
   }
 
   Cubes internalAirCubes{};
@@ -159,7 +157,7 @@ solve(const Input& input)
     return scanForAirCubes(cube, cubes, boundaries);
   };
 
-  for (const auto& cube : cubesToBeSearched) {
+  for (const auto& cube : adjacentAirCubes) {
     if (!internalAirCubes.contains(cube) && !externalAirCubes.contains(cube)) {
       const auto scanResult = scan(cube);
       auto& cubesToAppendTo =
@@ -168,15 +166,11 @@ solve(const Input& input)
     }
   }
 
-  std::size_t part2 = 0;
-  for (const auto& cube : cubes) {
-    const auto airCubes = getAirCubes(cube);
-    for (const auto& airCube : airCubes) {
-      if (!internalAirCubes.contains(airCube)) {
-        ++part2;
-      }
-    }
-  }
+  const auto part2 = static_cast<std::size_t>(
+    std::ranges::count_if(adjacentAirCubes, [&](const auto& cube) {
+      return !internalAirCubes.contains(cube);
+    }));
+
   return { part1, part2 };
 }
 

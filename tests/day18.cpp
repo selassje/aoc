@@ -5,6 +5,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
+#include <cstddef>
 #include <fstream>
 #include <regex>
 #include <string>
@@ -18,7 +19,7 @@ readInput(const std::string_view path_)
 {
   std::ifstream ifs{ path_.data() };
   Input input{};
-  Cube cube{};
+  Cube cube{}; //NOLINT
 
   static constexpr std::array indexToCoord = { &Cube::x, &Cube::y, &Cube::z };
 

@@ -35,7 +35,7 @@ contains(const Cubes& cubes, const CubeEx& cube)
 {
   return std::ranges::find(cubes, cube) != cubes.end();
 }
-struct RectangularPrism
+struct Boundaries
 {
   CubeEx cornerMin;
   CubeEx cornerMax;
@@ -78,7 +78,7 @@ struct ScanResult
 ScanResult
 scanForAirCubes(const CubeEx& cube,
                 const Cubes& dropletCubes,
-                const RectangularPrism& boundaries)
+                const Boundaries& boundaries)
 {
   auto getAirCubes = [&dropletCubes](const auto& cube) {
     return getNeighbouringAirCubes(cube, dropletCubes);
@@ -105,7 +105,6 @@ scanForAirCubes(const CubeEx& cube,
 Result
 solve(const Input& input)
 {
-
   Cubes cubes(input.begin(), input.end());
 
   auto max = [&cubes](const auto& proj) {
@@ -115,7 +114,7 @@ solve(const Input& input)
     return std::ranges::min(cubes, {}, proj).*proj;
   };
 
-  const RectangularPrism boundaries = {
+  const Boundaries boundaries = {
     { min(&CubeEx::x), min(&CubeEx::y), min(&CubeEx::z) },
     { max(&CubeEx::x), max(&CubeEx::y), max(&CubeEx::z) }
   };

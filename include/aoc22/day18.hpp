@@ -8,23 +8,26 @@
 
 namespace aoc22::day18 {
 
-struct Cube {
+struct Cube
+{
   std::int32_t x;
   std::int32_t y;
   std::int32_t z;
+
+  constexpr auto operator<=>(const Cube&) const noexcept = default;
 };
 
 using Input = std::vector<Cube>;
 
-struct Result {
+struct Result
+{
   std::size_t part1;
   std::size_t part2;
 };
 
-Result solve(const Input& input);
+Result
+solve(const Input& input);
 
 };
-
-
 
 #endif

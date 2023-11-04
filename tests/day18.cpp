@@ -31,7 +31,8 @@ readInput(const std::string_view path_)
     std::size_t index = 0;
     auto coordIt = std::sregex_iterator(line.begin(), line.end(), numberRegex);
     while (coordIt != endRegexIt) {
-      cube.*indexToCoord[index++] = std::stoi(coordIt->str());
+      cube.*indexToCoord[index] = std::stoi(coordIt->str());
+      ++index;
       ++coordIt;
     }
     input.push_back(cube);

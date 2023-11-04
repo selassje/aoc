@@ -99,8 +99,8 @@ scanForAirCubes(const CubeEx& cube,
                 const Cubes& dropletCubes,
                 const Boundaries& boundaries)
 {
-  auto getAirCubes = [&dropletCubes](const auto& cube) {
-    return getNeighbouringAirCubes(cube, dropletCubes);
+  auto getAirCubes = [&dropletCubes](const auto& cubeLambda) {
+    return getNeighbouringAirCubes(cubeLambda, dropletCubes);
   };
   bool isInternal = true;
   Cubes scannedCubes{};

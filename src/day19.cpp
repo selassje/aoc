@@ -6,7 +6,7 @@ namespace aoc22::day19 {
 
 struct State
 {
-  int minutes{ 20 };
+  int minutes{ 13 };
   int ore{};
   int clay{};
   int obsidian{};
@@ -33,7 +33,7 @@ findMaxGeodes(const Blueprint& blueprint)
 
     maxGeodes = std::max(maxGeodes, state.geodes);
 
-    if (state.minutes >= 0) {
+    if (state.minutes > 0) {
       const auto maxNewOreRobots = state.ore / blueprint.oreRobotCost.ore;
       const auto maxNewClayRobots = state.ore / blueprint.clayRobotCost.ore;
       const auto maxNewObsidianRobots =

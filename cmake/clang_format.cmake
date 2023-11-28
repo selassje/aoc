@@ -8,7 +8,6 @@ file(GLOB
      ${CMAKE_SOURCE_DIR}/tests/aoc23/*.cpp
      )
 
-get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)
 
 if ( "${ALL_CXX_SOURCE_FILES}" STREQUAL "")
   message(SEND_ERROR "No files to format")

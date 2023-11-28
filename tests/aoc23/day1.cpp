@@ -9,7 +9,7 @@
 using aoc23::day1::Input;
 
 Input
-readInput(std::string_view) //NOLINT
+readInput(std::string_view) // NOLINT
 {
   return {};
 }

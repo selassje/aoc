@@ -5,7 +5,7 @@ on: [push]
 env:
   NINJA_VER: 1.11.1
   GCC_VER: 13
-  MVSC_VER: 14.37
+  MVSC_VER: 14.38
   CMAKE_VER: 3.27.3
   LLVM_VER_UBUNTU: 17
   LLVM_VER_WIN: 17.0.1

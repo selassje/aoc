@@ -19,7 +19,7 @@ readInput(const std::string_view path_)
 {
   std::ifstream ifs{ path_.data() };
   Input input{};
-  Cube cube{}; //NOLINT
+  Cube cube{}; // NOLINT
 
   static constexpr std::array indexToCoord = { &Cube::x, &Cube::y, &Cube::z };
 

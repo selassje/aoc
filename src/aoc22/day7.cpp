@@ -1,4 +1,4 @@
-#include "day7.hpp"
+#include "aoc22/day7.hpp"
 
 #include <algorithm>
 #include <cassert>

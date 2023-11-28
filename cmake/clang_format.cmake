@@ -1,8 +1,11 @@
 file(GLOB
      ALL_CXX_SOURCE_FILES
-     ${CMAKE_SOURCE_DIR}/src/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/aoc22/*.cpp
+     ${CMAKE_SOURCE_DIR}/src/aoc23/*.cpp
      ${CMAKE_SOURCE_DIR}/include/aoc22/*.hpp
-     ${CMAKE_SOURCE_DIR}/tests/*.cpp
+     ${CMAKE_SOURCE_DIR}/include/aoc23/*.hpp
+     ${CMAKE_SOURCE_DIR}/tests/aoc22/*.cpp
+     ${CMAKE_SOURCE_DIR}/tests/aoc23/*.cpp
      )
 
 get_filename_component(BINARY_DIR_NAME ${CMAKE_BINARY_DIR} DIRECTORY)

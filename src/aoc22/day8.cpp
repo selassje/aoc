@@ -1,4 +1,4 @@
-#include "day8.hpp"
+#include "aoc22/day8.hpp"
 
 #include <algorithm>
 #include <cstddef>

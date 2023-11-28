@@ -1,4 +1,4 @@
-#include "day6.hpp"
+#include "aoc22/day6.hpp"
 
 #include <array>
 #include <cstddef>

@@ -1,4 +1,4 @@
-#include "day9.hpp"
+#include "aoc22/day9.hpp"
 
 #include <array>
 #include <compare>

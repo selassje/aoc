@@ -1,4 +1,4 @@
-#include "day10.hpp"
+#include "aoc22/day10.hpp"
 
 #include <cstddef>
 #include <cstdint>

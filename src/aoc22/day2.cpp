@@ -1,4 +1,4 @@
-#include "day2.hpp"
+#include "aoc22/day2.hpp"
 
 #include <cstddef>
 #include <exception>

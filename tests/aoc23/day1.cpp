@@ -7,7 +7,6 @@
 #include <fstream>
 #include <string>
 #include <string_view>
-#include <vector>
 
 using aoc23::day1::Input;
 

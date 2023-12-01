@@ -1,19 +1,21 @@
 Checks: "*,
-         -llvmlibc-*, 
-         -fuchsia-default-arguments-calls,
-         -google-readability-namespace-comments,
-         -llvm-namespace-comment,
-         -modernize-use-trailing-return-type,
+         -abseil-string-find-str-contains,
          -altera-id-dependent-backward-branch,
          -altera-unroll-loops,
-         -readability-identifier-length,
-         -abseil-string-find-str-contains,
-         -misc-no-recursion,
+         -altera-struct-pack-align,
+         -cert-err58-cpp,
          -cppcoreguidelines-avoid-magic-numbers,
-         -fuchsia-overloaded-operator,
-         -readability-function-cognitive-complexity,
          -cppcoreguidelines-pro-bounds-constant-array-index,
-         -altera-struct-pack-align
+         -fuchsia-default-arguments-calls,
+         -fuchsia-statically-constructed-objects,
+         -fuchsia-overloaded-operator,
+         -google-readability-namespace-comments,
+         -llvmlibc-*, 
+         -llvm-namespace-comment,
+         -misc-no-recursion,
+         -modernize-use-trailing-return-type,
+         -readability-identifier-length,
+         -readability-function-cognitive-complexity
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true

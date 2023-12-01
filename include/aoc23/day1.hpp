@@ -2,11 +2,12 @@
 #define AOC23_DAY1_HPP
 
 #include <cstddef>
+#include <string>
+#include <vector>
 
 namespace aoc23::day1 {
 
-struct Input
-{};
+using Input = std::vector<std::string>;
 
 struct Result
 {

@@ -25,26 +25,45 @@ Result
 solve(const Input& input)
 {
   std::size_t part1 = 0;
-  //std::size_t part2 = 0;
+  std::size_t part2 = 0;
   for (const auto& line : input) {
       std::size_t minIndexFirst = std::numeric_limits<std::size_t>::max();
-      std::size_t minIndexLast = std::numeric_limits<std::size_t>::max();
+      std::size_t maxIndexLast = std::numeric_limits<std::size_t>::min();
       std::size_t firstDigit = 0;
       std::size_t lastDigit = 0;
       for( const auto&[str, digit] : strToDigitsPart1 ) {
-        const auto firstDigitIndex = line.find(str);
+        const auto firstDigitIndex = line.find_first_of(str);
         if (firstDigitIndex != std::string::npos && firstDigitIndex < minIndexFirst) {
           minIndexFirst = firstDigitIndex;
           firstDigit = digit;
         }
         const auto lastDigitIndex = line.find_last_of(str);
-        if (lastDigitIndex != std::string::npos && lastDigitIndex < minIndexLast) {
-          minIndexLast = lastDigitIndex;
+        if (lastDigitIndex != std::string::npos && lastDigitIndex >= maxIndexLast) {
+          maxIndexLast = lastDigitIndex;
           lastDigit = digit;
         }
       }
       part1 += firstDigit * 10 + lastDigit; 
   }
-  return {part1, part1};
+  for (const auto& line : input) {
+      std::size_t minIndexFirst = std::numeric_limits<std::size_t>::max();
+      std::size_t maxIndexLast = std::numeric_limits<std::size_t>::min();
+      std::size_t firstDigit = 0;
+      std::size_t lastDigit = 0;
+      for( const auto&[str, digit] : strToDigitsPart1 ) {
+        const auto firstDigitIndex = line.find_first_of(str);
+        if (firstDigitIndex != std::string::npos && firstDigitIndex < minIndexFirst) {
+          minIndexFirst = firstDigitIndex;
+          firstDigit = digit;
+        }
+        const auto lastDigitIndex = line.find_last_of(str);
+        if (lastDigitIndex != std::string::npos && lastDigitIndex >= maxIndexLast) {
+          maxIndexLast = lastDigitIndex;
+          lastDigit = digit;
+        }
+      }
+      part2 += firstDigit * 10 + lastDigit; 
+  }
+  return {part1, part2};
 }
 }

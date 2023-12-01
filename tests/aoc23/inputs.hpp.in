@@ -6,6 +6,7 @@
 namespace inputs::day1 {
 constexpr std::string_view INPUT = R"(@INPUTS_DAY1_INPUT@)";
 constexpr std::string_view EXAMPLE = R"(@INPUTS_DAY1_EXAMPLE@)";
+constexpr std::string_view EXAMPLE2 = R"(@INPUTS_DAY1_EXAMPLE2@)";
 }
 
 #endif

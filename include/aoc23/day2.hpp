@@ -6,7 +6,8 @@
 
 namespace aoc23::day2 {
 
-struct Draw {
+struct Draw
+{
   std::size_t redCount;
   std::size_t greenCount;
   std::size_t blueCount;

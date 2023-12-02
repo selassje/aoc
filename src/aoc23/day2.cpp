@@ -4,51 +4,38 @@
 
 namespace aoc23::day2 {
 
-struct DrawEx
+std::size_t
+getMininumSetPower(const Game& game)
 {
-  std::size_t redCount;
-  std::size_t greenCount;
-  std::size_t blueCount;
-
-  constexpr DrawEx(const Draw& draw)
-    : redCount{ draw.redCount }
-    , greenCount{ draw.greenCount }
-    , blueCount{ draw.blueCount } {};
-
-  constexpr DrawEx(std::initializer_list<std::size_t> list)
-  {
-    auto it = list.begin(); // NOLINT
-    redCount = *it++;
-    greenCount = *it++;
-    blueCount = *it;
+  Draw minSet{};
+  for (const auto& draw : game) {
+    minSet.redCount = std::max(minSet.redCount, draw.redCount);
+    minSet.greenCount = std::max(minSet.greenCount, draw.greenCount);
+    minSet.blueCount = std::max(minSet.blueCount, draw.blueCount);
   }
-  constexpr auto operator<=>(const DrawEx&) const noexcept = default;
-};
-
-bool
-isDrawValid(const Draw& limit, const Draw& draw)
-{
-  return draw.redCount <= limit.redCount &&
-         draw.greenCount <= limit.greenCount &&
-         draw.blueCount <= limit.blueCount;
+  return minSet.redCount * minSet.greenCount * minSet.blueCount;
 }
 
 Result
 solve(const Input& input)
 {
   static constexpr Draw maxDraw = { 12, 13, 14 };
-  std::size_t part1 = input.size();
-  part1 = 0;
+  auto isDrawValid = [](const Draw& draw) {
+    return draw.redCount <= maxDraw.redCount &&
+           draw.greenCount <= maxDraw.greenCount &&
+           draw.blueCount <= maxDraw.blueCount;
+  };
+
+  std::size_t part1 = 0;
+  std::size_t part2 = 0;
   for (std::size_t i = 0; i < input.size(); ++i) {
     const auto& game = input[i];
-    if (std::ranges::count_if(game, [&](const auto& draw) {
-          return !isDrawValid(maxDraw, draw);
-        }) == 0) {
+    if (std::ranges::count_if(
+          game, [&](const auto& draw) { return !isDrawValid(draw); }) == 0) {
       part1 += i + 1;
-    } else {
-      std::cout << "ERROR " << i + 1 << "\n";
     }
+    part2 += getMininumSetPower(game);
   }
-  return { part1, part1 };
+  return { part1, part2 };
 }
 }

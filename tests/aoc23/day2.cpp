@@ -12,20 +12,21 @@ using aoc23::day2::Draw;
 using aoc23::day2::Game;
 using aoc23::day2::Input;
 
-auto split(const std::string& string, const char delimeter) {
+auto
+split(const std::string& string, const char delimeter)
+{
   std::vector<std::string> parts{};
   std::size_t searchOffset = 0;
   std::size_t nextDelimeter = string.find(delimeter);
   while (nextDelimeter != std::string::npos) {
-    const auto part =
-      string.substr(searchOffset, nextDelimeter - searchOffset);
+    const auto part = string.substr(searchOffset, nextDelimeter - searchOffset);
     parts.push_back(part);
     searchOffset = nextDelimeter + 1;
     nextDelimeter = string.find(delimeter, searchOffset);
   }
   const auto lastPart =
-      string.substr(searchOffset, string.size() - searchOffset);
-  parts.push_back(lastPart);  
+    string.substr(searchOffset, string.size() - searchOffset);
+  parts.push_back(lastPart);
   return parts;
 };
 
@@ -65,13 +66,15 @@ readInput(const std::string_view path)
 TEST_CASE("Aoc23 Day2 Example", "[AoC23_Day2]")
 {
   const auto input = readInput(inputs::day2::EXAMPLE);
-  const auto& [part_1, _] = aoc23::day2::solve(input);
-  REQUIRE(part_1 == 8);
+  const auto& [part1, part2] = aoc23::day2::solve(input);
+  REQUIRE(part1 == 8);
+  REQUIRE(part2 == 2286);
 }
 
 TEST_CASE("Aoc23 Day2 Input", "[AoC23_Day2]")
 {
   const auto input = readInput(inputs::day2::INPUT);
-  const auto& [part_1, _] = aoc23::day2::solve(input);
-  REQUIRE(part_1 == 2377);
+  const auto& [part1, part2] = aoc23::day2::solve(input);
+  REQUIRE(part1 == 2377);
+  REQUIRE(part2 == 71220);
 }

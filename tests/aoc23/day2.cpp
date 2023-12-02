@@ -4,9 +4,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cstddef>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <string_view>
+#include <vector>
 
 using aoc23::day2::Draw;
 using aoc23::day2::Game;

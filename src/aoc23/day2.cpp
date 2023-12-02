@@ -1,6 +1,6 @@
 #include "aoc23/day2.hpp"
 #include <algorithm>
-#include <iostream>
+#include <cstddef>
 
 namespace aoc23::day2 {
 

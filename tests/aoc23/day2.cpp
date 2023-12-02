@@ -12,25 +12,29 @@ using aoc23::day2::Draw;
 using aoc23::day2::Game;
 using aoc23::day2::Input;
 
+auto split(const std::string& string, const char delimeter) {
+  std::vector<std::string> parts{};
+  std::size_t searchOffset = 0;
+  std::size_t nextDelimeter = string.find(delimeter);
+  while (nextDelimeter != std::string::npos) {
+    const auto part =
+      string.substr(searchOffset, nextDelimeter - searchOffset);
+    parts.push_back(part);
+    searchOffset = nextDelimeter + 1;
+    nextDelimeter = string.find(delimeter, searchOffset);
+  }
+  const auto lastPart =
+      string.substr(searchOffset, string.size() - searchOffset);
+  parts.push_back(lastPart);  
+  return parts;
+};
+
 Input
 readInput(const std::string_view path)
 {
   std::ifstream ifs{ path.data() };
   Input input{};
   std::string line{};
-  auto split = [](const std::string& string, const char delimeter) {
-    std::vector<std::string> parts{};
-    std::size_t searchOffset = 0;
-    std::size_t nextDelimeter = string.find(delimeter);
-    while (nextDelimeter != std::string::npos) {
-      const auto part =
-        string.substr(searchOffset, nextDelimeter - searchOffset + 1);
-      parts.push_back(part);
-      searchOffset = nextDelimeter;
-      nextDelimeter = string.find(delimeter, searchOffset + 1);
-    }
-    return parts;
-  };
   while (std::getline(ifs, line)) {
     Game game{};
     const auto drawsStr = split(line, ':')[1];
@@ -38,8 +42,8 @@ readInput(const std::string_view path)
       Draw draw{};
       for (const auto& cubeStr : split(drawStr, ',')) {
         const auto words = split(cubeStr, ' ');
-        const auto count = std::strtoull(words[0].c_str(), nullptr, 10);
-        const auto& colour = words[1];
+        const auto count = std::strtoull(words[1].c_str(), nullptr, 10);
+        const auto& colour = words[2];
         if (colour == "red") {
           draw.redCount = count;
         }

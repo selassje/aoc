@@ -27,14 +27,14 @@ TEST_CASE("Aoc23 Day3 Example", "[AoC23_Day3]")
 {
   const auto input = readInput(inputs::day3::EXAMPLE);
   const auto& [part1, part2] = aoc23::day3::solve(input);
-  REQUIRE(part1 == 114);
-  REQUIRE(part2 == 114);
+  REQUIRE(part1 == 4361);
+  REQUIRE(part2 == 4361);
 }
 
 TEST_CASE("Aoc23 Day3 Input", "[AoC23_Day3]")
 {
   const auto input = readInput(inputs::day3::INPUT);
   const auto& [part1, part2] = aoc23::day3::solve(input);
-  REQUIRE(part1 == 114);
-  REQUIRE(part2 == 114);
+  REQUIRE(part1 == 520019);
+  REQUIRE(part2 == 520019);
 }

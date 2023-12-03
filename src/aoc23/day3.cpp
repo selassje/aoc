@@ -1,10 +1,12 @@
 #include "aoc23/day3.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <cstddef>
 #include <cstdlib>
 #include <map>
 #include <optional>
+#include <vector>
 
 namespace aoc23::day3 {
 
@@ -43,7 +45,7 @@ parseInput(const Input& input)
     };
 
     for (std::size_t x = 0; x < width; ++x) {
-      if (std::isdigit(line[x])) {
+      if (0 != std::isdigit(line[x])) {
         if (!startX) {
           startX = x;
         }

@@ -18,7 +18,7 @@ struct Position
 struct Number
 {
   Position startPosition;
-  std::size_t length;
+  std::size_t endX;
   std::size_t value;
 };
 
@@ -39,7 +39,7 @@ parseInput(const Input& input)
     auto getValue = [&](const std::size_t endX) -> Number {
       const auto subStr = line.substr(*startX, endX - *startX + 1);
       const auto value = std::strtoull(subStr.c_str(), nullptr, 10);
-      return { { *startX, y }, endX - *startX + 1, value };
+      return { { *startX, y }, endX, value };
     };
 
     for (std::size_t x = 0; x < width; ++x) {
@@ -80,7 +80,7 @@ solve(const Input& input)
   std::map<Position, GearInfo> gearInfoMap{};
   for (const Number& number : parseInput(input)) {
     const auto& [startX, y] = number.startPosition;
-    const auto endX = startX + number.length - 1;
+    const auto& endX = number.endX;
     std::vector<Position> adjacent = {
       { startX - 1, y },     { endX + 1, y },     { startX - 1, y - 1 },
       { startX - 1, y + 1 }, { endX + 1, y - 1 }, { endX + 1, y + 1 }
@@ -109,7 +109,6 @@ solve(const Input& input)
       part2 += pair.second.gearRatio;
     }
   });
-
   return { part1, part2 };
 }
 }

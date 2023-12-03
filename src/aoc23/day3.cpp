@@ -1,7 +1,9 @@
 #include "aoc23/day3.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdlib>
+#include <map>
 #include <optional>
 
 namespace aoc23::day3 {
@@ -10,6 +12,7 @@ struct Position
 {
   std::size_t x;
   std::size_t y;
+  auto operator<=>(const Position&) const noexcept = default;
 };
 
 struct Number
@@ -17,6 +20,12 @@ struct Number
   Position startPosition;
   std::size_t length;
   std::size_t value;
+};
+
+struct GearInfo
+{
+  std::size_t gearRatio{ 1 };
+  std::size_t partNumberCount{ 0 };
 };
 
 auto
@@ -61,13 +70,14 @@ solve(const Input& input)
   const auto width = input[0].size();
 
   std::size_t part1 = 0;
-  auto isSymbol = [&](const Position& position) {
+  auto getSymbol = [&](const Position& position) {
     if (position.x >= width || position.y >= height) {
-      return false;
+      return '.';
     }
-    return input[position.y][position.x] != '.';
+    return input[position.y][position.x];
   };
 
+  std::map<Position, GearInfo> gearInfoMap{};
   for (const Number& number : parseInput(input)) {
     const auto& [startX, y] = number.startPosition;
     const auto endX = startX + number.length - 1;
@@ -82,13 +92,24 @@ solve(const Input& input)
     }
 
     for (const auto& position : adjacent) {
-      if (isSymbol(position)) {
+      const auto symbol = getSymbol(position);
+      if (symbol != '.') {
         part1 += number.value;
+        if (symbol == '*') {
+          gearInfoMap[position].partNumberCount += 1;
+          gearInfoMap[position].gearRatio *= number.value;
+        }
         break;
       }
     }
   }
+  std::size_t part2 = 0;
+  std::ranges::for_each(gearInfoMap, [&part2](const auto& pair) {
+    if (pair.second.partNumberCount == 2) {
+      part2 += pair.second.gearRatio;
+    }
+  });
 
-  return { part1, part1 };
+  return { part1, part2 };
 }
 }

@@ -1,7 +1,6 @@
 #include "aoc23/day4.hpp"
 
 #include <algorithm>
-#include <cmath>
 #include <cstddef>
 #include <vector>
 
@@ -30,8 +29,7 @@ solve(const Input& input)
   for (std::size_t i = 0; i < originalCardCount; ++i) {
     const auto& card = input[i];
     const auto matches = getCardMatches(card);
-    
-    part1 += static_cast<std::size_t>(std::pow(2, matches - 1));
+    part1 += matches == 0 ? 0 : 1ULL << (matches - 1);
     for (std::size_t j = i + 1; j <= i + matches && j < originalCardCount;
          ++j) {
       cardCount[j] += cardCount[i];

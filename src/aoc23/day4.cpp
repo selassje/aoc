@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstddef>
+#include <vector>
 
 namespace aoc23::day4 {
 
@@ -12,7 +14,7 @@ getCardMatches(const Card& card)
   for (const auto& winningNumber : card.winningNumbers) {
     if (std::ranges::find(card.actualNumbers, winningNumber) !=
         card.actualNumbers.end()) {
-          ++result;
+      ++result;
     }
   }
   return result;
@@ -21,12 +23,25 @@ getCardMatches(const Card& card)
 Result
 solve(const Input& input)
 {
+  const auto originalCardCount = input.size();
+  std::vector<std::size_t> cardCount(originalCardCount, 1);
+
   std::size_t part1 = 0;
-  for (const auto& card : input) {
+  for (std::size_t i = 0; i < originalCardCount; ++i) {
+    const auto& card = input[i];
     const auto matches = getCardMatches(card);
+    
     part1 += static_cast<std::size_t>(std::pow(2, matches - 1));
+    for (std::size_t j = i + 1; j <= i + matches && j < originalCardCount;
+         ++j) {
+      cardCount[j] += cardCount[i];
+    }
   }
-  return { part1, part1 };
+  std::size_t part2 = 0;
+  for (const auto& count : cardCount) {
+    part2 += count;
+  }
+  return { part1, part2 };
 }
 
 }

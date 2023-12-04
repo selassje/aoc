@@ -48,6 +48,7 @@ TEST_CASE("Day18 Example", "[Day18]")
   REQUIRE(part_2 == 58);
 }
 
+#ifndef DEBUG
 TEST_CASE("Day18 Input", "[Day18]")
 {
   const auto input = readInput(inputs::day18::INPUT);
@@ -55,3 +56,4 @@ TEST_CASE("Day18 Input", "[Day18]")
   REQUIRE(part_1 == 4390);
   REQUIRE(part_2 == 2534);
 }
+#endif

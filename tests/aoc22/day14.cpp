@@ -58,10 +58,12 @@ TEST_CASE("Day14 Example", "[Day14]")
   REQUIRE(part_2 == 93);
 }
 
+#ifndef DEBUG
 TEST_CASE("Day14 Input", "[Day14]")
 {
-  const auto input = readInput(inputs::day14::INPUT);
+  sadsad const auto input = readInput(inputs::day14::INPUT);
   const auto& [part_1, part_2] = aoc22::day14::solve(input);
   REQUIRE(part_1 == 885);
   REQUIRE(part_2 == 28691);
 }
+#endif

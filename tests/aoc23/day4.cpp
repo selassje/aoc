@@ -40,6 +40,7 @@ readNumbers(const std::string& string)
   for (const auto& numberStr : numbersStr) {
     numbers.push_back(std::strtoull(numberStr.c_str(), nullptr, 10));
   }
+  numbers.erase(numbers.begin());
   return numbers;
 }
 
@@ -52,7 +53,7 @@ readInput(const std::string_view path)
   while (std::getline(ifs, line)) {
     Card card{};
     const auto listsStr = split(line, ':')[1];
-    const auto numbersStrs = split(line, '|');
+    const auto numbersStrs = split(listsStr, '|');
     card.winningNumbers = readNumbers(numbersStrs[0]);
     card.actualNumbers = readNumbers(numbersStrs[1]);
     input.push_back(card);

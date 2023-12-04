@@ -6,7 +6,8 @@
 
 namespace aoc23::day4 {
 
-struct Card {
+struct Card
+{
   std::vector<std::size_t> winningNumbers;
   std::vector<std::size_t> actualNumbers;
 };

@@ -40,14 +40,14 @@ solve(const Input& input)
                        input.lightToTemp,       input.tempToHumidity,
                        input.humidityToLocation };
 
-  struct LocationAndMinLength
+  struct LocationAndNextSeed
   {
     std::size_t location;
-    std::size_t minLength;
+    std::size_t nextSeed;
   };
 
-  auto getLocationAndMinLength =
-    [&maps](const std::size_t seed) -> LocationAndMinLength {
+  auto getLocationAndNextSeed =
+    [&maps](const std::size_t seed) -> LocationAndNextSeed {
     std::size_t minLength = std::numeric_limits<std::size_t>::max();
     std::size_t location = seed;
     for (const auto& map : maps) {
@@ -55,21 +55,21 @@ solve(const Input& input)
       location = destination.destination;
       minLength = std::min(minLength, destination.remainingLength);
     }
-    return { location, minLength };
+    return { location, seed + minLength + 1 };
   };
 
   std::size_t part1 = std::numeric_limits<std::size_t>::max();
   std::size_t part2 = std::numeric_limits<std::size_t>::max();
   for (std::size_t i = 0; i < input.seeds.size(); ++i) {
     auto seed = input.seeds[i];
-    part1 = std::min(part1, getLocationAndMinLength(seed).location);
+    part1 = std::min(part1, getLocationAndNextSeed(seed).location);
     if ((i + 1) % 2 == 0) {
       seed = input.seeds[i - 1];
       const auto endSeed = seed + input.seeds[i] - 1;
       while (seed <= endSeed) {
-        auto location = getLocationAndMinLength(seed);
-        part2 = std::min(part2, location.location);
-        seed += location.minLength + 1;
+        const auto& [location, nextSeed] = getLocationAndNextSeed(seed);
+        part2 = std::min(part2, location);
+        seed = nextSeed;
       }
     }
   }

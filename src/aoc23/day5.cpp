@@ -18,44 +18,44 @@ using MapArray = std::array<Map, 7>;
 DestinationAndRemainingLengthInTheCurrentRange
 getDestinationAndRemainingLength(std::size_t source, const Map& map)
 {
-  auto remainingRange = std::numeric_limits<std::size_t>::max();
-  bool nextRangeFound = false;
+  std::optional<std::size_t> remainingLength{};
   for (const auto& range : map) {
     if (range.source <= source && source <= range.source + range.length - 1) {
       const auto destination = range.destination + source - range.source;
-      remainingRange = range.length - (destination - range.destination + 1);
-      return { destination, remainingRange };
-    } else if (!nextRangeFound && range.source > source) {
-      nextRangeFound = true;
-      remainingRange = range.source - source - 1;
+      remainingLength = range.length - (destination - range.destination + 1);
+      return { destination, *remainingLength };
+    } else if (!remainingLength && range.source > source) {
+      remainingLength = range.source - source - 1;
     }
   }
-  return { source, remainingRange };
+  return { source,
+           remainingLength.value_or(std::numeric_limits<std::size_t>::max()) };
 };
-
 
 Result
 solve(const Input& input)
 {
-  const MapArray maps{ input.seedToSoil,          input.soilToFertilizer,
-                       input.fertilizerToWater,   input.waterToLight,
-                       input.lightToTemp,         input.tempToHumidity,
+  const MapArray maps{ input.seedToSoil,        input.soilToFertilizer,
+                       input.fertilizerToWater, input.waterToLight,
+                       input.lightToTemp,       input.tempToHumidity,
                        input.humidityToLocation };
-  
-  struct LocationAndMinLength {
+
+  struct LocationAndMinLength
+  {
     std::size_t location;
     std::size_t minLength;
   };
 
-  auto getLocationAndMinLength = [&maps](const std::size_t seed ) -> LocationAndMinLength {
+  auto getLocationAndMinLength =
+    [&maps](const std::size_t seed) -> LocationAndMinLength {
     std::size_t minLength = std::numeric_limits<std::size_t>::max();
     std::size_t location = seed;
-    for ( const auto& map : maps) {
-        const auto destination = getDestinationAndRemainingLength(location,map);
-        location = destination.destination;
-        minLength = std::min(minLength,destination.remainingLength);
+    for (const auto& map : maps) {
+      const auto destination = getDestinationAndRemainingLength(location, map);
+      location = destination.destination;
+      minLength = std::min(minLength, destination.remainingLength);
     }
-    return {location, minLength};
+    return { location, minLength };
   };
 
   std::size_t part1 = std::numeric_limits<std::size_t>::max();

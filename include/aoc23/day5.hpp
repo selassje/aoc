@@ -9,8 +9,8 @@ namespace aoc23::day5 {
 
 struct Range
 {
-  std::size_t source;
   std::size_t destination;
+  std::size_t source;
   std::size_t length;
 };
 

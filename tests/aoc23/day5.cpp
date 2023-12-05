@@ -81,7 +81,7 @@ readInput(const std::string_view path)
     if (!line.empty()) {
       if (line.starts_with("seeds")) {
         const auto seedsStr = split(line, ':')[1];
-        input.seeds = readNumbers(seedsStr);
+        input.seeds = readNumbers(seedsStr.substr(1));
       } else {
         auto& map = getMap(line);
         while (std::getline(ifs, line)) {
@@ -109,8 +109,8 @@ TEST_CASE("Aoc23 Day5 Example", "[AoC23_Day5]")
 
 TEST_CASE("Aoc23 Day5 Input", "[AoC23_Day5]")
 {
- // const auto input = readInput(inputs::day5::INPUT);
- // const auto& [part1, part2] = aoc23::day5::solve(input);
-//  REQUIRE(part1 == 21821);
-  //REQUIRE(part2 == 5539496);
+  const auto input = readInput(inputs::day5::INPUT);
+  const auto& [part1, part2] = aoc23::day5::solve(input);
+  REQUIRE(part1 == 107430936);
+  REQUIRE(part2 == 107430936);
 }

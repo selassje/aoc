@@ -26,7 +26,7 @@ struct Input
   Map waterToLight;
   Map lightToTemp;
   Map tempToHumidity;
-  Map humidityToToLocation;
+  Map humidityToLocation;
 };
 
 struct Result

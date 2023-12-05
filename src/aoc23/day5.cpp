@@ -1,5 +1,6 @@
 #include "aoc23/day5.hpp"
 
+#include <array>
 #include <cstddef>
 #include <limits>
 
@@ -10,6 +11,8 @@ struct Destination
   std::size_t destination;
   std::size_t remainingRange;
 };
+
+using MapArray = std::array<Map, 7>;
 
 Destination
 getDestination(std::size_t source, const Map& map)
@@ -42,7 +45,7 @@ getSeedLocation(std::size_t seed, const Input& input)
   const auto [humidity, humidityRange] =
     getDestination(temp, input.tempToHumidity);
   const auto [location, locationRange] =
-    getDestination(humidity, input.humidityToToLocation);
+    getDestination(humidity, input.humidityToLocation);
   const auto minRange = std::min({ soilRange,
                                    fertilizerRange,
                                    waterRange,
@@ -56,18 +59,34 @@ getSeedLocation(std::size_t seed, const Input& input)
 Result
 solve(const Input& input)
 {
+  const MapArray maps{ input.seedToSoil,          input.soilToFertilizer,
+                       input.fertilizerToWater,   input.waterToLight,
+                       input.lightToTemp,         input.tempToHumidity,
+                       input.humidityToLocation };
+
+  auto getLocationAndMinLength = [&maps](const std::size_t seed ) -> Destination {
+    std::size_t minLength = std::numeric_limits<std::size_t>::max();
+    std::size_t location = seed;
+    for ( const auto& map : maps) {
+        const auto destination = getDestination(location,map);
+        location = destination.destination;
+        minLength = std::min(minLength,destination.remainingRange);
+    }
+    return {location, minLength};
+  };
+
   std::size_t part1 = std::numeric_limits<std::size_t>::max();
   std::size_t part2 = std::numeric_limits<std::size_t>::max();
   for (std::size_t i = 0; i < input.seeds.size(); ++i) {
     auto seed = input.seeds[i];
-    part1 = std::min(part1, getSeedLocation(seed, input).destination);
+    part1 = std::min(part1, getLocationAndMinLength(seed).destination);
     if ((i + 1) % 2 == 0) {
-      auto startSeed = input.seeds[i - 1];
-      const auto endSeed = startSeed + input.seeds[i] - 1;
-      while ( startSeed <= endSeed) {
-        auto location = getSeedLocation(startSeed,input);
+      seed = input.seeds[i - 1];
+      const auto endSeed = seed + input.seeds[i] - 1;
+      while (seed <= endSeed) {
+        auto location = getLocationAndMinLength(seed);
         part2 = std::min(part2, location.destination);
-        startSeed += location.remainingRange + 1;
+        seed += location.remainingRange + 1;
       }
     }
   }

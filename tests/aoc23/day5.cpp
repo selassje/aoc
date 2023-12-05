@@ -73,7 +73,7 @@ readInput(const std::string_view path)
     if (mapHeader == "temperature-to-humidity map:") {
       return input.tempToHumidity;
     }
-    return input.humidityToToLocation;
+    return input.humidityToLocation;
   };
 
   std::string line{};

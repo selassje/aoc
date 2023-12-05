@@ -87,7 +87,7 @@ readInput(const std::string_view path)
         while (std::getline(ifs, line)) {
           if (!line.empty()) {
             const auto numbers = readNumbers(line);
-            Range range{ numbers[0], numbers[1], numbers[2] };
+            const Range range{ numbers[0], numbers[1], numbers[2] };
             map.push_back(range);
           } else {
             break;

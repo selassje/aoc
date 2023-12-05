@@ -1,5 +1,6 @@
 #include "aoc23/day5.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <limits>
@@ -13,7 +14,7 @@ struct DestinationAndRemainingLengthInTheCurrentRange
   std::size_t remainingLength;
 };
 
-using MapArray = std::array<Map, 7>;
+using MapArray = std::array<Map, 7>; // NOLINT
 
 DestinationAndRemainingLengthInTheCurrentRange
 getDestinationAndRemainingLength(std::size_t source, const Map& map)
@@ -24,7 +25,8 @@ getDestinationAndRemainingLength(std::size_t source, const Map& map)
       const auto destination = range.destination + source - range.source;
       remainingLength = range.length - (destination - range.destination + 1);
       return { destination, *remainingLength };
-    } else if (!remainingLength && range.source > source) {
+    }
+    if (!remainingLength && range.source > source) {
       remainingLength = range.source - source - 1;
     }
   }

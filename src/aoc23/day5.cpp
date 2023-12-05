@@ -16,19 +16,23 @@ getDestination(std::size_t source, const Map& map)
   return source;
 };
 
-Result
-solve(const Input& input)
-{
-  std::size_t part1 = std::numeric_limits<std::size_t>::max();
-  for (const auto& seed : input.seeds) {
-   const auto soil = getDestination(seed, input.seedToSoil);
+std::size_t getSeedLocation(std::size_t seed, const Input& input) {
+    const auto soil = getDestination(seed, input.seedToSoil);
     const auto fertilizer = getDestination(soil, input.soilToFertilizer);
     const auto water = getDestination(fertilizer, input.fertilizerToWater);
     const auto light = getDestination(water, input.waterToLight);
     const auto temp = getDestination(light, input.lightToTemp);
     const auto humidity = getDestination(temp, input.tempToHumidity);
     const auto location = getDestination(humidity, input.humidityToToLocation);
-    part1 = std::min(part1, location);
+    return location;
+}
+
+Result
+solve(const Input& input)
+{
+  std::size_t part1 = std::numeric_limits<std::size_t>::max();
+  for (const auto& seed : input.seeds) {
+    part1 = std::min(part1, getSeedLocation(seed, input));
   }
   return { part1, part1 };
 }

@@ -51,13 +51,14 @@ solve(const Input& input)
   auto getLocationAndNextSeed =
     [&maps](const std::size_t seed) -> LocationAndNextSeed {
     std::size_t minLength = std::numeric_limits<std::size_t>::max();
-    std::size_t location = seed;
+    std::size_t source = seed;
     for (const auto& map : maps) {
-      const auto destination = getDestinationAndRemainingLength(location, map);
-      location = destination.destination;
-      minLength = std::min(minLength, destination.remainingLength);
+      const auto& [destination, remainingLength] =
+        getDestinationAndRemainingLength(source, map);
+      source = destination;
+      minLength = std::min(minLength, remainingLength);
     }
-    return { location, seed + minLength + 1 };
+    return { source, seed + minLength + 1 };
   };
 
   std::size_t part1 = std::numeric_limits<std::size_t>::max();

@@ -3,10 +3,14 @@
 namespace aoc23::day6 {
 
 std::size_t recordBeatingCount(const Race& race) {
-  for( std::size_t t = 0 ; t < race.time; ++t) {
-
+  std::size_t result = 0;
+  for( std::size_t t = 0 ; t <= race.time; ++t) {
+    const auto distance = t * ( race.time -t );
+    if (distance > race.recordDistance) {
+      ++result;
+    }
   }
-  return 0;
+  return result;
 }
 
 Result

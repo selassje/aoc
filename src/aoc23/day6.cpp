@@ -1,5 +1,8 @@
 #include "aoc23/day6.hpp"
 
+#include <cstddef>
+#include <cstdlib>
+
 #include <string>
 
 namespace aoc23::day6 {
@@ -30,11 +33,11 @@ solve(const Input& input)
   }
 
   auto toInt = [](const std::string& string) {
-    return std::strtoull(string.c_str(), nullptr, 10);
+    return std::strtoull(string.c_str(), nullptr, 10); // NOLINT
   };
 
-  Race singleRace{ toInt(singleRaceRecordDistanceStr),
-                   toInt(singleRaceTimeStr) };
+  const Race singleRace{ toInt(singleRaceRecordDistanceStr),
+                         toInt(singleRaceTimeStr) };
   const std::size_t part2 = recordBeatingCount(singleRace);
 
   return { part1, part2 };

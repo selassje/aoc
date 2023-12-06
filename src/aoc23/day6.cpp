@@ -2,8 +2,11 @@
 
 namespace aoc23::day6 {
 Result
-solve(const Input&)
+solve(const Input& input)
 {
-  return { 0, 0 };
+  std::size_t part1 = 0;
+  part1 = input.size();
+
+  return { part1 , 0 };
 }
 }

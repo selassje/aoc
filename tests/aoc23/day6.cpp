@@ -36,7 +36,7 @@ auto
 readNumbers(const std::string& string)
 {
   std::vector<std::size_t> numbers{};
-  const auto stringRepl = std::regex_replace(string, std::regex("  "), " ");
+  const auto stringRepl = std::regex_replace(string, std::regex(" +"), " ");
   const auto numbersStr = split(stringRepl.substr(1), ' ');
   for (const auto& numberStr : numbersStr) {
     const auto number = std::strtoull(numberStr.c_str(), nullptr, 10);
@@ -49,9 +49,20 @@ Input
 readInput(const std::string_view path)
 {
   std::ifstream ifs{ path.data() };
-  Input input{};
   std::string line{};
+  std::vector<std::size_t> distances{};
+  std::vector<std::size_t> times{};
   while (std::getline(ifs, line)) {
+      const auto numberStr = split(line,':')[1];
+      if ( line.starts_with("Time:")) {
+        times = readNumbers(numberStr);
+      } else {
+        distances = readNumbers(numberStr);
+      }
+  }
+  Input input{};
+  for ( std::size_t i = 0 ; i < distances.size(); ++i) {
+      input.emplace_back(distances[i], times[i]);
   }
   return input;
 }

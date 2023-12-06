@@ -4,12 +4,17 @@
 #define AOC23_DAY6_HPP
 
 #include <cstddef>
+#include <vector>
 
 namespace aoc23::day6 {
 
-struct Input
+struct TimeAndDistance
 {
+  std::size_t distance;
+  std::size_t time;
 };
+
+using Input = std::vector<TimeAndDistance>;
 
 struct Result
 {

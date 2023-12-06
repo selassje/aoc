@@ -51,18 +51,18 @@ readInput(const std::string_view path)
   std::ifstream ifs{ path.data() };
   std::string line{};
   std::vector<std::size_t> distances{};
-  std::vector<std::size_t> times{};
+  std::vector<std::size_t> recordTimes{};
   while (std::getline(ifs, line)) {
       const auto numberStr = split(line,':')[1];
       if ( line.starts_with("Time:")) {
-        times = readNumbers(numberStr);
+        recordTimes = readNumbers(numberStr);
       } else {
         distances = readNumbers(numberStr);
       }
   }
   Input input{};
   for ( std::size_t i = 0 ; i < distances.size(); ++i) {
-      input.emplace_back(distances[i], times[i]);
+      input.emplace_back(distances[i], recordTimes[i]);
   }
   return input;
 }
@@ -72,8 +72,8 @@ TEST_CASE("Aoc23 Day6 Example", "[AoC23_Day6]")
 {
   const auto input = readInput(inputs::day6::EXAMPLE);
   const auto& [part1, part2] = aoc23::day6::solve(input);
-  REQUIRE(part1 == 0);
-  REQUIRE(part2 == 0);
+  REQUIRE(part1 == 288);
+  REQUIRE(part2 == 288);
 }
 
 TEST_CASE("Aoc23 Day6 Input", "[AoC23_Day6]")

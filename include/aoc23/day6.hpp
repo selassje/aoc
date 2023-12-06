@@ -8,13 +8,13 @@
 
 namespace aoc23::day6 {
 
-struct TimeAndDistance
+struct Race
 {
-  std::size_t distance;
+  std::size_t recordDistance;
   std::size_t time;
 };
 
-using Input = std::vector<TimeAndDistance>;
+using Input = std::vector<Race>;
 
 struct Result
 {

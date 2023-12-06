@@ -50,30 +50,29 @@ readInput(const std::string_view path)
 {
   std::ifstream ifs{ path.data() };
   std::string line{};
-  std::vector<std::size_t> distances{};
-  std::vector<std::size_t> recordTimes{};
+  std::vector<std::size_t> recordDistances{};
+  std::vector<std::size_t> times{};
   while (std::getline(ifs, line)) {
-      const auto numberStr = split(line,':')[1];
-      if ( line.starts_with("Time:")) {
-        recordTimes = readNumbers(numberStr);
-      } else {
-        distances = readNumbers(numberStr);
-      }
+    const auto numberStr = split(line, ':')[1];
+    if (line.starts_with("Time:")) {
+      times = readNumbers(numberStr);
+    } else {
+      recordDistances = readNumbers(numberStr);
+    }
   }
   Input input{};
-  for ( std::size_t i = 0 ; i < distances.size(); ++i) {
-      input.emplace_back(distances[i], recordTimes[i]);
+  for (std::size_t i = 0; i < recordDistances.size(); ++i) {
+    input.emplace_back(recordDistances[i], times[i]);
   }
   return input;
 }
-
 
 TEST_CASE("Aoc23 Day6 Example", "[AoC23_Day6]")
 {
   const auto input = readInput(inputs::day6::EXAMPLE);
   const auto& [part1, part2] = aoc23::day6::solve(input);
   REQUIRE(part1 == 288);
-  REQUIRE(part2 == 288);
+  REQUIRE(part2 == 71503);
 }
 
 TEST_CASE("Aoc23 Day6 Input", "[AoC23_Day6]")
@@ -81,6 +80,5 @@ TEST_CASE("Aoc23 Day6 Input", "[AoC23_Day6]")
   const auto input = readInput(inputs::day6::INPUT);
   const auto& [part1, part2] = aoc23::day6::solve(input);
   REQUIRE(part1 == 741000);
-  REQUIRE(part2 == 741000);
+  REQUIRE(part2 == 38220708);
 }
-

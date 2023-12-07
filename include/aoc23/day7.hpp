@@ -9,19 +9,19 @@ namespace aoc23::day7 {
 
 enum class Card : std::size_t
 {
-  Ace = 12,
-  King = 11,
-  Queen = 10,
-  Jack = 9,
-  Ten = 8,
-  Nine = 7,
-  Eight = 6,
-  Seven = 5,
-  Six = 4,
-  Five = 3,
-  Four = 2,
-  Three = 1,
-  Two = 0
+  Ace = 13,
+  King = 12,
+  Queen = 11,
+  JackOrJoker = 10,
+  Ten = 9,
+  Nine = 8,
+  Eight = 7,
+  Seven = 6,
+  Six = 5,
+  Five = 4,
+  Four = 3,
+  Three = 2,
+  Two = 1
 };
 
 using Hand = std::array<Card, 5>;

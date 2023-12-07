@@ -19,54 +19,58 @@ enum class HandType
 using enum HandType;
 
 HandType
-getType(const Hand& hand) noexcept
+getType(const Hand& hand, bool part2) noexcept
 {
-  std::array<std::size_t, 13> cardCount{};
-  for (const auto& card : hand)
-  {
-    ++cardCount[static_cast<std::size_t>(card)];
-  }
-  const auto endIt = cardCount.end();
-  auto findIt = std::ranges::find(cardCount, 5);
-  if (findIt != endIt) {
-    return FiveOfKind;
-  }
-  findIt = std::ranges::find(cardCount, 4);
-  if (findIt != endIt) {
-    return FourOfKind;
-  }
-  const auto findThree = std::ranges::find(cardCount, 3);
-  const auto pairCount = std::ranges::count(cardCount, 2);
+  if (part2) {
+    return HighCard;
+  } else {
+    std::array<std::size_t, 14> cardCount{};
+    for (const auto& card : hand) {
+      ++cardCount[static_cast<std::size_t>(card)];
+    }
+    const auto endIt = cardCount.end();
+    auto findIt = std::ranges::find(cardCount, 5);
+    if (findIt != endIt) {
+      return FiveOfKind;
+    }
+    findIt = std::ranges::find(cardCount, 4);
+    if (findIt != endIt) {
+      return FourOfKind;
+    }
+    const auto findThree = std::ranges::find(cardCount, 3);
+    const auto pairCount = std::ranges::count(cardCount, 2);
 
-  if (findThree != endIt) {
-    return pairCount == 1 ? FullHouse : ThreeOfKind;
-  }
+    if (findThree != endIt) {
+      return pairCount == 1 ? FullHouse : ThreeOfKind;
+    }
 
-  if (pairCount == 2) {
-    return TwoPairs;
-  }
+    if (pairCount == 2) {
+      return TwoPairs;
+    }
 
-  if (pairCount == 1) {
-    return OnePair;
+    if (pairCount == 1) {
+      return OnePair;
+    }
+    return HighCard;
   }
-  return HighCard;
 }
 
 bool
-compareHands(const Hand& handL, const Hand& handR)
+compareHands(const Hand& handL, const Hand& handR, bool part2)
 {
-  const auto typeL = static_cast<std::size_t>(getType(handL));
-  const auto typeR = static_cast<std::size_t>(getType(handR));
+  const auto typeL = static_cast<std::size_t>(getType(handL, part2));
+  const auto typeR = static_cast<std::size_t>(getType(handR, part2));
   if (typeL == typeR) {
     for (std::size_t i = 0; i < handL.size(); ++i) {
       const auto cardL = static_cast<std::size_t>(handL[i]);
       const auto cardR = static_cast<std::size_t>(handR[i]);
       if (cardL < cardR) {
         return true;
-      } else if ( cardL > cardR) {
+      } else if (cardL > cardR) {
         return false;
       }
     }
+    abort();
     return false;
   }
   return typeL < typeR;
@@ -76,14 +80,21 @@ Result
 solve(const Input& input)
 {
   Input rankedHands = input;
-  std::size_t part1= input.size();
-  std::ranges::sort(rankedHands, [](const auto &l, const auto &r) {
-    return compareHands(l.hand, r.hand);
+  std::ranges::sort(rankedHands, [](const auto& l, const auto& r) {
+    return compareHands(l.hand, r.hand, false);
   });
-  part1 = 0;
-  for ( std::size_t i = 0 ; i < input.size(); ++i) {
+  std::size_t part1 = 0;
+  for (std::size_t i = 0; i < input.size(); ++i) {
     part1 += (i + 1) * rankedHands[i].bid;
   }
-  return { part1, part1 };
+  std::ranges::sort(rankedHands, [](const auto& l, const auto& r) {
+    return compareHands(l.hand, r.hand, true);
+  });
+  std::size_t part2 = 0;
+  for (std::size_t i = 0; i < input.size(); ++i) {
+    part2 += (i + 1) * rankedHands[i].bid;
+  }
+  return { part1, part2 };
 }
+
 }

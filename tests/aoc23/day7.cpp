@@ -4,6 +4,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <cassert>
 #include <cstddef>
 #include <cstdlib>
 #include <fstream>
@@ -33,8 +34,10 @@ Card charToCard(const char c) {
         return Queen;
       case 'J':
         return Jack;
+      case 'T':
+        return Ten;
       default:
-        throw std::runtime_error{"charToCard: Inalid char"};
+        throw std::runtime_error{"charToCard: Invalid char"};
     }
 };
 
@@ -49,30 +52,31 @@ readInput(const std::string_view path)
     std::istringstream iss{line};
     std::string handStr{};
     iss >> handStr;
-    for ( std::size_t i = 0 ; i < handBid.hand.max_size(); ++i) {
+    assert(handStr.size() == 5);
+    for ( std::size_t i = 0 ; i < 5; ++i) {
       handBid.hand[i] = charToCard(handStr[i]);
+      assert(static_cast<std::size_t>(handBid.hand[i]) <= 12);
     }
-
-    std::size_t bid{};
-    iss >> bid;
-    handBid.bid = std::strtoull(handStr.c_str(), nullptr, 10);
-    
+    iss >> handBid.bid;
     input.push_back(handBid);
+    for ( std::size_t i = 0 ; i < 5; ++i) {
+      assert(static_cast<std::size_t>(handBid.hand[i]) <= 12);
+    }
   }
   return input;
 }
 
-TEST_CASE("Aoc23 Day7 Example", "[AoC23_Day7]")
-{
-  const auto input = readInput(inputs::day7::EXAMPLE);
-  const auto& [part1, part2] = aoc23::day7::solve(input);
-  REQUIRE(part1 == 6440);
-  REQUIRE(part2 == 6440);
-}
-
 TEST_CASE("Aoc23 Day7 Input", "[AoC23_Day7]")
 {
-  const auto input = readInput(inputs::day7::INPUT);
+    const auto input = readInput(inputs::day7::INPUT);
+    const auto& [part1, part2] = aoc23::day7::solve(input);
+    REQUIRE(part1 == 6440);
+    REQUIRE(part2 == 6440);
+}
+
+TEST_CASE("Aoc23 Day7 Example", "[AoC23_Day7]")
+{
+  auto input = readInput(inputs::day7::EXAMPLE);
   const auto& [part1, part2] = aoc23::day7::solve(input);
   REQUIRE(part1 == 6440);
   REQUIRE(part2 == 6440);

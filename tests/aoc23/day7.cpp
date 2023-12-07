@@ -5,15 +5,14 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cassert>
+#include <cctype>
 #include <cstddef>
 #include <cstdlib>
 #include <fstream>
-#include <regex>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-
 #include <string_view>
-#include <vector>
 
 using aoc23::day7::Card;
 using aoc23::day7::Hand;
@@ -55,7 +54,7 @@ readInput(const std::string_view path)
     std::string handStr{};
     iss >> handStr;
     assert(handStr.size() == 5);
-    for (std::size_t i = 0; i < 5; ++i) {
+    for (std::size_t i = 0; i < handStr.size(); ++i) {
       handBid.hand[i] = charToCard(handStr[i]);
     }
     iss >> handBid.bid;

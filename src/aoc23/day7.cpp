@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
 
 namespace aoc23::day7 {
 
@@ -17,6 +18,7 @@ enum class HandType
 };
 
 using enum HandType;
+using enum Card;
 
 HandType
 getType(const Hand& hand, bool part2) noexcept
@@ -68,24 +70,23 @@ getType(const Hand& hand, bool part2) noexcept
       }
     }
     return OnePair;
-  } else {
-    if (isFive) {
-      return FiveOfKind;
-    }
-    if (isFour) {
-      return FourOfKind;
-    }
-    if (isThree) {
-      return pairCount == 1 ? FullHouse : ThreeOfKind;
-    }
-    if (pairCount == 2) {
-      return TwoPairs;
-    }
-    if (pairCount == 1) {
-      return OnePair;
-    }
-    return HighCard;
   }
+  if (isFive) {
+    return FiveOfKind;
+  }
+  if (isFour) {
+    return FourOfKind;
+  }
+  if (isThree) {
+    return pairCount == 1 ? FullHouse : ThreeOfKind;
+  }
+  if (pairCount == 2) {
+    return TwoPairs;
+  }
+  if (pairCount == 1) {
+    return OnePair;
+  }
+  return HighCard;
 }
 
 bool
@@ -95,19 +96,18 @@ compareHands(const Hand& handL, const Hand& handR, bool part2)
   const auto typeR = static_cast<std::size_t>(getType(handR, part2));
   if (typeL == typeR) {
     for (std::size_t i = 0; i < handL.size(); ++i) {
-      auto cardL = static_cast<std::size_t>(handL[i]);
-      auto cardR = static_cast<std::size_t>(handR[i]);
-      if (part2) {
-        if (cardL == 10) {
-          cardL = 0;
+      auto value = [part2](const Card card) -> std::size_t {
+        if (part2 && card == JackOrJoker) {
+          return 0;
         }
-        if (cardR == 10) {
-          cardR = 0;
-        }
-      }
+        return static_cast<std::size_t>(card);
+      };
+      const auto cardL = value(handL[i]);
+      const auto cardR = value(handR[i]);
       if (cardL < cardR) {
         return true;
-      } else if (cardL > cardR) {
+      }
+      if (cardL > cardR) {
         return false;
       }
     }
@@ -120,7 +120,7 @@ Result
 solve(const Input& input)
 {
   Input rankedHands = input;
-  auto solve_internal = [&rankedHands](const bool part2) {
+  auto solveInternal = [&rankedHands](const bool part2) {
     std::ranges::sort(rankedHands, [part2](const auto& l, const auto& r) {
       return compareHands(l.hand, r.hand, part2);
     });
@@ -131,7 +131,7 @@ solve(const Input& input)
     return result;
   };
 
-  return { solve_internal(false), solve_internal(true) };
+  return { solveInternal(false), solveInternal(true) };
 }
 
 }

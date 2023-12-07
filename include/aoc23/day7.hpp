@@ -24,7 +24,7 @@ enum class Card : std::size_t
   Two = 1
 };
 
-using Hand = std::array<Card, 5>;
+using Hand = std::array<Card, 5>; // NOLINT
 
 struct HandBid
 {

@@ -21,13 +21,14 @@ using enum HandType;
 HandType
 getType(const Hand& hand, bool part2) noexcept
 {
-  if (part2) {
+  std::array<std::size_t, 14> cardCount{};
+  for (const auto& card : hand) {
+    ++cardCount[static_cast<std::size_t>(card)];
+  }
+  const auto jackOrJokerCount = std::ranges::count(hand, Card::JackOrJoker);
+  if (part2 && jackOrJokerCount > 0) {
     return HighCard;
   } else {
-    std::array<std::size_t, 14> cardCount{};
-    for (const auto& card : hand) {
-      ++cardCount[static_cast<std::size_t>(card)];
-    }
     const auto endIt = cardCount.end();
     auto findIt = std::ranges::find(cardCount, 5);
     if (findIt != endIt) {

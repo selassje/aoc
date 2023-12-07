@@ -25,7 +25,7 @@ Card
 charToCard(const char c)
 {
   if (std::isdigit(c) != 0) {
-    return static_cast<Card>(c - '2');
+    return static_cast<Card>(c - '2' + 1);
   }
   switch (c) {
     case 'A':
@@ -77,5 +77,5 @@ TEST_CASE("Aoc23 Day7 Input", "[AoC23_Day7]")
   const auto input = readInput(inputs::day7::INPUT);
   const auto& [part1, part2] = aoc23::day7::solve(input);
   REQUIRE(part1 == 246163188);
-  REQUIRE(part2 == 246163188);
+  REQUIRE(part2 == 245794069);
 }

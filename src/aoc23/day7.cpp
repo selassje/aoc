@@ -28,42 +28,40 @@ getType(const Hand& hand, bool part2) noexcept
   const auto endIt = cardCount.end();
   const auto jackOrJokerCount = std::ranges::count(hand, Card::JackOrJoker);
   if (part2 && jackOrJokerCount > 0) {
-    if ( jackOrJokerCount >= 4) {
+    if (jackOrJokerCount >= 4) {
       return FiveOfKind;
     }
     const auto pairCount = std::ranges::count(cardCount, 2);
-    if ( jackOrJokerCount == 3) {
-        if ( pairCount > 0) {
-          return FiveOfKind;
-        }
-        return FourOfKind;  
+    if (jackOrJokerCount == 3) {
+      if (pairCount > 0) {
+        return FiveOfKind;
+      }
+      return FourOfKind;
     }
     const auto threesCount = std::ranges::count(cardCount, 3);
-    if ( jackOrJokerCount == 2) {
-        if ( threesCount > 0)
-        {
-          return FiveOfKind;
-        }
-        if ( pairCount > 1) {
-          return FourOfKind;
-        }
-        return ThreeOfKind;
+    if (jackOrJokerCount == 2) {
+      if (threesCount > 0) {
+        return FiveOfKind;
+      }
+      if (pairCount > 1) {
+        return FourOfKind;
+      }
+      return ThreeOfKind;
     }
     const auto foursCount = std::ranges::count(cardCount, 4);
-    if ( jackOrJokerCount == 1) {
-        if ( foursCount > 0)
-        {
-          return FiveOfKind;
-        }
-        if ( threesCount > 0) {
-          return FourOfKind;
-        }
-        if ( pairCount > 1) {
-          return FullHouse;
-        }
-        if ( pairCount == 1) {
-          return ThreeOfKind;
-        }
+    if (jackOrJokerCount == 1) {
+      if (foursCount > 0) {
+        return FiveOfKind;
+      }
+      if (threesCount > 0) {
+        return FourOfKind;
+      }
+      if (pairCount > 1) {
+        return FullHouse;
+      }
+      if (pairCount == 1) {
+        return ThreeOfKind;
+      }
     }
     return OnePair;
   } else {
@@ -100,15 +98,22 @@ compareHands(const Hand& handL, const Hand& handR, bool part2)
   const auto typeR = static_cast<std::size_t>(getType(handR, part2));
   if (typeL == typeR) {
     for (std::size_t i = 0; i < handL.size(); ++i) {
-      const auto cardL = static_cast<std::size_t>(handL[i]);
-      const auto cardR = static_cast<std::size_t>(handR[i]);
+      auto cardL = static_cast<std::size_t>(handL[i]);
+      auto cardR = static_cast<std::size_t>(handR[i]);
+      if (part2) {
+        if (cardL == 10) {
+          cardL = 0;
+        }
+        if (cardR == 10) {
+          cardR = 0;
+        }
+      }
       if (cardL < cardR) {
         return true;
       } else if (cardL > cardR) {
         return false;
       }
     }
-    abort();
     return false;
   }
   return typeL < typeR;

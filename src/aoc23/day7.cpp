@@ -25,11 +25,48 @@ getType(const Hand& hand, bool part2) noexcept
   for (const auto& card : hand) {
     ++cardCount[static_cast<std::size_t>(card)];
   }
+  const auto endIt = cardCount.end();
   const auto jackOrJokerCount = std::ranges::count(hand, Card::JackOrJoker);
   if (part2 && jackOrJokerCount > 0) {
-    return HighCard;
+    if ( jackOrJokerCount >= 4) {
+      return FiveOfKind;
+    }
+    const auto pairCount = std::ranges::count(cardCount, 2);
+    if ( jackOrJokerCount == 3) {
+        if ( pairCount > 0) {
+          return FiveOfKind;
+        }
+        return FourOfKind;  
+    }
+    const auto threesCount = std::ranges::count(cardCount, 3);
+    if ( jackOrJokerCount == 2) {
+        if ( threesCount > 0)
+        {
+          return FiveOfKind;
+        }
+        if ( pairCount > 1) {
+          return FourOfKind;
+        }
+        return ThreeOfKind;
+    }
+    const auto foursCount = std::ranges::count(cardCount, 4);
+    if ( jackOrJokerCount == 1) {
+        if ( foursCount > 0)
+        {
+          return FiveOfKind;
+        }
+        if ( threesCount > 0) {
+          return FourOfKind;
+        }
+        if ( pairCount > 1) {
+          return FullHouse;
+        }
+        if ( pairCount == 1) {
+          return ThreeOfKind;
+        }
+    }
+    return OnePair;
   } else {
-    const auto endIt = cardCount.end();
     auto findIt = std::ranges::find(cardCount, 5);
     if (findIt != endIt) {
       return FiveOfKind;

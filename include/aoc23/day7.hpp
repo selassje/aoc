@@ -42,6 +42,7 @@ struct Result
 
 Result
 solve(const Input& input);
+
 }
 
 #endif

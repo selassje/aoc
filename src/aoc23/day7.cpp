@@ -17,11 +17,13 @@ enum class HandType
 };
 
 using enum HandType;
+
 HandType
 getType(const Hand& hand) noexcept
 {
   std::array<std::size_t, 13> cardCount{};
-  for (const auto& card : hand) {
+  for (const auto& card : hand)
+  {
     ++cardCount[static_cast<std::size_t>(card)];
   }
   const auto endIt = cardCount.end();
@@ -61,6 +63,8 @@ compareHands(const Hand& handL, const Hand& handR)
       const auto cardR = static_cast<std::size_t>(handR[i]);
       if (cardL < cardR) {
         return true;
+      } else if ( cardL > cardR) {
+        return false;
       }
     }
     return false;
@@ -73,7 +77,7 @@ solve(const Input& input)
 {
   Input rankedHands = input;
   std::size_t part1= input.size();
-  std::ranges::sort(rankedHands, [](const auto l, const auto r) {
+  std::ranges::sort(rankedHands, [](const auto &l, const auto &r) {
     return compareHands(l.hand, r.hand);
   });
   part1 = 0;

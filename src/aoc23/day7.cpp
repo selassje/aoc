@@ -25,38 +25,42 @@ getType(const Hand& hand, bool part2) noexcept
   for (const auto& card : hand) {
     ++cardCount[static_cast<std::size_t>(card)];
   }
-  const auto endIt = cardCount.end();
   const auto jackOrJokerCount = std::ranges::count(hand, Card::JackOrJoker);
+  auto count = [&cardCount](const std::size_t i) {
+    return std::ranges::count(cardCount, i);
+  };
+  const auto pairCount = count(2);
+  const auto isThree = count(3) == 1;
+  const auto isFour = count(4) == 1;
+  const auto isFive = count(5) == 1;
+
   if (part2 && jackOrJokerCount > 0) {
     if (jackOrJokerCount >= 4) {
       return FiveOfKind;
     }
-    const auto pairCount = std::ranges::count(cardCount, 2);
     if (jackOrJokerCount == 3) {
-      if (pairCount > 0) {
+      if (pairCount == 1) {
         return FiveOfKind;
       }
       return FourOfKind;
     }
-    const auto threesCount = std::ranges::count(cardCount, 3);
     if (jackOrJokerCount == 2) {
-      if (threesCount > 0) {
+      if (isThree) {
         return FiveOfKind;
       }
-      if (pairCount > 1) {
+      if (pairCount == 2) {
         return FourOfKind;
       }
       return ThreeOfKind;
     }
-    const auto foursCount = std::ranges::count(cardCount, 4);
     if (jackOrJokerCount == 1) {
-      if (foursCount > 0) {
+      if (isFour) {
         return FiveOfKind;
       }
-      if (threesCount > 0) {
+      if (isThree) {
         return FourOfKind;
       }
-      if (pairCount > 1) {
+      if (pairCount == 2) {
         return FullHouse;
       }
       if (pairCount == 1) {
@@ -65,25 +69,18 @@ getType(const Hand& hand, bool part2) noexcept
     }
     return OnePair;
   } else {
-    auto findIt = std::ranges::find(cardCount, 5);
-    if (findIt != endIt) {
+    if (isFive) {
       return FiveOfKind;
     }
-    findIt = std::ranges::find(cardCount, 4);
-    if (findIt != endIt) {
+    if (isFour) {
       return FourOfKind;
     }
-    const auto findThree = std::ranges::find(cardCount, 3);
-    const auto pairCount = std::ranges::count(cardCount, 2);
-
-    if (findThree != endIt) {
+    if (isThree) {
       return pairCount == 1 ? FullHouse : ThreeOfKind;
     }
-
     if (pairCount == 2) {
       return TwoPairs;
     }
-
     if (pairCount == 1) {
       return OnePair;
     }
@@ -123,21 +120,18 @@ Result
 solve(const Input& input)
 {
   Input rankedHands = input;
-  std::ranges::sort(rankedHands, [](const auto& l, const auto& r) {
-    return compareHands(l.hand, r.hand, false);
-  });
-  std::size_t part1 = 0;
-  for (std::size_t i = 0; i < input.size(); ++i) {
-    part1 += (i + 1) * rankedHands[i].bid;
-  }
-  std::ranges::sort(rankedHands, [](const auto& l, const auto& r) {
-    return compareHands(l.hand, r.hand, true);
-  });
-  std::size_t part2 = 0;
-  for (std::size_t i = 0; i < input.size(); ++i) {
-    part2 += (i + 1) * rankedHands[i].bid;
-  }
-  return { part1, part2 };
+  auto solve_internal = [&rankedHands](const bool part2) {
+    std::ranges::sort(rankedHands, [part2](const auto& l, const auto& r) {
+      return compareHands(l.hand, r.hand, part2);
+    });
+    std::size_t result = 0;
+    for (std::size_t i = 0; i < rankedHands.size(); ++i) {
+      result += (i + 1) * rankedHands[i].bid;
+    }
+    return result;
+  };
+
+  return { solve_internal(false), solve_internal(true) };
 }
 
 }

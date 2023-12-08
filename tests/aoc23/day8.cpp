@@ -84,16 +84,21 @@ readInput(const std::string_view path)
 TEST_CASE("Aoc23 Day8 Example", "[AoC23_Day8]")
 {
   const auto input = readInput(inputs::day8::EXAMPLE);
-  const auto& [part1, part2] = aoc23::day8::solve(input);
+  const auto& [part1, _] = aoc23::day8::solve(input);
   REQUIRE(part1 == 2);
-  REQUIRE(part2 == 2);
 }
 
 TEST_CASE("Aoc23 Day8 Example2", "[AoC23_Day8]")
 {
   const auto input = readInput(inputs::day8::EXAMPLE2);
-  const auto& [part1, part2] = aoc23::day8::solve(input);
+  const auto& [part1, _] = aoc23::day8::solve(input);
   REQUIRE(part1 == 6);
+}
+
+TEST_CASE("Aoc23 Day8 Example3", "[AoC23_Day8]")
+{
+  const auto input = readInput(inputs::day8::EXAMPLE3);
+  const auto& [_, part2] = aoc23::day8::solve(input);
   REQUIRE(part2 == 6);
 }
 

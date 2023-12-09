@@ -2,10 +2,8 @@
 #include "aoc23/day8.hpp"
 
 #include <algorithm>
-#include <iostream>
+#include <cstddef>
 #include <numeric>
-#include <optional>
-#include <ranges>
 #include <string_view>
 
 namespace aoc23::day8 {

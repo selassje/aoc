@@ -12,7 +12,6 @@
 #include <string_view>
 #include <vector>
 
-using aoc23::day8::Direction;
 using aoc23::day8::Directions;
 using aoc23::day8::Input;
 using aoc23::day8::Node;
@@ -61,7 +60,6 @@ readInput(const std::string_view path)
     input.directions.push_back(c == 'L' ? Left : Right);
   }
 
-  Nodes nodes{};
   while (std::getline(ifs, line)) {
     if (!line.empty()) {
       Node node{};

@@ -107,5 +107,5 @@ TEST_CASE("Aoc23 Day8 Input", "[AoC23_Day8]")
   const auto input = readInput(inputs::day8::INPUT);
   const auto& [part1, part2] = aoc23::day8::solve(input);
   REQUIRE(part1 == 12643);
-  REQUIRE(part2 == 12643);
+  REQUIRE(part2 == 13133452426987);
 }

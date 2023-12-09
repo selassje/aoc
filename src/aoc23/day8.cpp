@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <numeric>
 #include <optional>
 #include <ranges>
 #include <string_view>
@@ -26,6 +27,30 @@ findNodesEndingIn(const Nodes& nodes, const char end)
                     return node.id[2] == end;
                   });
   return Nodes(filtered.begin(), filtered.end());
+}
+
+constexpr auto lcm(auto x, auto... xs)
+{
+    return ((x = std::lcm(x, xs)), ...);
+}
+
+std::size_t 
+stepsToNodeEndingWith(const Node& startNode, const Input& input)
+{
+  std::size_t result = 0;
+  std::size_t directionsIndex = 0;
+  auto node = startNode;
+  while (node.id[2] != 'Z') {
+    if (input.directions[directionsIndex] == Direction::Left) {
+      node = *findNodeById(node.left, input.nodes);
+    } else {
+      node = *findNodeById(node.right, input.nodes);
+    }
+    directionsIndex = (directionsIndex + 1) % input.directions.size();
+    ++result;
+  }
+  std::cout << "Start " << startNode.id << " End " << node.id << "  Steps" << result <<std::endl;
+  return result;
 }
 
 Result
@@ -53,10 +78,15 @@ solve(const Input& input)
 
   const auto startNodes = findNodesEndingIn(input.nodes, 'A');
   const auto startNodesCount = startNodes.size();
+  std::size_t part2 = 1;
+
+  for ( const auto& startNode : startNodes) {
+    part2 = lcm(stepsToNodeEndingWith(startNode,input),part2);
+  }
 
   std::cout << startNodesCount << std::endl;
 
-  return { part1, part1 };
+  return { part1, part2 };
 };
 
 }

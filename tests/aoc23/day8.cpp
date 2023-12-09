@@ -14,9 +14,9 @@
 
 using aoc23::day8::Direction;
 using aoc23::day8::Directions;
+using aoc23::day8::Input;
 using aoc23::day8::Node;
 using aoc23::day8::Nodes;
-using aoc23::day8::Input;
 using enum aoc23::day8::Direction;
 
 auto
@@ -58,17 +58,17 @@ readInput(const std::string_view path)
   Input input{};
   std::getline(ifs, line);
   for (const char c : line) {
-    input.directions.push_back( c == 'L' ? Left : Right);
+    input.directions.push_back(c == 'L' ? Left : Right);
   }
-  
+
   Nodes nodes{};
   while (std::getline(ifs, line)) {
-    if ( !line.empty()) {
+    if (!line.empty()) {
       Node node{};
       const auto splitStrs = split(line, '=');
       const auto id = splitStrs[0].substr(0, splitStrs[0].size() - 1);
       const auto dirsStr = splitStrs[1].substr(1, splitStrs[1].size() - 1);
-      const auto dirs = split(dirsStr,',');
+      const auto dirs = split(dirsStr, ',');
       const auto left = dirs[0].substr(1);
       const auto right = dirs[1].substr(1, dirs[0].size() - 1);
 

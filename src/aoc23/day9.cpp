@@ -1,6 +1,7 @@
 #include "aoc23/day9.hpp"
 
 #include <algorithm>
+#include <utility>
 
 namespace aoc23::day9 {
 
@@ -22,28 +23,38 @@ extrapolate(const Values& originalValues)
     }
     --size;
   }
+  auto forwardSequences = sequences;
+  auto backwardSequences = sequences;
 
-  sequences.back().push_back(0);
-  auto i = sequences.size() - 2;
+  forwardSequences.back().push_back(0);
+  backwardSequences.back().insert(backwardSequences.back().begin(), 0);
+  auto i = forwardSequences.size() - 2;
   while (true) {
-    sequences[i].push_back(sequences[i].back() + sequences[i + 1].back());
+    forwardSequences[i].push_back(forwardSequences[i].back() +
+                                  forwardSequences[i + 1].back());
+    backwardSequences[i].insert(backwardSequences[i].begin(),
+                                backwardSequences[i][0] -
+                                  backwardSequences[i + 1][0]);
     if (i-- == 0) {
       break;
     }
   }
 
-  return sequences[0].back();
+  return std::make_pair(forwardSequences[0].back(), backwardSequences[0][0]);
 }
 
 Result
 solve(const Input& input)
 {
   std::int64_t part1 = 0;
+  std::int64_t part2 = 0;
   for (const auto& values : input) {
-    part1 += extrapolate(values);
+    const auto [forward, backward] = extrapolate(values);
+    part1 += forward;
+    part2 += backward;
   }
 
-  return { part1, part1 };
+  return { part1, part2 };
 }
 
 }

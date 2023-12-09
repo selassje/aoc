@@ -18,8 +18,8 @@ using Input = std::vector<Values>;
 
 struct Result
 {
-  std::size_t part1;
-  std::size_t part2;
+  std::int64_t part1;
+  std::int64_t part2;
 };
 
 Result

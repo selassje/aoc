@@ -1,5 +1,7 @@
 #include "aoc23/day10.hpp"
+#include <deque>
 #include <optional>
+#include <set>
 #include <utility>
 
 namespace aoc23::day10 {
@@ -8,6 +10,7 @@ struct Position
 {
   std::size_t x;
   std::size_t y;
+  auto operator<=>(const Position&) const noexcept = default;
 };
 
 Position
@@ -24,14 +27,14 @@ findStart(const Input& input)
 }
 
 auto
-getNeighbours(const Position& position, PipeType pipteType, const Input& input)
+getNeighbours(const Position& position, PipeType pipeType, const Input& input)
 {
   std::optional<std::pair<Position, Position>> neighbours = std::nullopt;
   using enum PipeType;
   const auto& [x, y] = position;
   const auto height = input.size();
   const auto width = input[0].size();
-  switch (pipteType) {
+  switch (pipeType) {
     case NorthSouth:
       if (y > 0 && y < height - 1) {
         neighbours = { { x, y - 1 }, { x, y + 1 } };
@@ -71,7 +74,46 @@ getNeighbours(const Position& position, PipeType pipteType, const Input& input)
 std::size_t
 solvePart1(const Input& input, const Position& start, PipeType startPipe)
 {
-  return 0;
+  std::size_t loopSize = 0;
+  bool loopFound = false;
+
+  auto neighbours = getNeighbours(start, startPipe, input);
+  if (neighbours) {
+    const auto& [firstNeighbour, _] = *neighbours;
+    const auto nextNeighbours = getNeighbours(
+      firstNeighbour, input[firstNeighbour.y][firstNeighbour.x], input);
+    if (nextNeighbours) {
+      std::set<Position> visited{};
+      visited.insert(firstNeighbour);
+      std::deque<Position> toBeVisited{};
+      toBeVisited.push_back(nextNeighbours->first != start
+                              ? nextNeighbours->first
+                              : nextNeighbours->second);
+      loopSize = 1;
+      while (!toBeVisited.empty()) {
+        ++loopSize;
+        const auto current = toBeVisited.front();
+        toBeVisited.pop_front();
+        if (current == start) {
+          loopFound = true;
+          break;
+        }
+        visited.insert(current);
+        neighbours = getNeighbours(current, input[current.y][current.x], input);
+        if (neighbours) {
+          if (!visited.contains(neighbours->first)) {
+            toBeVisited.push_back(neighbours->first);
+          }
+          if (!visited.contains(neighbours->second)) {
+            toBeVisited.push_back(neighbours->second);
+          }
+        } else {
+          break;
+        }
+      }
+    }
+  }
+  return loopFound ? loopSize / 2 : 0;
 }
 
 Result

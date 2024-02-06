@@ -27,105 +27,111 @@ findStart(const Input& input)
 }
 
 auto
-getNeighbours(const Position& position, PipeType pipeType, const Input& input)
+findPotentialConnections(const Input& input, const Position& position)
 {
-  std::optional<std::pair<Position, Position>> neighbours = std::nullopt;
+  std::optional<std::pair<Position, Position>> potentialConnections =
+    std::nullopt;
   using enum PipeType;
   const auto& [x, y] = position;
   const auto height = input.size();
   const auto width = input[0].size();
+  const auto pipeType = input[position.y][position.x];
   switch (pipeType) {
     case NorthSouth:
       if (y > 0 && y < height - 1) {
-        neighbours = { { x, y - 1 }, { x, y + 1 } };
+        potentialConnections = { { x, y - 1 }, { x, y + 1 } };
       }
       break;
     case EastWest:
       if (x > 0 && x < width - 1) {
-        neighbours = { { x + 1, y }, { x - 1, y } };
+        potentialConnections = { { x + 1, y }, { x - 1, y } };
       }
       break;
     case NorthEast:
       if (x < width - 1 && y > 0) {
-        neighbours = { { x, y - 1 }, { x + 1, y } };
+        potentialConnections = { { x, y - 1 }, { x + 1, y } };
       }
       break;
     case NorthWest:
       if (x > 0 && y > 0) {
-        neighbours = { { x, y - 1 }, { x - 1, y } };
+        potentialConnections = { { x, y - 1 }, { x - 1, y } };
       }
       break;
     case SouthWest:
       if (x > 0 && y < height - 1) {
-        neighbours = { { x, y + 1 }, { x - 1, y } };
+        potentialConnections = { { x, y + 1 }, { x - 1, y } };
       }
       break;
     case SouthEast:
       if (x < width - 1 && y < height - 1) {
-        neighbours = { { x, y + 1 }, { x + 1, y } };
+        potentialConnections = { { x, y + 1 }, { x + 1, y } };
       }
       break;
     default:
       break;
   }
-  return neighbours;
+  return potentialConnections;
 }
 
-std::size_t
-solvePart1(const Input& input, const Position& start, PipeType startPipe)
+bool
+isConnection(const Input& input,
+             const Position& position1,
+             const Position& position2)
 {
-  std::size_t loopSize = 0;
-  bool loopFound = false;
+  const auto potentialConnections1 = findPotentialConnections(input, position1);
+  const auto potentialConnections2 = findPotentialConnections(input, position2);
 
-  auto neighbours = getNeighbours(start, startPipe, input);
-  if (neighbours) {
-    const auto& [firstNeighbour, _] = *neighbours;
-    const auto nextNeighbours = getNeighbours(
-      firstNeighbour, input[firstNeighbour.y][firstNeighbour.x], input);
-    if (nextNeighbours) {
-      std::set<Position> visited{};
-      visited.insert(firstNeighbour);
-      std::deque<Position> toBeVisited{};
-      toBeVisited.push_back(nextNeighbours->first != start
-                              ? nextNeighbours->first
-                              : nextNeighbours->second);
-      loopSize = 1;
-      while (!toBeVisited.empty()) {
-        ++loopSize;
-        const auto current = toBeVisited.front();
-        toBeVisited.pop_front();
-        if (current == start) {
-          loopFound = true;
-          break;
-        }
-        visited.insert(current);
-        neighbours = getNeighbours(current, input[current.y][current.x], input);
-        if (neighbours) {
-          if (!visited.contains(neighbours->first)) {
-            toBeVisited.push_back(neighbours->first);
-          }
-          if (!visited.contains(neighbours->second)) {
-            toBeVisited.push_back(neighbours->second);
-          }
-        } else {
-          break;
-        }
+  if (potentialConnections1 && potentialConnections2) {
+    const auto& [f1, s1] = *potentialConnections1;
+    const auto& [f2, s2] = *potentialConnections2;
+    return f1 == f2 || f1 == s2 || s1 == f2 || s1 == s2;
+  }
+  return false;
+}
+
+void
+setStartPipeType(Input& input, const Position& startPosition)
+{
+  for (int i = 0; i <= static_cast<int>(PipeType::SouthEast); ++i) {
+    const auto pipeType = static_cast<PipeType>(i);
+    input[startPosition.y][startPosition.x] = pipeType;
+    const auto connections = findPotentialConnections(input, startPosition);
+    if (connections) {
+      if (isConnection(input, startPosition, connections->first) &&
+          isConnection(input, startPosition, connections->second)) {
+        break;
       }
     }
   }
-  return loopFound ? loopSize / 2 : 0;
+}
+
+
+auto
+findLoop(const Input& originalInput)
+{
+  Input input = originalInput;
+  const auto startPosition = findStart(input);
+  setStartPipeType(input, startPosition);
+  std::vector loop{ startPosition };
+  while (true) {
+    const auto currentPosition = loop.back();
+    const auto connections = *findPotentialConnections(input, currentPosition);
+    if (std::ranges::find(loop, connections.first) == loop.end()) {
+      loop.push_back(connections.first);
+    } else if (std::ranges::find(loop, connections.second) == loop.end()) {
+      loop.push_back(connections.second);
+    } else {
+      break;
+    }
+  }
+  return loop;
 }
 
 Result
 solve(const Input& input)
 {
-  const auto start = findStart(input);
-
-  std::size_t part1 = 0;
-  for (int i = 0; i <= static_cast<int>(PipeType::SouthEast); ++i) {
-    const auto pipeType = static_cast<PipeType>(i);
-    part1 = std::max(part1, solvePart1(input, start, pipeType));
-  }
+  const auto loop = findLoop(input);
+  const std::size_t part1 = loop.size() / 2;
   return { part1, part1 };
 }
 

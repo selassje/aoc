@@ -3,6 +3,7 @@
 #include <optional>
 #include <set>
 #include <utility>
+#include <variant>
 
 namespace aoc23::day10 {
 
@@ -12,6 +13,13 @@ struct Position
   std::size_t y;
   auto operator<=>(const Position&) const noexcept = default;
 };
+
+struct Gap {
+    Position x;
+    Position y;
+};
+
+using GroundOrGap = std::variant<Position,Gap>;
 
 Position
 findStart(const Input& input)
@@ -107,9 +115,8 @@ setStartPipeType(Input& input, const Position& startPosition)
 
 
 auto
-findLoop(const Input& originalInput)
+findLoop(Input& input)
 {
-  Input input = originalInput;
   const auto startPosition = findStart(input);
   setStartPipeType(input, startPosition);
   std::vector loop{ startPosition };
@@ -128,8 +135,9 @@ findLoop(const Input& originalInput)
 }
 
 Result
-solve(const Input& input)
+solve(const Input& inputOrg)
 {
+  Input input = inputOrg; 
   const auto loop = findLoop(input);
   const std::size_t part1 = loop.size() / 2;
   return { part1, part1 };

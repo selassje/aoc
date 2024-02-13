@@ -235,7 +235,7 @@ solve(const Input& inputOrg)
         if ( v.index() == 0) {
             const auto ground = std::get<Position>(v);
             unCheckedGroundTiles.erase(ground);
-            if  ( isOutside) {
+            if  (!isOutside) {
                 ++part2;
             }
         }

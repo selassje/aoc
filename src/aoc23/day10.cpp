@@ -1,6 +1,9 @@
 #include "aoc23/day10.hpp"
 #include <deque>
+#include <map>
 #include <optional>
+#include <limits>
+#include <queue>
 #include <set>
 #include <utility>
 #include <variant>
@@ -15,8 +18,9 @@ struct Position
 };
 
 struct Gap {
-    Position x;
-    Position y;
+  Position x;
+  Position y;
+  auto operator<=>(const Gap&) const noexcept = default;
 };
 
 using GroundOrGap = std::variant<Position,Gap>;
@@ -134,13 +138,111 @@ findLoop(Input& input)
   return loop;
 }
 
+auto getNeighbours(const GroundOrGap &groundOrGap, const Input& input) {
+    std::vector<GroundOrGap> neighbours{};
+    const auto& [x,y] = std::get<Position>(groundOrGap);
+    if (x > 0) {
+      neighbours.emplace_back(Position{x - 1, y});
+    }
+    if (x < input[0].size() - 1) {
+      neighbours.emplace_back(Position{x + 1, y});
+    }
+    if (y > 0) {
+      neighbours.emplace_back(Position{x, y - 1});
+    }
+    if (y < input.size() - 1) {
+      neighbours.emplace_back(Position{x, y + 1});
+    }
+    return neighbours;
+}
+
+bool isOnTheEdge(const GroundOrGap &groundOrGap, const Input &input) {
+    const auto& [x,y] = std::get<Position>(groundOrGap);
+    return x == 0 || x == input[0].size() - 1 || y == 0 || y == input.size() - 1;
+}
+
 Result
 solve(const Input& inputOrg)
 {
   Input input = inputOrg; 
   const auto loop = findLoop(input);
   const std::size_t part1 = loop.size() / 2;
-  return { part1, part1 };
+
+  using Positions = std::set<Position>;
+
+  Positions unCheckedGroundTiles{};
+  for (std::size_t y = 0; y < input.size(); ++y) {
+    for (std::size_t x = 0; x < input[y].size(); ++x) {
+      if (input[y][x] == PipeType::Ground) {
+        unCheckedGroundTiles.insert({x,y});
+      }
+    }
+  }
+
+  std::size_t part2 = 0;
+
+  struct Range {
+    std::size_t min;
+    std::size_t max;
+  };
+
+  std::map<std::size_t, Range> yToXs{};
+  Range yS{std::numeric_limits<std::size_t>::max(),0}; 
+  for(const auto& pipe : loop) {
+      yS.max = std::max(yS.max,pipe.y);
+      yS.min = std::min(yS.min,pipe.y);
+
+      if ( yToXs.find(pipe.y) == yToXs.end()) {
+        yToXs[pipe.y] = {std::numeric_limits<std::size_t>::max(),0};
+      }
+
+      yToXs[pipe.y].min = std::min(yToXs[pipe.y].min, pipe.x);
+      yToXs[pipe.y].max = std::max(yToXs[pipe.y].max, pipe.x);
+
+  } 
+
+  for ( std::size_t y = yS.min ; y <= yS.max; ++y) {
+      for ( std::size_t x = yToXs[y].min ; x <= yToXs[y].max; ++x ) {
+        if ( input[y][x] == PipeType::Ground ) {
+            ++part2;
+        }
+      }    
+  }
+
+  part2 = 0;
+  while(!unCheckedGroundTiles.empty()) {
+      bool isOutside = false;
+      const auto first = *unCheckedGroundTiles.begin();
+      std::queue<GroundOrGap> toBeVisited{};
+      std::set<GroundOrGap> visited{};
+      toBeVisited.push(first);
+      while(!toBeVisited.empty()) {
+          const auto current = toBeVisited.front();
+          visited.insert(current);
+          toBeVisited.pop();
+          if ( isOnTheEdge(current, input)) {
+              isOutside = true;
+          }
+          const auto neighbours = getNeighbours(current,input);
+          for ( const auto& n : neighbours) {
+            const auto& position = std::get<Position>(n);
+            if ( !visited.contains(n) && input[position.y][position.x] == PipeType::Ground ) {
+                toBeVisited.push(n);
+            }
+          }
+     }
+     for ( const auto& v : visited) {
+        if ( v.index() == 0) {
+            const auto ground = std::get<Position>(v);
+            unCheckedGroundTiles.erase(ground);
+            if  ( isOutside) {
+                ++part2;
+            }
+        }
+     }
+  }
+
+  return { part1, part2 };
 }
 
 }

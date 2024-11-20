@@ -5,9 +5,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cctype>
-#include <cstddef>
-#include <cstdlib>
+#include <cstdint>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -25,9 +23,8 @@ readInput(const std::string_view path)
   while (std::getline(ifs, line)) {
     Values values{};
     std::istringstream iss{ line };
-    std::string handStr{};
     while(!iss.eof()) {
-        std::int64_t value;
+        std::int64_t value{};
         iss >> value;
         values.push_back(value);  
     }

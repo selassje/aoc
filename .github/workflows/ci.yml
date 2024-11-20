@@ -7,8 +7,8 @@ env:
   GCC_VER: 13
   MVSC_VER: 14.40
   CMAKE_VER: 3.27.3
-  LLVM_VER_UBUNTU: 17
-  LLVM_VER_WIN: 17.0.1
+  LLVM_VER_UBUNTU: 19
+  LLVM_VER_WIN: 19.0.1
 
 jobs:
   build_and_test:

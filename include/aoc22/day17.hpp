@@ -3,6 +3,7 @@
 #define AOC22_DAY17_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 
 namespace aoc22::day17 {

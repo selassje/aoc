@@ -3,7 +3,17 @@
 #define AOC23_DAY9_HPP
 
 #include <cstdint>
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
+
 #include <vector>
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 namespace aoc23::day9 {
 

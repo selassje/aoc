@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
-#include <concepts>
+#include <concepts> //NOLINT
 #include <cstddef>
 #include <memory>
 #include <numeric>

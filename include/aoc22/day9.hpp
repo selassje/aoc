@@ -1,6 +1,7 @@
 #ifndef AOC22_DAY9_HPP
 #define AOC22_DAY9_HPP
 
+#include <cstdint>
 #include <cstdlib>
 #include <utility>
 #include <vector>

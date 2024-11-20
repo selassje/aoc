@@ -1,6 +1,8 @@
 #include "aoc23/day9.hpp"
 
 #include <algorithm>
+#include <cstddef>
+#include <cstdint>
 #include <utility>
 
 namespace aoc23::day9 {

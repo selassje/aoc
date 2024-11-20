@@ -10,6 +10,8 @@
 
 using aoc23::day3::Input;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -21,7 +23,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day3 Example", "[AoC23_Day3]")
 {
   const auto input = readInput(inputs::day3::EXAMPLE);

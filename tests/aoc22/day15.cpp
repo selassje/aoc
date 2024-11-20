@@ -14,6 +14,8 @@
 using aoc22::day15::Input;
 using aoc22::day15::Record;
 
+namespace {
+
 Input
 readInput(const std::string_view path_)
 {
@@ -49,12 +51,12 @@ readInput(const std::string_view path_)
   }
   return input;
 }
-
+}
 namespace aoc22::day15 {
 
 template<typename std::int32_t, typename std::int32_t>
 Result
-solve(const Input&);
+solve(const Input&); // NOLINT
 
 };
 

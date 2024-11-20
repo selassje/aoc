@@ -7,7 +7,7 @@
 
 namespace aoc22::day9 {
 
-enum class Direction
+enum class Direction : std::uint8_t
 {
   Left,
   Right,

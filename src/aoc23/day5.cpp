@@ -16,6 +16,8 @@ struct DestinationAndRemainingLengthInTheCurrentRange
 
 using MapArray = std::array<Map, 7>; // NOLINT
 
+namespace {
+
 DestinationAndRemainingLengthInTheCurrentRange
 getDestinationAndRemainingLength(std::size_t source, const Map& map)
 {
@@ -33,7 +35,7 @@ getDestinationAndRemainingLength(std::size_t source, const Map& map)
   return { source,
            remainingLength.value_or(std::numeric_limits<std::size_t>::max()) };
 };
-
+}
 Result
 solve(const Input& input)
 {

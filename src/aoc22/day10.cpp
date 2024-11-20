@@ -8,6 +8,7 @@ namespace aoc22::day10 {
 static constexpr std::size_t FIRST_SIGNAL_CYCLE = 20;
 static constexpr std::size_t SIGNAL_PERIOD = CRT_WIDTH;
 
+namespace {
 std::size_t
 getCyclesToNextSignalCycle(std::size_t cycles)
 {
@@ -20,6 +21,7 @@ getCyclesToNextSignalCycle(std::size_t cycles)
   }
   return FIRST_SIGNAL_CYCLE - cycles;
 };
+}
 
 Result
 solve(const Input& input)

@@ -10,7 +10,7 @@
 
 namespace aoc22::day11 {
 
-enum class OperationType
+enum class OperationType : std::uint8_t
 {
   Add,
   Multiply
@@ -29,8 +29,8 @@ using Operand = std::variant<Literal, Old>;
 struct alignas(64) Operation
 {
   OperationType type{};
-  Operand op1{};
-  Operand op2{};
+  Operand op1;
+  Operand op2;
 };
 
 struct alignas(128) Monkey
@@ -39,7 +39,7 @@ struct alignas(128) Monkey
   std::uint64_t divisionTest{};
   std::size_t nextMonkeyTestPass{};
   std::size_t nextMonkeyTestFail{};
-  std::vector<std::uint64_t> worryLevels{};
+  std::vector<std::uint64_t> worryLevels;
 };
 
 using Input = std::vector<Monkey>;

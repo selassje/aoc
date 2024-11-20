@@ -18,7 +18,7 @@ NestedVector
 readInput(const std::string_view path)
 {
 
-  std::ifstream ifs{ path.data() };
+  std::ifstream ifs{ path.data() }; // NOLINT
 
   NestedVector input{};
   vector<unsigned int> caloriesPerElf{};

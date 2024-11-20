@@ -14,6 +14,8 @@
 
 using aoc23::day6::Input;
 
+namespace {
+
 auto
 split(const std::string& string, const char delimeter)
 {
@@ -66,7 +68,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day6 Example", "[AoC23_Day6]")
 {
   const auto input = readInput(inputs::day6::EXAMPLE);

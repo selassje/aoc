@@ -17,6 +17,8 @@ using aoc23::day5::Input;
 using aoc23::day5::Map;
 using aoc23::day5::Range;
 
+namespace {
+
 auto
 split(const std::string& string, const char delimeter)
 {
@@ -98,7 +100,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day5 Example", "[AoC23_Day5]")
 {
   const auto input = readInput(inputs::day5::EXAMPLE);

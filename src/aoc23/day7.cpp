@@ -3,10 +3,10 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
-
+#include <cstdint>
 namespace aoc23::day7 {
 
-enum class HandType
+enum class HandType : std::uint8_t
 {
   FiveOfKind = 6,
   FourOfKind = 5,
@@ -19,7 +19,7 @@ enum class HandType
 
 using enum HandType;
 using enum Card;
-
+namespace {
 HandType
 getType(const Hand& hand, bool part2) noexcept
 {
@@ -115,7 +115,7 @@ compareHands(const Hand& handL, const Hand& handR, bool part2)
   }
   return typeL < typeR;
 }
-
+}
 Result
 solve(const Input& input)
 {

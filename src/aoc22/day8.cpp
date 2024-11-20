@@ -12,9 +12,9 @@ solve(const Grid& grid)
 {
   const std::size_t height = grid.size();
   const std::size_t width = grid[0].size();
-  const std::size_t edges = 2 * height + 2 * (width - 2);
+  const std::size_t edges = (2 * height) + (2 * (width - 2));
 
-  enum class Direction
+  enum class Direction : std::uint8_t
   {
     Left,
     Right,
@@ -36,13 +36,13 @@ solve(const Grid& grid)
       std::size_t h, std::size_t w, const Direction& dir) -> SearchPattern { //NOLINT
     switch (dir) {
       case Left:
-        return { 0, -1, h, 0 };
+        return {.incH = 0, .incW = -1,.endH = h, .endW = 0 };
       case Right:
-        return { 0, 1, h, width - 1 };
+        return {.incH = 0, .incW = 1, .endH = h, .endW = width - 1 };
       case Up:
-        return { -1, 0, 0, w };
+        return {.incH = -1, .incW = 0, .endH = 0, .endW = w };
       case Down:
-        return { 1, 0, height - 1, w };
+        return { .incH = 1,.incW = 0, .endH = height - 1,.endW = w };
     }
     return {};
   };

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <memory>
 #include <string>
@@ -20,6 +21,8 @@ struct List
 {
   std::vector<Packet> packets;
 };
+
+namespace {
 
 Packet
 parse(std::string_view packet)
@@ -54,7 +57,7 @@ parse(std::string_view packet)
     std::strtoull(integer.c_str(), nullptr, base));
 }
 
-enum class CmprResult
+enum class CmprResult : std::uint8_t
 {
   Lesser,
   Greater,
@@ -106,7 +109,7 @@ compare(const Packet& left, const Packet& right)
   }
   return result;
 }
-
+}
 Result
 solve(const Input& input)
 {

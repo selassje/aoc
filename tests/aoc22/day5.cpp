@@ -25,6 +25,8 @@ using aoc22::day5::Stacks;
 using Deque = std::deque<char>;
 using Deques = std::vector<Deque>;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -32,7 +34,7 @@ readInput(const std::string_view path)
   std::string line{};
   std::getline(ifs, line);
 
-  const auto stacksNum = 1 + (line.size() - 3) / 4;
+  const auto stacksNum = 1 + ((line.size() - 3) / 4);
   Deques deques(stacksNum);
   Moves moves{};
 
@@ -57,7 +59,7 @@ readInput(const std::string_view path)
         moves.push_back(m);
       } else if (line.find('[') != std::string::npos) {
         for (std::size_t i = 0; i < stacksNum; ++i) {
-          auto crate = line[4 * i + 1];
+          auto crate = line[(4 * i) + 1];
           if (crate != ' ') {
             deques[i].push_front(crate);
           }
@@ -72,7 +74,7 @@ readInput(const std::string_view path)
   }
   return { stacks, moves };
 }
-
+}
 TEST_CASE("Day5 Example", "[Day5]")
 {
   const auto input = readInput(inputs::day5::EXAMPLE);

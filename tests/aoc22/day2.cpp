@@ -14,10 +14,12 @@ using aoc22::day2::Guide;
 
 using enum aoc22::day2::Move;
 
+namespace {
+
 Guide
 readInput(const std::string_view path)
 {
-  std::ifstream ifs{ path.data() };
+  std::ifstream ifs{ path.data() }; // NOLINT
 
   Guide input;
 
@@ -48,7 +50,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Day2 Example", "[Day2]")
 {
   const auto input =

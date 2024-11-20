@@ -22,7 +22,7 @@ struct ValveEx : Valve
     auto toIndex = [](const char c) {
       return static_cast<std::size_t>(c - 'A');
     };
-    return toIndex(name[0]) * divider + toIndex(name[1]);
+    return (toIndex(name[0]) * divider) + toIndex(name[1]);
   }
 };
 
@@ -44,8 +44,8 @@ public:
   const ValveEx& operator[](std::size_t index) const noexcept
   {
     static constexpr std::size_t divider = 'Z' - 'A' + 1;
-    const char hi = static_cast<char>(index / divider + 'A');
-    const char lo = static_cast<char>(index % divider + 'A');
+    const char hi = static_cast<char>((index / divider) + 'A');
+    const char lo = static_cast<char>((index % divider) + 'A');
     return (*this)[std::string{ hi, lo }];
   }
 
@@ -55,6 +55,8 @@ public:
 private:
   std::vector<ValveEx> m_input;
 };
+
+namespace {
 
 auto
 findShortestPath(std::size_t src, const InputEx& input)
@@ -82,16 +84,16 @@ findShortestPath(std::size_t src, const InputEx& input)
     for (const auto& neighbour : valve.connectedValves) {
       const auto neighbourIndex = input[neighbour].index();
       if (!visitedValves.contains(neighbourIndex)) {
-        if (const auto canidateLength = distances[valveIndex] + 1;
-            canidateLength < distances[neighbourIndex]) {
-          distances[neighbourIndex] = canidateLength;
-        }
-        toBeVisitedValves.push_back(neighbourIndex);
+        const auto canidateLength = distances[valveIndex] + 1;
+        distances[neighbourIndex] =
+          std::min(canidateLength, distances[neighbourIndex]);
       }
+      toBeVisitedValves.push_back(neighbourIndex);
     }
     visitedValves.insert(valveIndex);
     toBeVisitedValves.pop_front();
   }
+
   auto nonZeroDistances =
     distances | std::views::filter([&input](const auto& pair) {
       return input[pair.first].flowRate > 0;
@@ -112,7 +114,6 @@ maxPressureReleasePart1(std::size_t valve, // NOLINT
   std::vector<std::size_t> results{ 0 };
   auto openedValves_ = openedValves; // NOLINT
   openedValves_.insert(valve);
-  const auto str = input[valve].name;
   const auto& distances = distMap.at(valve);
   for (const auto& [nextValve, d] : distances) {
     const auto flowRate = input[nextValve].flowRate;
@@ -120,7 +121,7 @@ maxPressureReleasePart1(std::size_t valve, // NOLINT
       const auto minutesSpent = d + 1;
       if (minutes > minutesSpent) {
         const auto releasedPressure =
-          flowRate * (minutes - minutesSpent) +
+          (flowRate * (minutes - minutesSpent)) +
           maxPressureReleasePart1(
             nextValve, minutes - minutesSpent, openedValves_, distMap, input);
         results.push_back(releasedPressure);
@@ -187,7 +188,7 @@ maxPressureReleasePart2(std::size_t valve1,
   }
   return std::ranges::max(results);
 }
-
+}
 Result
 solve(const Input& input)
 {

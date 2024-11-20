@@ -15,6 +15,7 @@ using aoc22::day9::Direction;
 using aoc22::day9::Move;
 using aoc22::day9::Moves;
 using enum aoc22::day9::Direction;
+namespace {
 
 Moves
 readInput(const std::string_view path)
@@ -36,7 +37,7 @@ readInput(const std::string_view path)
   }
   return moves;
 }
-
+}
 TEST_CASE("Day9 Example", "[Day9]")
 {
   const auto input = readInput(inputs::day9::EXAMPLE);

@@ -15,6 +15,8 @@ using aoc22::day14::Input;
 using aoc22::day14::Path;
 using aoc22::day14::Point;
 
+namespace {
+
 Input
 readInput(const std::string_view path_)
 {
@@ -49,7 +51,7 @@ readInput(const std::string_view path_)
   }
   return input;
 }
-
+}
 TEST_CASE("Day14 Example", "[Day14]")
 {
   const auto input = readInput(inputs::day14::EXAMPLE);

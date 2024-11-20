@@ -15,6 +15,8 @@
 using aoc23::day4::Card;
 using aoc23::day4::Input;
 
+namespace {
+
 auto
 split(const std::string& string, const char delimeter)
 {
@@ -62,7 +64,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day4 Input", "[AoC23_Day4]")
 {
   const auto input = readInput(inputs::day4::INPUT);

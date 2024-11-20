@@ -7,7 +7,7 @@
 
 namespace aoc23::day7 {
 
-enum class Card : std::size_t
+enum class Card : std::uint8_t
 {
   Ace = 13,
   King = 12,

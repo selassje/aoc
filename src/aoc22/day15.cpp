@@ -9,6 +9,8 @@
 
 namespace aoc22::day15 {
 
+namespace {
+
 [[nodiscard]] constexpr std::size_t
 getDistance(const Point& p1, const Point& p2) noexcept
 {
@@ -79,10 +81,10 @@ outer:
   std::ranges::sort(ranges);
   return ranges;
 }
-
+}
 template<typename std::int32_t Y, typename std::int32_t B>
 Result
-solve(const Input& input)
+solve(const Input& input) // NOLINT
 {
   const auto beaconCountAtY = [&input]() {
     std::set<Point> uniqueBeacons;

@@ -14,6 +14,8 @@
 using aoc22::day18::Cube;
 using aoc22::day18::Input;
 
+namespace {
+
 Input
 readInput(const std::string_view path_)
 {
@@ -39,7 +41,7 @@ readInput(const std::string_view path_)
   }
   return input;
 }
-
+}
 TEST_CASE("Day18 Example", "[Day18]")
 {
   const auto input = readInput(inputs::day18::EXAMPLE);

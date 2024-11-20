@@ -20,6 +20,8 @@ using aoc23::day7::HandBid;
 using aoc23::day7::Input;
 using enum aoc23::day7::Card;
 
+namespace {
+
 Card
 charToCard(const char c)
 {
@@ -62,7 +64,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day7 Example", "[AoC23_Day7]")
 {
   auto input = readInput(inputs::day7::EXAMPLE);

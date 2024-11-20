@@ -41,6 +41,9 @@ struct Exception : std::exception
   {
   }
 };
+
+namespace {
+
 void
 veryfiInput(const Input& input)
 {
@@ -119,7 +122,7 @@ veryfiInput(const Input& input)
                                  valueAtEnd) };
   }
 }
-
+}
 Result
 solve(const Input& input)
 {
@@ -185,10 +188,8 @@ solve(const Input& input)
   while (!toBeVisitedPositions.empty()) {
     const auto position = toBeVisitedPositions.front();
     for (const auto& neighbour : getEligibleNeighbours(position)) {
-      if (const auto canidateLength = distances[position] + 1;
-          canidateLength < distances[neighbour]) {
-        distances[neighbour] = canidateLength;
-      }
+      const auto canidateLength = distances[position] + 1;
+      distances[neighbour] = std::min(canidateLength, distances[neighbour]);
       toBeVisitedPositions.push_back(neighbour);
     }
 

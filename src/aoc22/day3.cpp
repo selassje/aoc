@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace aoc22::day3 {
-
+namespace {
 std::string
 getCommonTypes(const std::string& items_1, const std::string& items_2)
 {
@@ -36,7 +36,7 @@ getCommonType(const std::string& items_1, const std::string& items_2)
 {
   return getCommonTypes(items_1, items_2)[0];
 }
-
+}
 std::pair<unsigned int, unsigned int>
 solve(const std::vector<std::string>& input)
 {

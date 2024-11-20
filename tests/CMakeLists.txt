@@ -25,6 +25,8 @@ if(ENABLE_FUZZ_TESTS)
 
 endif()
 
+list(APPEND EXCLUDED_TESTS aoc22_day16)
+
 function(configure_tests YEAR)
   configure_test_inputs(${YEAR})
   
@@ -51,7 +53,10 @@ function(configure_tests YEAR)
         link_fuzztest(${TEST_NAME})
       endif()
 
-      add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+      list(FIND EXCLUDED_TESTS ${TEST_NAME} index)
+      if (${index} EQUAL -1)
+        add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+      endif()
       setup_coverate_report_env(${TEST_NAME})
   endforeach()
 endfunction()

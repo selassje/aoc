@@ -83,6 +83,8 @@ struct InputErrorNextMonkeyTestPass : ExceptionBase
   }
 };
 
+namespace {
+
 void
 verifyInput(const Input& input)
 {
@@ -171,7 +173,7 @@ solveInternal(const Input& input)
 
   return inspectionsCount[0] * inspectionsCount[1];
 }
-
+}
 Result
 solve(const Input& input)
 {

@@ -15,6 +15,8 @@ using aoc23::day2::Draw;
 using aoc23::day2::Game;
 using aoc23::day2::Input;
 
+namespace {
+
 auto
 split(const std::string& string, const char delimeter)
 {
@@ -65,7 +67,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day2 Example", "[AoC23_Day2]")
 {
   const auto input = readInput(inputs::day2::EXAMPLE);

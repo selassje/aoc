@@ -15,7 +15,11 @@ Checks: "*,
          -misc-no-recursion,
          -modernize-use-trailing-return-type,
          -readability-identifier-length,
-         -readability-function-cognitive-complexity
+         -readability-function-cognitive-complexity,
+         -modernize-use-designated-initializers,
+         -boost-use-ranges,
+         -bugprone-chained-comparison,
+         -bugprone-suspicious-stringview-data-usage
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true

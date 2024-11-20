@@ -4,6 +4,7 @@
 
 namespace aoc23::day2 {
 
+namespace {
 std::size_t
 getMininumSetPower(const Game& game)
 {
@@ -14,6 +15,7 @@ getMininumSetPower(const Game& game)
     minSet.blueCount = std::max(minSet.blueCount, draw.blueCount);
   }
   return minSet.redCount * minSet.greenCount * minSet.blueCount;
+}
 }
 
 Result

@@ -14,6 +14,8 @@
 using aoc23::day9::Input;
 using aoc23::day9::Values;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -23,16 +25,16 @@ readInput(const std::string_view path)
   while (std::getline(ifs, line)) {
     Values values{};
     std::istringstream iss{ line };
-    while(!iss.eof()) {
-        std::int64_t value{};
-        iss >> value;
-        values.push_back(value);  
+    while (!iss.eof()) {
+      std::int64_t value{};
+      iss >> value;
+      values.push_back(value);
     }
     input.push_back(values);
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day9 Example", "[AoC23_Day9]")
 {
   auto input = readInput(inputs::day9::EXAMPLE);

@@ -7,7 +7,7 @@
 #include <string_view>
 
 namespace aoc23::day8 {
-
+namespace {
 template<typename F>
 std::size_t
 stepsTo(const Node& startNode, const Input& input, F cond)
@@ -31,7 +31,7 @@ stepsTo(const Node& startNode, const Input& input, F cond)
   }
   return result;
 }
-
+}
 Result
 solve(const Input& input)
 {

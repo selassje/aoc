@@ -33,6 +33,8 @@ namespace aoc22::day9 {
 
 using enum Direction;
 
+namespace {
+
 void
 performMove(Position& position, Direction direction)
 {
@@ -57,6 +59,7 @@ areTouching(const Position& p1, const Position& p2)
 {
   return p1.x >= p2.x - 1 && p1.x <= p2.x + 1 && p1.y >= p2.y - 1 &&
          p1.y <= p2.y + 1;
+}
 }
 
 std::pair<std::size_t, std::size_t>

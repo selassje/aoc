@@ -7,7 +7,7 @@
 
 namespace aoc22::day17 {
 
-enum class JetDir
+enum class JetDir : std::uint8_t
 {
   Left,
   Right

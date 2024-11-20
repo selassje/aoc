@@ -13,6 +13,8 @@ using aoc22::day12::Grid;
 using aoc22::day12::IndexType;
 using aoc22::day12::Input;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -40,7 +42,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Day12 Example", "[Day12]")
 {
   const auto input = readInput(inputs::day12::EXAMPLE);

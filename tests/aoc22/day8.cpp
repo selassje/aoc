@@ -13,6 +13,8 @@
 
 using aoc22::day8::Grid;
 
+namespace {
+
 Grid
 readInput(const std::string_view path)
 {
@@ -29,7 +31,7 @@ readInput(const std::string_view path)
   }
   return grid;
 }
-
+}
 TEST_CASE("Day8 Example", "[Day8]")
 {
   const auto input = readInput(inputs::day8::EXAMPLE);

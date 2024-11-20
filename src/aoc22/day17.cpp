@@ -16,7 +16,7 @@ struct Point
   std::size_t y;
 };
 
-enum Rock : std::size_t
+enum Rock : std::uint8_t
 {
   HorizontalLine = 0,
   Cross = 1,
@@ -109,7 +109,7 @@ private:
     }
     return result;
   }
-  std::vector<std::byte> m_rows{};
+  std::vector<std::byte> m_rows;
   std::size_t m_rocksCount{};
   TowerHeights m_towerHeights{};
 
@@ -133,6 +133,8 @@ private:
     { 2, 0b0000000011001100, { 2, 2, 0, 0 } }
   };
 };
+
+namespace {
 
 void
 processNextRock(const Input& input,
@@ -160,6 +162,8 @@ processNextRock(const Input& input,
     --y;
   }
   rock = static_cast<Rock>((rock + 1) % Rock::Count);
+}
+
 }
 
 struct SimulationInput

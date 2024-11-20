@@ -17,6 +17,8 @@ using aoc22::day10::Input;
 using aoc22::day10::Instruction;
 using aoc22::day10::Noop;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -57,6 +59,7 @@ compareRenders(const auto& r1, const auto r2)
       REQUIRE(r1.at(i).at(j) == r2.at(i).at(j));
     }
   }
+}
 }
 
 TEST_CASE("Day10 Example", "[Day10]")

@@ -7,6 +7,8 @@
 
 namespace aoc23::day9 {
 
+namespace {
+
 auto
 extrapolate(const Values& originalValues)
 {
@@ -44,7 +46,7 @@ extrapolate(const Values& originalValues)
 
   return std::make_pair(forwardSequences[0].back(), backwardSequences[0][0]);
 }
-
+}
 Result
 solve(const Input& input)
 {

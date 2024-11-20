@@ -14,6 +14,8 @@ using std::vector;
 
 using Rucksacks = std::vector<std::string>;
 
+namespace {
+
 Rucksacks
 readInput(const std::string_view path)
 {
@@ -26,6 +28,7 @@ readInput(const std::string_view path)
     rucksacks.emplace_back(line);
   }
   return rucksacks;
+}
 }
 TEST_CASE("Day3 Example", "[Day3]")
 {

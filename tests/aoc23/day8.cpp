@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <cstdlib>
 #include <fstream>
-#include <regex>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -17,6 +16,8 @@ using aoc23::day8::Input;
 using aoc23::day8::Node;
 using aoc23::day8::Nodes;
 using enum aoc23::day8::Direction;
+
+namespace {
 
 auto
 split(const std::string& string, const char delimeter)
@@ -35,19 +36,6 @@ split(const std::string& string, const char delimeter)
   parts.push_back(lastPart);
   return parts;
 };
-
-auto
-readNumbers(const std::string& string)
-{
-  std::vector<std::size_t> numbers{};
-  const auto stringRepl = std::regex_replace(string, std::regex(" +"), " ");
-  const auto numbersStr = split(stringRepl.substr(1), ' ');
-  for (const auto& numberStr : numbersStr) {
-    const auto number = std::strtoull(numberStr.c_str(), nullptr, 10);
-    numbers.push_back(number);
-  }
-  return numbers;
-}
 
 Input
 readInput(const std::string_view path)
@@ -78,7 +66,7 @@ readInput(const std::string_view path)
   }
   return input;
 }
-
+}
 TEST_CASE("Aoc23 Day8 Example", "[AoC23_Day8]")
 {
   const auto input = readInput(inputs::day8::EXAMPLE);

@@ -17,7 +17,7 @@ struct Line
 };
 
 using Lines = std::vector<Line>;
-
+namespace {
 bool
 isPointOnLine(const Point& point, const Line& line)
 {
@@ -46,6 +46,8 @@ isPointAboveLine(const Point& point, const Line& line)
     return minX <= point.x && point.x <= maxX && point.y < line.start.y;
   }
   return false;
+}
+
 }
 
 Result

@@ -74,6 +74,8 @@ constexpr std::array<CubeEx, 6> SHIFTS = { CubeEx{ 1, 0, 0 }, { -1, 0, 0 },
                                            { 0, 1, 0 },       { 0, -1, 0 },
                                            { 0, 0, 1 },       { 0, 0, -1 } };
 
+namespace {
+
 Cubes
 getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
 {
@@ -88,11 +90,14 @@ getNeighbouringAirCubes(const CubeEx& cube, const Cubes& dropletCubes)
   return airCubes;
 }
 
+}
 struct ScanResult
 {
   bool isInternal{};
-  Cubes cubes{};
+  Cubes cubes;
 };
+
+namespace {
 
 ScanResult
 scanForAirCubes(const CubeEx& cube,
@@ -120,7 +125,7 @@ scanForAirCubes(const CubeEx& cube,
   }
   return { isInternal, scannedCubes };
 };
-
+}
 Result
 solve(const Input& input)
 {

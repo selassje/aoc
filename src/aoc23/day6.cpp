@@ -4,11 +4,9 @@
 #include <cstdlib>
 
 #include <string>
-
-namespace aoc23::day6 {
-
+namespace {
 std::size_t
-recordBeatingCount(const Race& race)
+recordBeatingCount(const aoc23::day6::Race& race)
 {
   std::size_t result = 0;
   for (std::size_t t = 0; t <= race.time; ++t) {
@@ -19,6 +17,9 @@ recordBeatingCount(const Race& race)
   }
   return result;
 }
+}
+
+namespace aoc23::day6 {
 
 Result
 solve(const Input& input)

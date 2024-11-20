@@ -4,10 +4,9 @@
 #include <cstddef>
 #include <vector>
 
-namespace aoc23::day4 {
-
+namespace {
 std::size_t
-getCardMatches(const Card& card)
+getCardMatches(const aoc23::day4::Card& card)
 {
   std::size_t result = 0;
   for (const auto& winningNumber : card.winningNumbers) {
@@ -18,6 +17,9 @@ getCardMatches(const Card& card)
   }
   return result;
 }
+}
+
+namespace aoc23::day4 {
 
 Result
 solve(const Input& input)

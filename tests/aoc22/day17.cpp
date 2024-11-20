@@ -13,6 +13,8 @@ using aoc22::day17::JetDir;
 
 using enum JetDir;
 
+namespace {
+
 Input
 readInput(const std::string_view path_)
 {
@@ -27,7 +29,7 @@ readInput(const std::string_view path_)
   }
   return input;
 }
-
+}
 TEST_CASE("Day17 Example", "[Day17]")
 {
   const auto input = readInput(inputs::day17::EXAMPLE);

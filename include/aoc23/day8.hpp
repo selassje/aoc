@@ -2,26 +2,28 @@
 #define AOC23_DAY8_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
 
 namespace aoc23::day8 {
 
-enum class Direction {
+enum class Direction : std::uint8_t
+{
   Left,
   Right
 };
 
 using Directions = std::vector<Direction>;
 
-struct Node {
+struct Node
+{
   std::string id;
   std::string left;
   std::string right;
 };
 
 using Nodes = std::vector<Node>;
-
 
 struct Input
 {

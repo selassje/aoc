@@ -18,6 +18,8 @@ using aoc22::day11::Monkey;
 using aoc22::day11::Operand;
 using enum aoc22::day11::OperationType;
 
+namespace {
+
 Input
 readInput(const std::string_view path)
 {
@@ -78,7 +80,7 @@ readInput(const std::string_view path)
   input.push_back(monkey);
   return input;
 }
-
+}
 TEST_CASE("Day11 Example", "[Day11]")
 {
   const auto input = readInput(inputs::day11::EXAMPLE);

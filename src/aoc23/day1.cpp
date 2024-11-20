@@ -21,7 +21,7 @@ const DigitMap DIGIT_MAP_PART2 = {
   { "two", 2 },   { "three", 3 }, { "four", 4 }, { "five", 5 }, { "six", 6 },
   { "seven", 7 }, { "eight", 8 }, { "nine", 9 }
 };
-
+namespace {
 std::size_t
 solveInternal(const Input& input, const DigitMap& digitMap)
 {
@@ -50,6 +50,7 @@ solveInternal(const Input& input, const DigitMap& digitMap)
     result += firstDigit * 10 + lastDigit; // NOLINT
   }
   return result;
+}
 }
 
 Result

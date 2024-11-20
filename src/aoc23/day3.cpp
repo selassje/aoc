@@ -30,6 +30,8 @@ struct GearInfo
   std::size_t partNumberCount{ 0 };
 };
 
+namespace {
+
 auto
 parseInput(const Input& input)
 {
@@ -64,7 +66,7 @@ parseInput(const Input& input)
   }
   return numbers;
 }
-
+}
 Result
 solve(const Input& input)
 {

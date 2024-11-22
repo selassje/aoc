@@ -15,7 +15,7 @@ jobs:
     name: Build and Test On ${{ matrix.os }} using ${{ matrix.cxx }}
     strategy:
       matrix:
-        os:  [ubuntu-latest, windows-latest]
+        os:  [ubuntu-24-04, windows-latest]
         cxx: [clang++, g++, cl.exe]
         exclude:
          - os: windows-latest
@@ -40,7 +40,6 @@ jobs:
         run: cmake --version
       - name: Set up GCC
         run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install g++-$GCC_VER
           sudo update-alternatives \

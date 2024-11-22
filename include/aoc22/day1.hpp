@@ -1,7 +1,17 @@
 #ifndef AOC22_DAY1_HPP
 #define AOC22_DAY1_HPP
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
+
 #include <algorithm>
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
+
 #include <concepts>
 #include <numeric>
 #include <utility>

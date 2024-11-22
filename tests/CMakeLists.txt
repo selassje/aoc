@@ -63,5 +63,6 @@ endfunction()
 
 configure_tests(22) 
 configure_tests(23) 
+configure_tests(24) 
 
 

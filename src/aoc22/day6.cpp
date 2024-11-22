@@ -1,5 +1,6 @@
 #include "aoc22/day6.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <string_view>

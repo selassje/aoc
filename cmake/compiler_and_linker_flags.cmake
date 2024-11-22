@@ -8,7 +8,7 @@ function(setup_compiler_warnings TARGET)
                             -Wnull-dereference  -Wdouble-promotion -Wformat=2 -Wimplicit-fallthrough)
                       
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT ${ENABLE_CLANG_TIDY})
-      target_compile_options(${TARGET} PRIVATE -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast -fmodules-ts)
+      target_compile_options(${TARGET} PRIVATE -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wuseless-cast)
     endif()
   endif()
 endfunction()

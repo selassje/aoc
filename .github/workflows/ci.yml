@@ -3,6 +3,7 @@ name: AoC CI
 on: [push]
         
 env:
+  UBUNTU: ubuntu-24.04
   NINJA_VER: 1.11.1
   GCC_VER: 14
   MVSC_VER: 14.40
@@ -15,7 +16,7 @@ jobs:
     name: Build and Test On ${{ matrix.os }} using ${{ matrix.cxx }}
     strategy:
       matrix:
-        os:  [ubuntu-24.04, windows-latest]
+        os: [ubuntu-24.04, windows-latest]
         cxx: [clang++, g++, cl.exe]
         exclude:
          - os: windows-latest
@@ -63,7 +64,7 @@ jobs:
             --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER_UBUNTU
-        if: ${{ matrix.os == 'ubuntu-latest'}}
+        if: ${{ matrix.os == env.UBUNTU}}
       - name: Install LLVM Windows
         run: choco install llvm --version=$env:LLVM_VER_WIN --allow-downgrade
         if: ${{ matrix.os == 'windows-latest'}}
@@ -85,18 +86,18 @@ jobs:
               -DENABLE_TESTS=ON 
               -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'cl.exe' && 'OFF' || 'ON' }} 
               -DENABLE_MSVC_ANALYSIS=${{ matrix.cxx == 'cl.exe' && 'ON' || 'OFF' }} 
-              -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'OFF' || 'OFF' }}
-              -DENABLE_COVERAGE_REPORT=${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest' && 'ON' || 'OFF' }}
+              -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'OFF' || 'OFF' }}
+              -DENABLE_COVERAGE_REPORT=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'ON' || 'OFF' }}
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build --output-on-failure
       - name: Generate Coverage Report
         run:  cmake --build build --target generate-coverage-report
-        if:  ${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest'}}
+        if:  ${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU}}
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
-        if:  ${{ matrix.cxx == 'clang++' && matrix.os == 'ubuntu-latest'}}
+        if:  ${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU}}
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Check Formating

@@ -31,9 +31,9 @@ struct CubeEx
   }
   constexpr bool operator==(const CubeEx&) const noexcept = default;
 
-  [[nodiscard]] CubeEx operator+(const CubeEx& cube) const
+  [[nodiscard]] friend CubeEx operator+(const CubeEx& lhs, const CubeEx& rhs) 
   {
-    return { x + cube.x, y + cube.y, z + cube.z };
+    return { lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z };
   }
 };
 

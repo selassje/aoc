@@ -1,5 +1,5 @@
 
-#include "day1.hpp"
+import aoc24_day1;
 // #include "inputs.hpp"
 
 #include <catch2/catch_test_macros.hpp>

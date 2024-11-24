@@ -36,10 +36,23 @@ function(configure_tests YEAR)
   configure_test_inputs(${YEAR})
 
   file(GLOB SOURCE_FILES aoc${YEAR}/*.cpp)
+  set(MODULES ${CMAKE_CURRENT_LIST_DIR}/../modules/aoc${YEAR})
+  file(GLOB MODULE_FILES ${MODULES}/*.cpp)
   foreach(SRC IN LISTS SOURCE_FILES)
     get_filename_component(FILENAME ${SRC} NAME_WE)
     set(TEST_NAME aoc${YEAR}_${FILENAME})
     add_executable(${TEST_NAME} ${SRC} main.cpp)
+
+    target_sources(
+      ${TEST_NAME}
+      PRIVATE FILE_SET
+              cxx_modules
+              TYPE
+              CXX_MODULES
+              BASE_DIRS
+              ${MODULES}
+              FILES
+              ${MODULE_FILES})
 
     setup_compiler_warnings(${TEST_NAME})
     setup_std_lib(${TEST_NAME})

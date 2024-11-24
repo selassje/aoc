@@ -38,7 +38,8 @@
       "inherits" : "dev_ninja_clang",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Release",
-        "ENABLE_TESTS":"ON"
+        "ENABLE_TESTS":"ON",
+        "ENABLE_CLANG_TIDY":"ON"
       },
       "binaryDir": "${sourceDir}/builds/rel_ninja_clang"
     },
@@ -91,6 +92,9 @@
     {
       "name": "dev_ninja_gcc",
       "inherits" : "dev_ninja",
+      "cacheVariables": {
+        "ENABLE_TESTS":"ON"
+      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",

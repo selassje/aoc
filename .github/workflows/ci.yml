@@ -102,3 +102,58 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
+  debug_tests:
+    name: Build and Test Debug
+    runs-on: ubuntu-24.04
+    env:
+      CXX: clang++
+      CC: clang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with: 
+          submodules: true
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.13
+        with:
+          cmake-version: ${{env.CMAKE_VER}}
+      - name: CMake version
+        run: cmake --version
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+        with:
+          version: ${{env.NINJA_VER}}
+      - name: Install LLVM Ubuntu
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh $LLVM_VER_UBUNTU all
+          sudo update-alternatives --remove-all clang++
+          sudo update-alternatives --remove-all clang
+          sudo update-alternatives --remove-all clang-tidy
+          sudo update-alternatives --remove-all clang-format
+          sudo update-alternatives \
+            --install /usr/bin/clang clang /usr/bin/clang-$LLVM_VER_UBUNTU 50 \
+            --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER_UBUNTU \
+            --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER_UBUNTU \
+            --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER_UBUNTU
+      - name: Configure
+        run:  cmake -S . -B build -G Ninja 
+              -DCMAKE_BUILD_TYPE=Debug 
+              -DENABLE_TESTS=ON 
+              -DENABLE_CLANG_TIDY=OFF 
+              -DENABLE_MSVC_ANALYSIS=OFF 
+              -DENABLE_FUZZ_TESTS=OFF
+              -DENABLE_COVERAGE_REPORT=OFF
+      - name: Build Tests
+        run:  cmake --build build
+      - name: Run Tests
+        run:  ctest --test-dir build --output-on-failure
+      - name: Generate Coverage Report
+        run:  cmake --build build --target generate-coverage-report
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Check Formating
+        run:  cmake --build build --config Release --target clang-format-check

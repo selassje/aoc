@@ -10,4 +10,3 @@ function(configure_test_inputs YEAR)
   endforeach()
   configure_file(aoc${YEAR}/inputs.hpp.in aoc${YEAR}/inputs.hpp)
 endfunction()
-

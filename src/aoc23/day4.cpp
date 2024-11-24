@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <functional>
 #include <vector>
 
 namespace {
@@ -37,10 +38,8 @@ solve(const Input& input)
       cardCount[j] += cardCount[i];
     }
   }
-  std::size_t part2 = 0;
-  for (const auto& count : cardCount) {
-    part2 += count;
-  }
+  const std::size_t part2 =
+    std::ranges::fold_left(cardCount, 0, std::plus<>()); // NOLINT
   return { part1, part2 };
 }
 

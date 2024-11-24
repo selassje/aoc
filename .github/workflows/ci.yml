@@ -144,7 +144,7 @@ jobs:
               -DENABLE_CLANG_TIDY=OFF 
               -DENABLE_MSVC_ANALYSIS=OFF 
               -DENABLE_FUZZ_TESTS=OFF
-              -DENABLE_COVERAGE_REPORT=OFF
+              -DENABLE_COVERAGE_REPORT=ON
       - name: Build Tests
         run:  cmake --build build
       - name: Run Tests

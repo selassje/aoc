@@ -17,7 +17,7 @@
       ],
       "externalConsole": false,
       "MIMode": "lldb",
-      "miDebuggerPath": "/usr/local/bin/lldb-mi"
+      "miDebuggerPath": "lldb-mi"
     },
     {
       "name": "GDB",
@@ -35,7 +35,7 @@
       ],
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -56,7 +56,7 @@
       "stopAtEntry": false,
       "externalConsole": false,
       "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

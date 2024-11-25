@@ -92,7 +92,9 @@ veryfiInput(const Input& input)
       height) };
   }
 
-  if (const auto valueAtStart = grid[input.startPosition.y][input.startPosition.x]; valueAtStart != 'a') {
+  if (const auto valueAtStart =
+        grid[input.startPosition.y][input.startPosition.x];
+      valueAtStart != 'a') {
     throw Exception{ std::format("{} Input is ill formed : Value at {} start "
                                  "position ({},{}) should be 'a'",
                                  prefix,

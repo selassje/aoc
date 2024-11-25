@@ -23,7 +23,7 @@ split(std::string_view string, const char delimeter)
   std::vector<std::string> parts{};
   std::size_t searchOffset = 0;
   std::size_t nextDelimeter = string.find(delimeter);
-while (nextDelimeter != std::string::npos) {
+  while (nextDelimeter != std::string::npos) {
     const auto part = string.substr(searchOffset, nextDelimeter - searchOffset);
     parts.emplace_back(part);
     searchOffset = nextDelimeter + 1;

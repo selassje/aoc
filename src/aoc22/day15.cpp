@@ -38,9 +38,8 @@ tryMergeRanges(Range& target, const Range& source)
     (source.start <= target.start && target.start <= source.end) ||
     (source.start <= target.end && target.end <= source.end);
 
-  const bool areAdjacent = source.start - 1 == target.end;
 
-  if (areOverLapping || areAdjacent) {
+  if (const bool areAdjacent = source.start - 1 == target.end; areOverLapping || areAdjacent) {
     target.start = std::min(target.start, source.start);
     target.end = std::max(target.end, source.end);
     return true;

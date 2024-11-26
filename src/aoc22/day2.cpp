@@ -36,7 +36,7 @@ struct InputErrorMoveOutOfRange : ExceptionBase
         std::format("Aoc22::day2 {} move of turn {} is out of range({}).",
                     first ? "First" : "Second",
                     index,
-                    static_cast<unsigned char>(move)))
+                    std::to_underlying(move)))
   {
   }
 };
@@ -118,9 +118,9 @@ solve(const Guide& guide)
   for (std::size_t i = 0; i < std::size(guide); ++i) {
     auto const& [first, second] = guide[i];
     auto checkMove = [](const Move& m) {
-      const auto c = static_cast<unsigned char>(m);
-      static constexpr auto rock = static_cast<unsigned char>(Rock);
-      static constexpr auto scissors = static_cast<unsigned char>(Sciscors);
+      const auto c = std::to_underlying(m);
+      static constexpr auto rock = std::to_underlying(Rock);
+      static constexpr auto scissors = std::to_underlying(Sciscors);
       return c >= rock && c <= scissors;
     };
     if (!checkMove(first)) {

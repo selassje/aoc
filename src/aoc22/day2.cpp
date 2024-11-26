@@ -55,7 +55,7 @@ using enum Outcome;
 constexpr unsigned int
 evaluateMove(Move m)
 {
-  return static_cast<unsigned int>(m);
+  return std::to_underlying(m);
 }
 
 const std::unordered_map<Move, Move> beats{ { Rock, Sciscors }, // NOLINT
@@ -71,7 +71,7 @@ evaluateOutcome(Move oponent, Move you)
   if (oponent != you) {
     outcome = beats.at(you) == oponent ? Win : Loss;
   }
-  return static_cast<unsigned int>(outcome);
+  return std::to_underlying(outcome);
 }
 
 Move

@@ -18,6 +18,21 @@
       "externalConsole": false,
       "MIMode": "lldb",
       "miDebuggerPath": "lldb-mi"
+      
+    },
+    {
+      "name": "LLDB TEST EXPLORER",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${cmake.testProgram}",
+      "args": [
+        "${cmake.testArgs}"
+      ],
+      "cwd": "${cmake.testWorkingDirectory}",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "miDebuggerPath": "lldb-mi",
     },
     {
       "name": "GDB",

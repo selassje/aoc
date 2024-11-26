@@ -18,7 +18,6 @@
       "externalConsole": false,
       "MIMode": "lldb",
       "miDebuggerPath": "lldb-mi"
-      
     },
     {
       "name": "LLDB TEST EXPLORER",

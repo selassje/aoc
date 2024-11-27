@@ -78,6 +78,34 @@
           "ignoreFailures": true
         }
       ]
+    },
+    {
+      "name": "MSVC",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${command:cmake.launchTargetPath}",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+        },
+      ],
+      "externalConsole": false,
+    },
+    {
+      "name": "MSVC TEST EXPLORER",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${cmake.testProgram}",
+      "args": [
+        "${cmake.testArgs}"
+      ],
+      "cwd": "${cmake.testWorkingDirectory}",
+      "stopAtEntry": false,
+      "externalConsole": false,
     }
   ]
 }

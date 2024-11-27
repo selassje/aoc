@@ -93,7 +93,7 @@
           "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
         },
       ],
-      "externalConsole": false,
+      "console": "integratedTerminal",
     },
     {
       "name": "MSVC TEST EXPLORER",
@@ -105,7 +105,7 @@
       ],
       "cwd": "${cmake.testWorkingDirectory}",
       "stopAtEntry": false,
-      "externalConsole": false,
+      "console": "integratedTerminal",
     }
   ]
 }

@@ -39,6 +39,16 @@ function(setup_compiler_warnings TARGET)
   endif()
 endfunction()
 
+function(setup_sanitizers TARGET)
+  if(ENABLE_SANITIZERS)
+    if(MSVC)
+      target_compile_options(
+        ${TARGET}
+        PRIVATE /fsanitize=address)
+    endif()
+  endif()
+endfunction()
+
 function(setup_std_lib TARGET)
   if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND (${CMAKE_SYSTEM_NAME}
                                                     STREQUAL "Linux"))

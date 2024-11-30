@@ -35,6 +35,7 @@ if(ENABLE_TESTS)
 endif()
 
 setup_compiler_warnings(aoc)
+setup_sanitizers(aoc)
 setup_std_lib(aoc)
 setup_clang_tidy(aoc)
 setup_msvc_analysis(aoc)

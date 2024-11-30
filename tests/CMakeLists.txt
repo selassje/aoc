@@ -5,6 +5,7 @@ include("cmake/configure_input_paths.cmake")
 add_subdirectory(Catch2 SYSTEM)
 
 setup_std_lib(Catch2)
+setup_sanitizers(Catch2)
 
 if(ENABLE_FUZZ_TESTS)
 
@@ -42,6 +43,7 @@ function(configure_tests YEAR)
     add_executable(${TEST_NAME} ${SRC} main.cpp)
 
     setup_compiler_warnings(${TEST_NAME})
+    setup_sanitizers(${TEST_NAME})
     setup_std_lib(${TEST_NAME})
     setup_clang_tidy(${TEST_NAME})
     setup_msvc_analysis(${TEST_NAME})

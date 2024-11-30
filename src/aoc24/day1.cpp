@@ -1,4 +1,4 @@
-#include "aoc24/day1.hpp"
+module aoc24_day1;
 
 namespace aoc24::day1 {
 

@@ -1,7 +1,3 @@
-
-//#include "day1.hpp"
-// #include "inputs.hpp"
-
 #include <catch2/catch_test_macros.hpp>
 
 import aoc24_day1;

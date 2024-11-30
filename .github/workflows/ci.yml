@@ -89,8 +89,6 @@ jobs:
               -DENABLE_TESTS=ON 
               -DENABLE_CLANG_TIDY=${{ matrix.cxx == 'clang++' && 'ON' || 'OFF' }} 
               -DENABLE_MSVC_ANALYSIS=${{ matrix.cxx == 'cl.exe' && 'ON' || 'OFF' }} 
-              -DENABLE_FUZZ_TESTS=OFF
-              -DENABLE_COVERAGE_REPORT=OFF
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests
@@ -144,10 +142,8 @@ jobs:
         run:  cmake -S . -B build -G Ninja 
               -DCMAKE_BUILD_TYPE=Debug 
               -DENABLE_TESTS=ON 
-              -DENABLE_CLANG_TIDY=OFF 
-              -DENABLE_MSVC_ANALYSIS=OFF 
-              -DENABLE_FUZZ_TESTS=OFF
               -DENABLE_COVERAGE_REPORT=ON
+              -DENABLE_SANITIZERS=ON
       - name: Build Tests
         run:  cmake --build build
       - name: Run Tests

@@ -42,9 +42,21 @@ endfunction()
 function(setup_sanitizers TARGET)
   if(ENABLE_SANITIZERS)
     if(MSVC)
+      target_compile_options(${TARGET} PRIVATE /fsanitize=address)
+    endif()
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
       target_compile_options(
-        ${TARGET}
-        PRIVATE /fsanitize=address)
+        ${TARGET} PRIVATE -fsanitize=address -fsanitize=undefined
+                          -fno-omit-frame-pointer -fno-optimize-sibling-calls)
+      target_link_options(${TARGET} PRIVATE -fsanitize=address
+                          -fsanitize=undefined)
+    endif()
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+      target_compile_options(
+        ${TARGET} PRIVATE -fsanitize=address -fsanitize=undefined
+                          -Wno-conversion)
+      target_link_options(${TARGET} PRIVATE -fsanitize=address
+                          -fsanitize=undefined)
     endif()
   endif()
 endfunction()

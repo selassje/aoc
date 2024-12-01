@@ -10,9 +10,8 @@
 #include <utility>
 #include <vector>
 
-
 using aoc24::day1::Input;
-using Pair = std::pair<std::uint32_t,std::uint32_t>;
+using Pair = std::pair<std::uint32_t, std::uint32_t>;
 
 namespace {
 
@@ -24,7 +23,7 @@ readInput(std::string_view path)
   std::string line{};
   while (std::getline(ifs, line)) {
     Pair pair{};
-    std::stringstream streamLine{line};
+    std::stringstream streamLine{ line };
     streamLine >> pair.first >> pair.second;
     input.push_back(pair);
   }
@@ -34,14 +33,16 @@ readInput(std::string_view path)
 }
 TEST_CASE("Aoc24 Day1 Example", "[Day1]")
 {
-  auto input  = readInput(inputs::day1::EXAMPLE);
-  const auto [part1,_] = aoc24::day1::solve(input);
+  auto input = readInput(inputs::day1::EXAMPLE);
+  const auto [part1, part2] = aoc24::day1::solve(input);
   REQUIRE(part1 == 11);
+  REQUIRE(part2 == 31);
 }
 
 TEST_CASE("Aoc24 Day1 Input", "[Day1]")
 {
-  auto input  = readInput(inputs::day1::INPUT);
-  const auto [part1,_] = aoc24::day1::solve(input);
+  auto input = readInput(inputs::day1::INPUT);
+  const auto [part1, part2] = aoc24::day1::solve(input);
   REQUIRE(part1 == 2176849);
+  REQUIRE(part2 == 23384288);
 }

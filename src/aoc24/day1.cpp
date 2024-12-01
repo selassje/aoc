@@ -24,9 +24,16 @@ solve(Input input)
   std::ranges::sort(rightList);
   auto distances =
     std::views::zip(leftList, rightList) | std::views::transform(getDistance);
-  const auto part1 = std::ranges::fold_left(distances,0, std::plus<>());
+  const auto part1 = std::ranges::fold_left(distances, 0, std::plus<>());
 
-  return { part1, part1 };
+  auto similarities =
+    leftList | std::views::transform([&rightList](const auto& value) {
+      return value *
+             static_cast<std::uint32_t>(std::ranges::count(rightList, value));
+    });
+
+  const auto part2 = std::ranges::fold_left(similarities, 0, std::plus<>());
+  return { part1, part2 };
 }
 
 }

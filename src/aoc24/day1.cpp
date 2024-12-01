@@ -35,7 +35,8 @@ solve(Input input)
              static_cast<std::uint32_t>(std::ranges::count(rightList, value));
     });
 
-  const auto part2 = std::ranges::fold_left(similarities, 0, std::plus<>()); //NOLINT
+  const auto part2 =
+    std::ranges::fold_left(similarities, 0, std::plus<>()); // NOLINT
   return { part1, part2 };
 }
 

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -31,7 +32,8 @@ readInput(std::string_view path)
 }
 
 }
-TEST_CASE("Aoc24 Day1 Example", "[Day1]")
+
+TEST_CASE("Aoc24 Day1 Example", "[AoC24_Day1]")
 {
   auto input = readInput(inputs::day1::EXAMPLE);
   const auto [part1, part2] = aoc24::day1::solve(input);
@@ -39,7 +41,7 @@ TEST_CASE("Aoc24 Day1 Example", "[Day1]")
   REQUIRE(part2 == 31);
 }
 
-TEST_CASE("Aoc24 Day1 Input", "[Day1]")
+TEST_CASE("Aoc24 Day1 Input", "[AoC24_Day1]")
 {
   auto input = readInput(inputs::day1::INPUT);
   const auto [part1, part2] = aoc24::day1::solve(input);

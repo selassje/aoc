@@ -12,10 +12,12 @@ Result
 solve(Input input)
 {
   auto getDistance = [](const auto& pair) {
-    if (pair.first >= pair.second) {
-      return pair.first - pair.second;
+    const auto first = std::get<0>(pair);
+    const auto second = std::get<1>(pair);
+    if (first >= second) {
+      return first - second;
     }
-    return pair.second - pair.first;
+    return second - first;
   };
 
   auto leftList = input | std::views::keys | std::ranges::to<std::vector>();
@@ -24,7 +26,8 @@ solve(Input input)
   std::ranges::sort(rightList);
   auto distances =
     std::views::zip(leftList, rightList) | std::views::transform(getDistance);
-  const auto part1 = std::ranges::fold_left(distances, 0, std::plus<>());
+  const auto part1 =
+    std::ranges::fold_left(distances, 0, std::plus<>()); // NOLINT
 
   auto similarities =
     leftList | std::views::transform([&rightList](const auto& value) {
@@ -32,7 +35,7 @@ solve(Input input)
              static_cast<std::uint32_t>(std::ranges::count(rightList, value));
     });
 
-  const auto part2 = std::ranges::fold_left(similarities, 0, std::plus<>());
+  const auto part2 = std::ranges::fold_left(similarities, 0, std::plus<>()); //NOLINT
   return { part1, part2 };
 }
 

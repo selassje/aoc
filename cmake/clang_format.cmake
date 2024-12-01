@@ -7,6 +7,8 @@ file(
   ${CMAKE_SOURCE_DIR}/include/aoc22/*.hpp
   ${CMAKE_SOURCE_DIR}/include/aoc23/*.hpp
   ${CMAKE_SOURCE_DIR}/include/aoc24/*.hpp
+  ${CMAKE_SOURCE_DIR}/tests/*.hpp
+  ${CMAKE_SOURCE_DIR}/tests/*.cpp
   ${CMAKE_SOURCE_DIR}/tests/aoc22/*.cpp
   ${CMAKE_SOURCE_DIR}/tests/aoc23/*.cpp
   ${CMAKE_SOURCE_DIR}/tests/aoc24/*.cpp)

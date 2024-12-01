@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AOC_TESTS_PARSING_HPP // NOLINT
+#define AOC_TESTS_PARSING_HPP
 
 #include <sstream>
 #include <tuple>
@@ -18,3 +19,4 @@ parseLine(const std::string& line)
 }
 
 };
+#endif

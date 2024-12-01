@@ -52,6 +52,7 @@ function(configure_tests YEAR)
 
     target_include_directories(
       ${TEST_NAME}
+      PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
       PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/aoc${YEAR}
       PRIVATE ${CMAKE_SOURCE_DIR}/include/aoc${YEAR})
 

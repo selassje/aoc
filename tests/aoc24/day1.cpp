@@ -1,11 +1,13 @@
 
 #include "day1.hpp"
 #include "inputs.hpp"
+#include "parsing.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+
+#include <cstddef>
 #include <cstdint>
 #include <fstream>
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -13,7 +15,6 @@
 
 using aoc24::day1::Input;
 using Pair = std::pair<std::uint32_t, std::uint32_t>;
-
 namespace {
 
 auto
@@ -23,10 +24,7 @@ readInput(std::string_view path)
   std::ifstream ifs{ path.data() };
   std::string line{};
   while (std::getline(ifs, line)) {
-    Pair pair{};
-    std::stringstream streamLine{ line };
-    streamLine >> pair.first >> pair.second;
-    input.push_back(pair);
+    input.emplace_back(inputs::parseLine<std::uint32_t, std::uint32_t>(line));
   }
   return input;
 }

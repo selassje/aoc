@@ -6,7 +6,7 @@
 #include <utility>
 namespace aoc24::day1 {
 
-using Input = std::span<std::pair<std::uint32_t, std::uint32_t>>;
+using Input = std::span<const std::pair<std::uint32_t, std::uint32_t>>;
 
 struct Result
 {

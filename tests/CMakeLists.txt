@@ -42,7 +42,7 @@ function(configure_tests YEAR)
   foreach(SRC IN LISTS SOURCE_FILES)
     get_filename_component(FILENAME ${SRC} NAME_WE)
     set(TEST_NAME aoc${YEAR}_${FILENAME})
-    add_executable(${TEST_NAME} ${SRC} main.cpp)
+    add_executable(${TEST_NAME})
 
     setup_compiler_warnings(${TEST_NAME})
     setup_sanitizers(${TEST_NAME})
@@ -54,6 +54,8 @@ function(configure_tests YEAR)
 
     target_sources(
       ${TEST_NAME}
+      PRIVATE main.cpp
+      PRIVATE ${SRC}
       PRIVATE FILE_SET
               cxx_modules
               TYPE

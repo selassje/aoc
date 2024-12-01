@@ -7,24 +7,23 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <fstream>
-#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
 
 using aoc24::day1::Input;
+using inputs::FileReader;
+using inputs::parseLine;
+
 using Pair = std::pair<std::uint32_t, std::uint32_t>;
 namespace {
-
 auto
 readInput(std::string_view path)
 {
   std::vector<Pair> input{};
-  std::ifstream ifs{ path.data() };
-  std::string line{};
-  while (std::getline(ifs, line)) {
-    input.emplace_back(inputs::parseLine<std::uint32_t, std::uint32_t>(line));
+  FileReader fileReader{path};
+  while(const auto& line = fileReader.readLine()) {
+    input.emplace_back(parseLine<std::uint32_t, std::uint32_t>(*line));
   }
   return input;
 }

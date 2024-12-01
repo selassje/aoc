@@ -13,13 +13,18 @@ namespace inputs {
 class FileReader
 {
 public:
-  explicit FileReader(std::string_view path) : m_ifs(path.data()) {}
-  [[nodiscard]] std::optional<std::string> readLine() {
-      if ( std::getline(m_ifs,m_line)) {
-        return m_line; 
-      }
-      return std::nullopt;
+  explicit FileReader(std::string_view path)
+    : m_ifs(path.data())
+  {
   }
+  [[nodiscard]] std::optional<std::string> readLine()
+  {
+    if (std::getline(m_ifs, m_line)) {
+      return m_line;
+    }
+    return std::nullopt;
+  }
+
 private:
   std::ifstream m_ifs;
   std::string m_line;

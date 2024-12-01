@@ -21,8 +21,8 @@ auto
 readInput(std::string_view path)
 {
   std::vector<Pair> input{};
-  FileReader fileReader{path};
-  while(const auto& line = fileReader.readLine()) {
+  FileReader fileReader{ path };
+  while (const auto& line = fileReader.readLine()) {
     input.emplace_back(parseLine<std::uint32_t, std::uint32_t>(*line));
   }
   return input;

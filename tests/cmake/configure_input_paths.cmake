@@ -1,5 +1,5 @@
 function(configure_test_inputs YEAR)
-  cmake_path(SET ROOT "${CMAKE_SOURCE_DIR}/tests/aoc${YEAR}/inputs")
+  cmake_path(SET ROOT "${CMAKE_SOURCE_DIR}/tests/inputs/aoc${YEAR}")
   foreach(i RANGE 1 25)
     file(GLOB INPUTS ${ROOT}/day${i}/*.txt)
     foreach(INPUT IN LISTS INPUTS)

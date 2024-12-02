@@ -7,6 +7,7 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <vector>
 
 namespace inputs {
 
@@ -39,6 +40,19 @@ parseLine(const std::string& line)
   [&]<std::size_t... Is>(std::index_sequence<Is...>) {
     ((isstream >> std::get<Is>(result)), ...);
   }(std::index_sequence_for<Args...>());
+  return result;
+}
+
+template<typename T>
+auto
+parseStringDynamic(const std::string& line)
+{
+  std::vector<T> result{};
+  T value{};
+  std::stringstream isstream{ line };
+  while( isstream >> value) {
+    result.push_back(value);
+  }
   return result;
 }
 

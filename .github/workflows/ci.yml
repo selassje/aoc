@@ -144,10 +144,8 @@ jobs:
         run:  cmake -S . -B build -G Ninja 
               -DCMAKE_BUILD_TYPE=Debug 
               -DENABLE_TESTS=ON 
-              -DENABLE_CLANG_TIDY=OFF 
-              -DENABLE_MSVC_ANALYSIS=OFF 
-              -DENABLE_FUZZ_TESTS=OFF
               -DENABLE_COVERAGE_REPORT=ON
+              -DENABLE_SANITIZERS=ON
       - name: Build Tests
         run:  cmake --build build
       - name: Run Tests

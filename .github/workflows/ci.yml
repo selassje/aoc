@@ -95,14 +95,6 @@ jobs:
         run:  cmake --build build --config Release
       - name: Run Tests
         run:  ctest --test-dir build --output-on-failure
-      - name: Generate Coverage Report
-        run:  cmake --build build --target generate-coverage-report
-        if:  ${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU}}
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        if:  ${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU}}
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Check Formating
         run:  cmake --build build --config Release --target clang-format-check
   debug_tests:

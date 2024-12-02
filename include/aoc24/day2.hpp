@@ -3,11 +3,12 @@
 #define AOC24_DAY2_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 
 namespace aoc24::day2 {
 
-using Input = std::vector<std::vector<std::size_t>>;
+using Input = std::vector<std::vector<std::uint32_t>>;
 
 struct Result
 {

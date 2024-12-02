@@ -34,6 +34,22 @@ isSafe(const List& list)
   }
   return false;
 }
+bool
+isSafeWithRemoval(const List& list)
+{
+  if (isSafe(list)) {
+    return true;
+  }
+
+  for (const auto [i, _] : std::views::enumerate(list)) {
+    auto cpList = list;
+    cpList.erase(cpList.begin() + i);
+    if (isSafe(cpList)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 }
 
@@ -43,7 +59,9 @@ solve(const Input& input) noexcept
 {
   const auto part1 =
     static_cast<std::size_t>(std::ranges::count_if(input, isSafe));
-  return { part1, part1 };
+  const auto part2 =
+    static_cast<std::size_t>(std::ranges::count_if(input, isSafeWithRemoval));
+  return { part1, part2 };
 }
 
 }

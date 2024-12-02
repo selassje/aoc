@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <functional>
+#include <iterator>
 #include <ranges>
 #include <vector>
 
@@ -14,7 +14,7 @@ using List = std::vector<std::uint32_t>;
 bool
 isSafe(const List& list)
 {
-  auto diffs = list | std::views::adjacent<2> |
+  auto diffs = std::views::zip(list, list | std::views::drop(1)) |
                std::views::transform([](const auto& pair) {
                  const auto first = std::get<0>(pair);
                  const auto second = std::get<1>(pair);
@@ -22,8 +22,7 @@ isSafe(const List& list)
                    return static_cast<std::int64_t>(first - second);
                  }
                  return -static_cast<std::int64_t>(second - first);
-               }) |
-               std::ranges::to<std::vector>();
+               });
   const auto isDecreasing =
     std::ranges::all_of(diffs, [](const auto& value) { return value > 0; });
   const auto isIncreasing =
@@ -34,6 +33,7 @@ isSafe(const List& list)
   }
   return false;
 }
+
 bool
 isSafeWithRemoval(const List& list)
 {
@@ -41,9 +41,11 @@ isSafeWithRemoval(const List& list)
     return true;
   }
 
-  for (const auto [i, _] : std::views::enumerate(list)) {
+  for (std::size_t i = 0; i < list.size(); ++i) {
     auto cpList = list;
-    cpList.erase(cpList.begin() + i);
+    auto it = cpList.begin();
+    std::advance(it, i);
+    cpList.erase(it);
     if (isSafe(cpList)) {
       return true;
     }

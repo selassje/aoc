@@ -50,7 +50,7 @@ parseStringDynamic(const std::string& line)
   std::vector<T> result{};
   T value{};
   std::stringstream isstream{ line };
-  while( isstream >> value) {
+  while (isstream >> value) {
     result.push_back(value);
   }
   return result;

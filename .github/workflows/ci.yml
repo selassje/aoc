@@ -108,8 +108,7 @@ jobs:
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
-         ssh-private-key: |
-          ${{ secrets.AOC_INPUTS }}
+         ssh-private-key: ${{ secrets.AOC_INPUTS }}
       - name: Checkout
         uses: actions/checkout@v3
         with: 

@@ -25,6 +25,13 @@ public:
     }
     return std::nullopt;
   }
+  
+  [[nodiscard]] std::string read()
+  {
+    std::stringstream sstream{};
+    sstream << m_ifs.rdbuf();
+    return sstream.str();
+  }
 
 private:
   std::ifstream m_ifs;

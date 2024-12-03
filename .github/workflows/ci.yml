@@ -37,7 +37,6 @@ jobs:
         shell: bash
         run: |
           echo "GIT_SSH_COMMAND=ssh -F /c/Users/runneradmin/.ssh/config -o \"UserKnownHostsFile /c/Users/runneradmin/.ssh/known_hosts\"" >> "${GITHUB_ENV:?}"
-          ssh -vT -F /c/Users/MY_USERNAME/.ssh/config -o \"UserKnownHostsFile /c/Users/MY_USERNAME/.ssh/known_hosts\" git@github.com
         if: ${{ matrix.os == 'windows-latest'}}
       - name: Checkout
         uses: actions/checkout@v3

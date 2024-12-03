@@ -25,7 +25,7 @@ public:
     }
     return std::nullopt;
   }
-  
+
   [[nodiscard]] std::string read()
   {
     std::stringstream sstream{};

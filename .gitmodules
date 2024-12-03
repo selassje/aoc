@@ -4,6 +4,3 @@
 [submodule "tests/fuzztest"]
 	path = tests/fuzztest
 	url = https://github.com/google/fuzztest.git
-[submodule "tests/inputs"]
-	path = tests/inputs
-	url = https://github.com/selassje/aoc_inputs.git

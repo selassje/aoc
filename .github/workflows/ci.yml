@@ -30,7 +30,7 @@ jobs:
       CC: ${{ matrix.cxx == 'clang++' && 'clang' || matrix.cxx == 'g++' && 'gcc' || 'cl.exe' }}
     steps:
       - name: Setup SSH Agent
-        uses: webfactory/ssh-agent@v0.6.0
+        uses: webfactory/ssh-agent@v0.9s.0
         with:
          ssh-private-key: ${{ secrets.AOC_INPUTS }}
       - name: Set GIT_SSH_COMMAND on Windows

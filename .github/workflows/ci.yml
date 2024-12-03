@@ -38,6 +38,11 @@ jobs:
         run: |
           echo "GIT_SSH_COMMAND=ssh -F /c/Users/runneradmin/.ssh/config -o \"UserKnownHostsFile /c/Users/runneradmin/.ssh/known_hosts\"" >> "${GITHUB_ENV:?}"
         if: ${{ matrix.os == 'windows-latest'}}
+      - name: Add GitHub to the SSH known hosts file
+        run: |
+          curl -L -o jq.exe https://github.com/jqlang/jq/releases/latest/download/jq-win64.exe
+          curl --silent https://api.github.com/meta | jq --raw-output "\"github.com \"+.ssh_keys[]" >> %USERPROFILE%/.ssh/known_hosts
+        if: ${{ matrix.os == 'windows-latest'}}
       - name: Checkout
         uses: actions/checkout@v3
         with: 

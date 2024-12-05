@@ -25,7 +25,7 @@ struct Result
 };
 
 [[nodiscard]] Result
-solve(const Input&) noexcept;
+solve(const Input& input);
 
 }
 

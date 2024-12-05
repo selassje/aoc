@@ -1,15 +1,12 @@
 #include "aoc24/day4.hpp"
+
 #include <algorithm>
 #include <array>
-#include <bits/ranges_algo.h>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
 #include <iterator>
-#include <optional>
-#include <queue>
+#include <numeric>
 #include <ranges>
-#include <utility>
 #include <vector>
 
 namespace {
@@ -48,7 +45,8 @@ std::size_t
 countXMASMatrix(const LettersMatrix& matrix)
 {
   const auto rowsCounted = matrix | std::views::transform(countXMAS);
-  return std::ranges::fold_left(rowsCounted, 0, std::plus());
+  return std::accumulate(
+    std::begin(rowsCounted), std::end(rowsCounted), std::size_t{});
 }
 
 auto
@@ -116,20 +114,9 @@ getDiagonals(const LettersMatrix& matrix)
       ++x;
       ++y;
     }
-  }
-  return diagonals;
-}
-auto
-getDiagonals2(const LettersMatrix& matrix)
-{
-  LettersMatrix diagonals{};
-  const auto h = matrix.size();
-  const auto w = matrix[0].size();
-
-  for (std::size_t i = 0; i < w; ++i) {
-    Letters diagonal{};
-    std::size_t x = w - 1 - i;
-    std::size_t y = h - 1;
+    diagonal.clear();
+    x = w - 1 - i;
+    y = h - 1;
     while (true) {
       diagonal.push_back(matrix[y][x]);
       if (y == 0 || x == w - 1) {
@@ -189,20 +176,16 @@ solvePart2(const aoc24::day4::Input& input)
 namespace aoc24::day4 {
 
 Result
-solve(const Input& input) noexcept
+solve(const Input& input)
 {
   std::size_t part1 = countXMASMatrix(input);
   part1 += countXMASMatrix(getRowsReversed(input));
   part1 += countXMASMatrix(getColumns(input));
   part1 += countXMASMatrix(getColumns<true>(input));
-  const auto diagonals1 = getDiagonals(input);
-  const auto diagonals2 = getDiagonals2(input);
-  part1 += countXMASMatrix(diagonals1);
-  part1 += countXMASMatrix(diagonals2);
-  part1 += countXMASMatrix(getRowsReversed(diagonals1));
-  part1 += countXMASMatrix(getRowsReversed(diagonals2));
+  const auto diagonals = getDiagonals(input);
+  part1 += countXMASMatrix(diagonals);
+  part1 += countXMASMatrix(getRowsReversed(diagonals));
   const std::size_t part2 = solvePart2(input);
-
   return { part1, part2 };
 }
 

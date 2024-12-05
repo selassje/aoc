@@ -10,38 +10,6 @@
 #include <string_view>
 #include <utility>
 #include <vector>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 namespace   {
   auto readInput(std::string_view path) {
       aoc24::day4::Input input{};
@@ -72,13 +40,15 @@ namespace   {
 TEST_CASE("Aoc24 Day4 Example", "[AoC24_Day4]")
 {
   const auto input = readInput(inputs::day4::EXAMPLE);
-  const auto [part1, _] = aoc24::day4::solve(input);
+  const auto [part1, part2] = aoc24::day4::solve(input);
   REQUIRE(part1 == 18);
+  REQUIRE(part2 == 9);
 }
 
 TEST_CASE("Aoc24 Day4 Input", "[AoC24_Day4]")
 {
   const auto input = readInput(inputs::day4::INPUT);
-  const auto [part1, _] = aoc24::day4::solve(input);
+  const auto [part1, part2] = aoc24::day4::solve(input);
   REQUIRE(part1 == 2401);
+  REQUIRE(part2 == 1822);
 }

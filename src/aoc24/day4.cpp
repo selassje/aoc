@@ -105,8 +105,8 @@ getDiagonals(const LettersMatrix& matrix)
       --y;
     }
     diagonal.clear();
-    x = w - 1 -i;
-    y =  0;
+    x = w - 1 - i;
+    y = 0;
     while (i != w - 1) {
       diagonal.push_back(matrix[y][x]);
       if (y == h - 1 || x == w - 1) {
@@ -142,7 +142,7 @@ getDiagonals2(const LettersMatrix& matrix)
     x = i;
     y = 0;
     diagonal.clear();
-    while ( i != w  - 1) {
+    while (i != w - 1) {
       diagonal.push_back(matrix[y][x]);
       if (y == h - 1 || x == 0) {
         diagonals.push_back(diagonal);
@@ -154,6 +154,37 @@ getDiagonals2(const LettersMatrix& matrix)
   }
   return diagonals;
 }
+
+auto
+solvePart2(const aoc24::day4::Input& input)
+{
+  std::size_t result = 0;
+  const auto h = input.size();
+  const auto w = input[0].size();
+
+  auto get = [&input](std::size_t x, std::size_t y) { return input[y][x]; };
+
+  for (std::size_t y = 1; y < h - 1; ++y) {
+    for (std::size_t x = 1; x < w - 1; ++x) {
+
+      if (get(x, y) == Letter::A) {
+
+        const bool isMas1 =
+          (get(x - 1, y - 1) == Letter::M && get(x + 1, y + 1) == Letter::S) ||
+          (get(x - 1, y - 1) == Letter::S && get(x + 1, y + 1) == Letter::M);
+        const bool isMas2 =
+          (get(x + 1, y - 1) == Letter::M && get(x - 1, y + 1) == Letter::S) ||
+          (get(x + 1, y - 1) == Letter::S && get(x - 1, y + 1) == Letter::M);
+
+        if (isMas1 && isMas2) {
+          ++result;
+        }
+      }
+    }
+  }
+  return result;
+}
+
 }
 namespace aoc24::day4 {
 
@@ -170,8 +201,9 @@ solve(const Input& input) noexcept
   part1 += countXMASMatrix(diagonals2);
   part1 += countXMASMatrix(getRowsReversed(diagonals1));
   part1 += countXMASMatrix(getRowsReversed(diagonals2));
+  const std::size_t part2 = solvePart2(input);
 
-  return { part1, part1 };
+  return { part1, part2 };
 }
 
 }

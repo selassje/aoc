@@ -89,54 +89,47 @@ getDiagonals(const LettersMatrix& matrix)
   const auto h = matrix.size();
   const auto w = matrix[0].size();
 
+  struct Quarter
+  {
+    std::size_t startX;
+    std::size_t endX;
+    std::size_t startY;
+    std::size_t endY;
+    bool incX;
+    bool incY;
+  };
+
   for (std::size_t i = 0; i < w; ++i) {
-    Letters diagonal{};
-    std::size_t x = i;
-    std::size_t y = h - 1;
-    while (true) {
-      diagonal.push_back(matrix[y][x]);
-      if (y == 0 || x == 0) {
-        diagonals.push_back(diagonal);
-        break;
+    Quarter quarters[] = { // NOLINT
+                           { i, 0, h - 1, 0, false, false },
+                           { w - i - 1, w - 1, 0, h - 1, true, true },
+                           { w - i - 1, w - 1, h - 1, 0, true, false },
+                           { i, 0, 0, h - 1, false, true }
+
+    };
+
+    for (std::size_t j = 0; j < 4; ++j) {
+      const auto& quarter = quarters[j];
+      std::size_t x = quarter.startX;
+      std::size_t y = quarter.startY;
+      Letters diagonal{};
+      while ((i != w - 1) || j % 2 == 1) {
+        diagonal.push_back(matrix[y][x]);
+        if (y == quarter.endY || x == quarter.endX) {
+          diagonals.push_back(diagonal);
+          break;
+        }
+        if (quarter.incX) {
+          ++x;
+        } else {
+          --x;
+        }
+        if (quarter.incY) {
+          ++y;
+        } else {
+          --y;
+        }
       }
-      --x;
-      --y;
-    }
-    diagonal.clear();
-    x = w - 1 - i;
-    y = 0;
-    while (i != w - 1) {
-      diagonal.push_back(matrix[y][x]);
-      if (y == h - 1 || x == w - 1) {
-        diagonals.push_back(diagonal);
-        break;
-      }
-      ++x;
-      ++y;
-    }
-    diagonal.clear();
-    x = w - 1 - i;
-    y = h - 1;
-    while (true) {
-      diagonal.push_back(matrix[y][x]);
-      if (y == 0 || x == w - 1) {
-        diagonals.push_back(diagonal);
-        break;
-      }
-      ++x;
-      --y;
-    }
-    x = i;
-    y = 0;
-    diagonal.clear();
-    while (i != w - 1) {
-      diagonal.push_back(matrix[y][x]);
-      if (y == h - 1 || x == 0) {
-        diagonals.push_back(diagonal);
-        break;
-      }
-      --x;
-      ++y;
     }
   }
   return diagonals;

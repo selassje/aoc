@@ -11,6 +11,37 @@
 #include <utility>
 #include <vector>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 namespace   {
   auto readInput(std::string_view path) {
       aoc24::day4::Input input{};
@@ -30,6 +61,7 @@ namespace   {
                 default:
                   std::unreachable();
               }
+
           }) | std::ranges::to<std::vector>();
           input.push_back(letters);       
       }
@@ -48,5 +80,5 @@ TEST_CASE("Aoc24 Day4 Input", "[AoC24_Day4]")
 {
   const auto input = readInput(inputs::day4::INPUT);
   const auto [part1, _] = aoc24::day4::solve(input);
-  REQUIRE(part1 == 18);
+  REQUIRE(part1 == 2401);
 }

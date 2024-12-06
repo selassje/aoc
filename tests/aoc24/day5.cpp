@@ -38,7 +38,7 @@ readInput(std::string_view path)
 }
 }
 
-TEST_CASE("Aoc24 Day5 Example", "[AoC24_Day4]")
+TEST_CASE("Aoc24 Day5 Example", "[AoC24_Day5]")
 {
   const auto input = readInput(inputs::day5::EXAMPLE);
   const auto [part1, part2] = aoc24::day5::solve(input);
@@ -46,7 +46,7 @@ TEST_CASE("Aoc24 Day5 Example", "[AoC24_Day4]")
   REQUIRE(part2 == 123);
 }
 
-TEST_CASE("Aoc24 Day5 Input", "[AoC24_Day]")
+TEST_CASE("Aoc24 Day5 Input", "[AoC24_Day5]")
 {
   const auto input = readInput(inputs::day5::INPUT);
   const auto [part1, part2] = aoc24::day5::solve(input);

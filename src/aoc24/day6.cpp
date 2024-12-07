@@ -100,7 +100,8 @@ countCycles(const Position& start, const Input& input)
     for (std::size_t x = 0; x < width; ++x) {
       {
         if (input[y][x] == Tile::Empty) {
-          std::optional<GuardState> guard = GuardState{ { start }, Direction::N };
+          std::optional<GuardState> guard =
+            GuardState{ { start }, Direction::N };
           std::set<GuardState> visitedPositions{ *guard };
           changedInput[y][x] = Tile::Obstacle;
           while ((guard = moveGuard(*guard, changedInput))) {

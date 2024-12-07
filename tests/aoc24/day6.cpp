@@ -23,20 +23,20 @@ readInput(std::string_view path)
 {
   Input input{};
   inputs::FileReader fileReader{ path };
-  while (const auto &line = fileReader.readLine()) {
-      const  auto row = *line | std::views::transform( [](char c) {
-        switch (c) {
-          case '.':
-            return Tile::Empty;
-          case '#':
-            return Tile::Obstacle;
-          case '^':
-            return Tile::Guard;
-          default:
-            std::unreachable();
-        }
-      } ) | std::ranges::to<std::vector>();
-      input.push_back(row);
+  while (const auto& line = fileReader.readLine()) {
+    const auto row = *line | std::views::transform([](char c) {
+      switch (c) {
+        case '.':
+          return Tile::Empty;
+        case '#':
+          return Tile::Obstacle;
+        case '^':
+          return Tile::Guard;
+        default:
+          std::unreachable();
+      }
+    }) | std::ranges::to<std::vector>();
+    input.push_back(row);
   }
   return input;
 }

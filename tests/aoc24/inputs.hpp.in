@@ -28,4 +28,8 @@ namespace inputs::day6 {
 constexpr std::string_view INPUT = R"(@INPUTS_DAY6_INPUT@)";
 constexpr std::string_view EXAMPLE = R"(@INPUTS_DAY6_EXAMPLE@)";
 }
+namespace inputs::day7 {
+constexpr std::string_view INPUT = R"(@INPUTS_DAY7_INPUT@)";
+constexpr std::string_view EXAMPLE = R"(@INPUTS_DAY7_EXAMPLE@)";
+}
 #endif

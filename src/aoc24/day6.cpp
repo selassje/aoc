@@ -1,6 +1,5 @@
 #include "aoc24/day6.hpp"
 #include <compare>
-#include <cstddef>
 #include <cstdint>
 #include <optional>
 #include <set>

@@ -1,4 +1,3 @@
-#include "aoc23/day9.hpp"
 #include "aoc24/day6.hpp"
 #include <compare>
 #include <cstddef>
@@ -39,7 +38,7 @@ moveGuard(const GuardState& guard, const Input& input)
 {
   const auto height = input.size();
   const auto width = input[0].size();
-  const auto& [x, y] = guard.position;
+  const auto [x, y] = guard.position;
 
   auto nextPosition = [&]() -> std::optional<Position> {
     switch (guard.direction) {

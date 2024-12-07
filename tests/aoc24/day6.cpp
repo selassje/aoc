@@ -7,7 +7,6 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cstddef>
 #include <ranges>
 #include <string_view>
 #include <utility>
@@ -50,6 +49,8 @@ TEST_CASE("Aoc24 Day6 Example", "[AoC24_Day6]")
   REQUIRE(part2 == 6);
 }
 
+#ifndef DEBUG
+
 TEST_CASE("Aoc24 Day6 Input", "[AoC24_Day6]")
 {
   const auto input = readInput(inputs::day6::INPUT);
@@ -57,3 +58,5 @@ TEST_CASE("Aoc24 Day6 Input", "[AoC24_Day6]")
   REQUIRE(part1 == 4752);
   REQUIRE(part2 == 1719);
 }
+
+#endif

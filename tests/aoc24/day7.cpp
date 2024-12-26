@@ -22,10 +22,10 @@ readInput(std::string_view path)
   inputs::FileReader fileReader{ path };
   while (auto line = fileReader.readLine()) {
     std::replace(std::begin(*line), std::end(*line), ':', ' ');
-    auto record =  inputs::parseStringDynamic<std::size_t>(*line);
+    auto record = inputs::parseStringDynamic<std::size_t>(*line);
     const auto testValue = record[0];
-    record.erase(record.begin()); 
-    input.emplace_back(testValue,record);
+    record.erase(record.begin());
+    input.emplace_back(testValue, record);
   }
   return input;
 }

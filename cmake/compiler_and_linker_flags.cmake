@@ -30,10 +30,9 @@ function(setup_compiler_warnings TARGET)
               -Wdouble-promotion
               -Wformat=2
               -Wimplicit-fallthrough)
-    
+
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-      target_compile_options(
-        ${TARGET} PRIVATE -Wno-unused-function)
+      target_compile_options(${TARGET} PRIVATE -Wno-unused-function)
     endif()
 
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT ${ENABLE_CLANG_TIDY})

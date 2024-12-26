@@ -1,11 +1,8 @@
 #include "aoc24/day7.hpp"
-#include <algorithm>
-#include <cmath>
+#include <array>
 #include <cstddef>
 #include <cstdlib>
 #include <functional>
-#include <limits>
-#include <print>
 #include <string>
 #include <vector>
 

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <functional>
 #include <limits>
 #include <print>
 #include <string>
@@ -30,32 +31,24 @@ isEquationPossible(const Record& record)
   const std::size_t combinationsCount = std::size_t{ 1 }
                                         << operatorsCount * (N / 2);
 
+  using Operation = std::function<std::size_t(std::size_t, std::size_t)>;
+  static std::array<Operation, 3> operations = { std::plus<std::size_t>{},
+                                                 std::multiplies<std::size_t>{},
+                                                 concatenate };
+
   for (std::size_t combination = 0; combination < combinationsCount;
        ++combination) {
     std::size_t result = 0;
     for (std::size_t i = 0; i < operatorsCount; ++i) {
       const auto opType =
         (combination & (std::size_t{ N - 1 } << (N / 2) * i)) >> (N / 2) * i;
+      if (opType == 3) {
+        break;
+      }
       if (i == 0) {
-        if (opType == 0) {
-          result = record.operands[0] * record.operands[1];
-        } else if (opType == 1) {
-          result = record.operands[0] + record.operands[1];
-        } else if (opType == 2) {
-          result = concatenate(record.operands[0], record.operands[1]);
-        } else {
-          break;
-        }
+        result = operations[opType](record.operands[0], record.operands[1]);
       } else {
-        if (opType == 0) {
-          result = result * record.operands[i + 1];
-        } else if (opType == 1) {
-          result = result + record.operands[i + 1];
-        } else if (opType == 2) {
-          result = concatenate(result, record.operands[i + 1]);
-        } else {
-          break;
-        }
+        result = operations[opType](result, record.operands[i + 1]);
       }
     }
     if (result == record.testValue) {

@@ -38,22 +38,19 @@ isEquationPossible(const Record& record)
 
   for (std::size_t combination = 0; combination < combinationsCount;
        ++combination) {
-    std::size_t result = 0;
+    std::size_t result = record.operands[0];
     for (std::size_t i = 0; i < operatorsCount; ++i) {
       const auto opType =
         (combination & (std::size_t{ N - 1 } << (N / 2) * i)) >> (N / 2) * i;
       if (opType == 3) {
-        break;
+        goto endComb;
       }
-      if (i == 0) {
-        result = operations[opType](record.operands[0], record.operands[1]);
-      } else {
-        result = operations[opType](result, record.operands[i + 1]);
-      }
+      result = operations[opType](result, record.operands[i + 1]);
     }
     if (result == record.testValue) {
       return true;
     }
+    endComb:
   }
   return false;
 }

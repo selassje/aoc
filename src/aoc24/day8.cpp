@@ -37,7 +37,10 @@ auto
 getAntiNodes(Point p1, Point p2, Size size)
 {
   std::vector<Point> antinodes{};
-  const Shift shift = { p2.x - p1.x, p2.y - p1.y };
+  const std::int64_t x = p2.x >= p1.x ? p2.x - p1.x : - static_cast<std::int64_t>(p1.x -p2.x);
+  const std::int64_t y = p2.y >= p1.y ? p2.y - p1.y : - static_cast<std::int64_t>(p1.y -p2.y);
+
+  const Shift shift = { x,y};
 
   auto shiftPoint = [&size, &shift](Point p, bool add) -> std::optional<Point> {
     const Shift newShift = add ? shift : Shift{ -shift.x, -shift.y };
@@ -81,16 +84,17 @@ solve(const Input& input)
       }
     }
   }
-  std::size_t part1 = 0;
+  std::set<Point> antinodes{};
   for (const auto& antenna : antennas) {
     for (const auto p1 : antenna.second) {
       for (const auto p2 : antenna.second) {
         if (p1 != p2) {
-          part1 += getAntiNodes(p1, p2, size).size();
+           antinodes.insert_range(getAntiNodes(p1, p2, size));
         }
       }
     }
   }
+  const std::size_t part1 = antinodes.size();
   return { part1, part1 };
 }
 

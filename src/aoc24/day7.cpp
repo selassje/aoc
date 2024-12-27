@@ -47,7 +47,8 @@ isEquationPossible(const Record& record)
     if (result == record.testValue) {
       return true;
     }
-  endComb:
+  endComb: {
+  }
   }
   return false;
 }

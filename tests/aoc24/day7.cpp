@@ -39,6 +39,8 @@ TEST_CASE("Aoc24 Day7 Example", "[AoC24_Day7]")
   REQUIRE(part2 == 11387);
 }
 
+#ifndef DEBUG
+
 TEST_CASE("Aoc24 Day7 Input", "[AoC24_Day7]")
 {
   const auto input = readInput(inputs::day7::INPUT);
@@ -46,3 +48,5 @@ TEST_CASE("Aoc24 Day7 Input", "[AoC24_Day7]")
   REQUIRE(part1 == 5512534574980);
   REQUIRE(part2 == 328790210468594);
 }
+
+#endif

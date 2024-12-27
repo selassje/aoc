@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <numeric>
 #include <optional>
 #include <set>
 #include <utility>
@@ -77,20 +78,33 @@ getAntiNodes2(Point p1, Point p2, Size size)
     p2.x >= p1.x ? p2.x - p1.x : -static_cast<std::int64_t>(p1.x - p2.x);
   const std::int64_t y =
     p2.y >= p1.y ? p2.y - p1.y : -static_cast<std::int64_t>(p1.y - p2.y);
-  const std::int64_t a = y / x;
-  const std::int64_t b = p1.y - (a * p1.x);
+  const auto gcd = std::gcd(std::abs(x),std::abs(y));
+  const auto a = static_cast<double>(y) / static_cast<double>(x);
+  const auto b = static_cast<double>(p1.y) - (a *  static_cast<double>(p1.x));
+
+  const auto gcdx = x / gcd;
+  const auto gcdy = y / gcd;
+
 
   const auto width = static_cast<std::int64_t>(size.width);
   const auto height = static_cast<std::int64_t>(size.height);
 
-  auto line = [&](std::int64_t x) { return (a * x) + b; };
+  std::int64_t x2 = p1.x;
+  std::int64_t y2 = p1.y;
 
-  for (std::int64_t x2 = 0; x2 < width; ++x2) {
-    const auto y2 = line(x2);
-    if (y2 >= 0 && y2 < height) {
-      antinodes.push_back(
-        { static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) });
-    }
+
+  for (;x2 < width && x2 >=0 && y2 < height && y2 >=0; x2 += gcdx,y2+=gcdy) {
+    const auto p = Point{ static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) };
+    antinodes.push_back(p);
+  }
+  
+  x2 = p1.x;
+  y2 = p1.y;
+
+
+  for (;x2 < width && x2 >=0 && y2 < height && y2 >=0; x2 -= gcdx,y2-=gcdy) {
+    const auto p = Point{ static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) };
+    antinodes.push_back(p);
   }
   return antinodes;
 }

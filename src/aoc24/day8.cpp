@@ -37,10 +37,12 @@ auto
 getAntiNodes(Point p1, Point p2, Size size)
 {
   std::vector<Point> antinodes{};
-  const std::int64_t x = p2.x >= p1.x ? p2.x - p1.x : - static_cast<std::int64_t>(p1.x -p2.x);
-  const std::int64_t y = p2.y >= p1.y ? p2.y - p1.y : - static_cast<std::int64_t>(p1.y -p2.y);
+  const std::int64_t x =
+    p2.x >= p1.x ? p2.x - p1.x : -static_cast<std::int64_t>(p1.x - p2.x);
+  const std::int64_t y =
+    p2.y >= p1.y ? p2.y - p1.y : -static_cast<std::int64_t>(p1.y - p2.y);
 
-  const Shift shift = { x,y};
+  const Shift shift = { x, y };
 
   auto shiftPoint = [&size, &shift](Point p, bool add) -> std::optional<Point> {
     const Shift newShift = add ? shift : Shift{ -shift.x, -shift.y };
@@ -63,7 +65,33 @@ getAntiNodes(Point p1, Point p2, Size size)
   if (antinode2) {
     antinodes.push_back(*antinode2);
   }
+  return antinodes;
+}
 
+auto
+getAntiNodes2(Point p1, Point p2, Size size)
+{
+  std::vector<Point> antinodes{};
+
+  const std::int64_t x =
+    p2.x >= p1.x ? p2.x - p1.x : -static_cast<std::int64_t>(p1.x - p2.x);
+  const std::int64_t y =
+    p2.y >= p1.y ? p2.y - p1.y : -static_cast<std::int64_t>(p1.y - p2.y);
+  const std::int64_t a = y / x;
+  const std::int64_t b = p1.y - (a * p1.x);
+
+  const auto width = static_cast<std::int64_t>(size.width);
+  const auto height = static_cast<std::int64_t>(size.height);
+
+  auto line = [&](std::int64_t x) { return (a * x) + b; };
+
+  for (std::int64_t x2 = 0; x2 < width; ++x2) {
+    const auto y2 = line(x2);
+    if (y2 >= 0 && y2 < height) {
+      antinodes.push_back(
+        { static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) });
+    }
+  }
   return antinodes;
 }
 
@@ -85,17 +113,20 @@ solve(const Input& input)
     }
   }
   std::set<Point> antinodes{};
+  std::set<Point> antinodes2{};
   for (const auto& antenna : antennas) {
     for (const auto p1 : antenna.second) {
       for (const auto p2 : antenna.second) {
         if (p1 != p2) {
-           antinodes.insert_range(getAntiNodes(p1, p2, size));
+          antinodes.insert_range(getAntiNodes(p1, p2, size));
+          antinodes2.insert_range(getAntiNodes2(p1, p2, size));
         }
       }
     }
   }
   const std::size_t part1 = antinodes.size();
-  return { part1, part1 };
+  const std::size_t part2 = antinodes2.size();
+  return { part1, part2 };
 }
 
 }

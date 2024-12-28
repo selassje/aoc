@@ -38,16 +38,59 @@ getDiskMap(Input input)
   return map;
 }
 
+auto
+calculateCheckSum(const DiskMap& diskMap)
+{
+  std::size_t checkSum = 0;
+  for (std::size_t i = 0; i < diskMap.size(); ++i) {
+    const auto& diskElement = diskMap[i];
+    if (diskElement.index() == 0) {
+      const auto file = std::get<File>(diskElement);
+      checkSum += i * file.id;
+    }
+  }
+  return checkSum;
+}
+
 }
 
 Result
 solve(Input input)
 {
-  auto diskMap =  getDiskMap(input);
+  auto diskMap = getDiskMap(input);
 
-  const std::size_t part1 = input.size();
-  const std::size_t part2 = input.size();
-  return { part1, part2 };
+  std::size_t nextEmptyIndex = 0;
+  std::size_t nextFileIndex = input.size() - 1;
+
+  while (nextEmptyIndex != nextFileIndex) {
+    if ( diskMap[nextEmptyIndex].index() == 0){
+      ++nextEmptyIndex;
+      continue;
+    }
+    if ( diskMap[nextFileIndex].index() == 1){
+      --nextFileIndex;
+      continue;
+    }
+    auto &nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
+    auto &nextFile = std::get<File>(diskMap[nextFileIndex]);
+
+    const auto blocksToTransfer = std::min(nextEmpty.size, nextFile.size);
+    if(nextEmpty.size == blocksToTransfer) {
+//      diskMap[nextEmptyIndex] = File
+
+    } else {
+      nextEmpty.size -= blocksToTransfer;
+    }
+
+    nextFile.size -= blocksToTransfer;
+    if(nextFile.size == 0 ) {
+      diskMap[nextFileIndex] = Empty{0};
+    }
+
+
+  }
+  const auto part1 = calculateCheckSum(diskMap);
+  return { part1, part1 };
 }
 
 }

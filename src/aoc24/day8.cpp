@@ -31,12 +31,6 @@ struct Size
 
 using Points = std::set<Point>;
 
-struct Shift
-{
-  std::int64_t x;
-  std::int64_t y;
-};
-
 auto
 getDiff(Point p1, Point p2)
 {

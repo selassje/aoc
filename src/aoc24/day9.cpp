@@ -1,7 +1,11 @@
 #include "aoc24/day9.hpp"
 #include <cstddef>
 #include <iterator>
+#include <optional>
+#include <print>
 #include <ranges>
+#include <set>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -62,7 +66,30 @@ calculateCheckSum(const DiskMap& diskMap)
   return checkSum;
 }
 
-auto defragment1(Input input) {
+/*
+void
+printDiskMap(const DiskMap& diskMap)
+{
+  for (const auto& diskElement : diskMap) {
+    if (diskElement.index() == 0) {
+      const auto file = std::get<File>(diskElement);
+      for (std::size_t i = 0; i < file.size; ++i) {
+        std::print("{}",file.id);
+      }
+    } else {
+      const auto size = std::get<Empty>(diskElement).size;
+      for (std::size_t i = 0; i < size; ++i) {
+        std::print(".");
+      }
+    }
+  }
+  std::println("");
+}
+
+*/
+auto
+defragment1(Input input)
+{
 
   auto diskMap = getDiskMap(input);
   std::size_t nextEmptyIndex = 0;
@@ -101,35 +128,79 @@ auto defragment1(Input input) {
 
   return filtered;
 }
-auto defragment2(Input input) {
 
-  auto diskMap = getDiskMap(input);
-  std::size_t nextEmptyIndex = 0;
-  std::size_t nextFileIndex = diskMap.size() - 1;
-
-  while (nextEmptyIndex != nextFileIndex) {
-    if (diskMap[nextEmptyIndex].index() == 0 ||
-        std::get<Empty>(diskMap[nextEmptyIndex]).size == 0) {
-      ++nextEmptyIndex;
-      continue;
+std::optional<std::size_t>
+findNextEmpty(const DiskMap& diskMap, std::size_t startIndex)
+{
+  for (std::size_t i = startIndex; i < diskMap.size(); ++i) {
+    const auto& diskElem = diskMap[i];
+    if (diskElem.index() == 1 && std::get<Empty>(diskElem).size > 0) {
+      return i;
     }
-    if (diskMap[nextFileIndex].index() == 1 ||
-        std::get<File>(diskMap[nextFileIndex]).size == 0) {
-      --nextFileIndex;
-      continue;
-    }
-    auto& nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
-    auto& nextFile = std::get<File>(diskMap[nextFileIndex]);
-    const auto blocksToTransfer = std::min(nextEmpty.size, nextFile.size);
-    nextEmpty.size -= blocksToTransfer;
-    nextFile.size -= blocksToTransfer;
-    auto it = diskMap.begin();
-    std::advance(it, nextEmptyIndex);
-    diskMap.insert(it, File{ nextFile.id, blocksToTransfer });
-    ++nextEmptyIndex;
-    ++nextFileIndex;
   }
+  return std::nullopt;
+}
 
+std::optional<std::size_t>
+findNextFile(const DiskMap& diskMap, std::size_t startIndex)
+{
+  for (std::size_t i = startIndex; i >= 0; --i) {
+    const auto& diskElem = diskMap[i];
+    if (diskElem.index() == 0 && std::get<File>(diskElem).size > 0) {
+      return i;
+    }
+    if (i == 0) {
+      return std::nullopt;
+    }
+  }
+  return std::nullopt;
+}
+
+bool
+tryMovingWholeFile(DiskMap& diskMap)
+{
+ // printDiskMap(diskMap);
+
+  std::optional<std::size_t> nextFileIndex = diskMap.size() - 1;
+  std::set<std::size_t> alreadyMoved{};
+  while ((nextFileIndex = findNextFile(diskMap, *nextFileIndex))) {
+    std::optional<std::size_t> nextEmptyIndex = 0;
+    while ((nextEmptyIndex = findNextEmpty(diskMap, *nextEmptyIndex))) {
+      auto& empty = std::get<Empty>(diskMap[*nextEmptyIndex]);
+      auto& file = std::get<File>(diskMap[*nextFileIndex]);
+      if (empty.size >= file.size && !alreadyMoved.contains(file.id) && *nextEmptyIndex < *nextFileIndex) {
+        std::size_t size = file.size;
+        std::size_t id = file.id;
+        empty.size -= file.size;
+        file.size = 0;
+        alreadyMoved.insert(file.id);
+        diskMap[*nextFileIndex] =  Empty{size};
+        auto it = diskMap.begin();
+        std::advance(it, *nextEmptyIndex);
+        diskMap.insert(it, File{ id, size });
+     //   printDiskMap(diskMap);
+        //return true;
+        //(*nextEmptyIndex)++;
+        (*nextFileIndex)++;
+        break;
+      }
+      (*nextEmptyIndex)++;
+    }
+    if (*nextFileIndex == 0) {
+      return false;
+    }
+    (*nextFileIndex)--;
+  }
+  return false;
+}
+
+auto
+defragment2(Input input)
+{
+  auto diskMap = getDiskMap(input);
+  tryMovingWholeFile(diskMap);
+ // while (tryMovingWholeFile(diskMap)) {
+ // }
   auto emptyElem = [](const DiskElement& elem) {
     return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
            (elem.index() == 1 && std::get<Empty>(elem).size != 0);

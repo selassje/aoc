@@ -62,8 +62,48 @@ calculateCheckSum(const DiskMap& diskMap)
   return checkSum;
 }
 
-auto defragment1(DiskMap& diskMap) {
+auto defragment1(Input input) {
 
+  auto diskMap = getDiskMap(input);
+  std::size_t nextEmptyIndex = 0;
+  std::size_t nextFileIndex = diskMap.size() - 1;
+
+  while (nextEmptyIndex != nextFileIndex) {
+    if (diskMap[nextEmptyIndex].index() == 0 ||
+        std::get<Empty>(diskMap[nextEmptyIndex]).size == 0) {
+      ++nextEmptyIndex;
+      continue;
+    }
+    if (diskMap[nextFileIndex].index() == 1 ||
+        std::get<File>(diskMap[nextFileIndex]).size == 0) {
+      --nextFileIndex;
+      continue;
+    }
+    auto& nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
+    auto& nextFile = std::get<File>(diskMap[nextFileIndex]);
+    const auto blocksToTransfer = std::min(nextEmpty.size, nextFile.size);
+    nextEmpty.size -= blocksToTransfer;
+    nextFile.size -= blocksToTransfer;
+    auto it = diskMap.begin();
+    std::advance(it, nextEmptyIndex);
+    diskMap.insert(it, File{ nextFile.id, blocksToTransfer });
+    ++nextEmptyIndex;
+    ++nextFileIndex;
+  }
+
+  auto emptyElem = [](const DiskElement& elem) {
+    return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
+           (elem.index() == 1 && std::get<Empty>(elem).size != 0);
+  };
+
+  auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
+                  std::ranges::to<std::vector>();
+
+  return filtered;
+}
+auto defragment2(Input input) {
+
+  auto diskMap = getDiskMap(input);
   std::size_t nextEmptyIndex = 0;
   std::size_t nextFileIndex = diskMap.size() - 1;
 
@@ -106,10 +146,9 @@ auto defragment1(DiskMap& diskMap) {
 Result
 solve(Input input)
 {
-  auto diskMap = getDiskMap(input);
-
-  const auto part1 = calculateCheckSum(defragment1(diskMap));
-  return { part1, part1 };
+  const auto part1 = calculateCheckSum(defragment1(input));
+  const auto part2 = calculateCheckSum(defragment2(input));
+  return { part1, part2 };
 }
 
 }

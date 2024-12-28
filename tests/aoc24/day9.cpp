@@ -43,10 +43,10 @@ TEST_CASE("Aoc24 Day9 Example", "[AoC24_Day9]")
   REQUIRE(part2 == 1928);
 }
 
-TEST_CASE("Aoc24 Day8 Input", "[AoC24_Day9]")
+TEST_CASE("Aoc24 Day9 Input", "[AoC24_Day9]")
 {
   auto input = readInput(inputs::day9::INPUT);
   const auto [part1, part2] = aoc24::day9::solve(input);
-  REQUIRE(part1 == 1928);
-  REQUIRE(part2 == 1928);
+  REQUIRE(part1 == 6461289671426);
+  REQUIRE(part2 == 6461289671426);
 }

@@ -1,5 +1,7 @@
 #include "aoc24/day9.hpp"
 #include <cstddef>
+#include <iterator>
+#include <ranges>
 #include <variant>
 #include <vector>
 
@@ -28,11 +30,14 @@ getDiskMap(Input input)
   DiskMap map{};
   std::size_t id = 0;
   for (std::size_t i = 0; i < input.size(); ++i) {
-    if (i % 2 == 0) {
-      map.emplace_back(File{ id, static_cast<std::size_t>(input[i]) });
-      ++id;
-    } else {
-      map.emplace_back(Empty{ static_cast<std::size_t>(input[i]) });
+    const auto size = static_cast<std::size_t>(input[i]);
+    if (size != 0) {
+      if (i % 2 == 0) {
+        map.emplace_back(File{ id, size });
+        ++id;
+      } else {
+        map.emplace_back(Empty{ size });
+      }
     }
   }
   return map;
@@ -42,11 +47,16 @@ auto
 calculateCheckSum(const DiskMap& diskMap)
 {
   std::size_t checkSum = 0;
-  for (std::size_t i = 0; i < diskMap.size(); ++i) {
-    const auto& diskElement = diskMap[i];
+  std::size_t index = 0;
+  for (const auto& diskElement : diskMap) {
     if (diskElement.index() == 0) {
       const auto file = std::get<File>(diskElement);
-      checkSum += i * file.id;
+      for (std::size_t i = index; i < index + file.size; ++i) {
+        checkSum += i * file.id;
+      }
+      index += file.size;
+    } else {
+      index += std::get<Empty>(diskElement).size;
     }
   }
   return checkSum;
@@ -60,36 +70,40 @@ solve(Input input)
   auto diskMap = getDiskMap(input);
 
   std::size_t nextEmptyIndex = 0;
-  std::size_t nextFileIndex = input.size() - 1;
+  std::size_t nextFileIndex = diskMap.size() - 1;
 
   while (nextEmptyIndex != nextFileIndex) {
-    if ( diskMap[nextEmptyIndex].index() == 0){
+    if (diskMap[nextEmptyIndex].index() == 0 ||
+        std::get<Empty>(diskMap[nextEmptyIndex]).size == 0) {
       ++nextEmptyIndex;
       continue;
     }
-    if ( diskMap[nextFileIndex].index() == 1){
+    if (diskMap[nextFileIndex].index() == 1 ||
+        std::get<File>(diskMap[nextFileIndex]).size == 0) {
       --nextFileIndex;
       continue;
     }
-    auto &nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
-    auto &nextFile = std::get<File>(diskMap[nextFileIndex]);
-
+    auto& nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
+    auto& nextFile = std::get<File>(diskMap[nextFileIndex]);
     const auto blocksToTransfer = std::min(nextEmpty.size, nextFile.size);
-    if(nextEmpty.size == blocksToTransfer) {
-//      diskMap[nextEmptyIndex] = File
-
-    } else {
-      nextEmpty.size -= blocksToTransfer;
-    }
-
+    nextEmpty.size -= blocksToTransfer;
     nextFile.size -= blocksToTransfer;
-    if(nextFile.size == 0 ) {
-      diskMap[nextFileIndex] = Empty{0};
-    }
-
-
+    auto it = diskMap.begin();
+    std::advance(it, nextEmptyIndex);
+    diskMap.insert(it, File{ nextFile.id, blocksToTransfer });
+    ++nextEmptyIndex;
+    ++nextFileIndex;
   }
-  const auto part1 = calculateCheckSum(diskMap);
+
+  auto emptyElem = [](const DiskElement& elem) {
+    return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
+           (elem.index() == 1 && std::get<Empty>(elem).size != 0);
+  };
+
+  auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
+                  std::ranges::to<std::vector>();
+
+  const auto part1 = calculateCheckSum(filtered);
   return { part1, part1 };
 }
 

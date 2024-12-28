@@ -8,14 +8,15 @@ namespace aoc24::day8 {
 
 using Input = std::vector<std::vector<unsigned char>>;
 
-struct Result {
+struct Result
+{
   std::size_t part1;
   std::size_t part2;
 };
 
-Result solve(const Input& input);
+Result
+solve(const Input& input);
 
 }
-
 
 #endif

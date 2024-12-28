@@ -1,14 +1,16 @@
 #include "aoc24/day8.hpp"
 
+#include <array>
+#include <cmath>
 #include <compare>
 #include <cstddef>
 #include <cstdint>
 #include <map>
 #include <numeric>
-#include <optional>
 #include <set>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 namespace aoc24::day8 {
 
@@ -49,7 +51,7 @@ auto
 getDistance(Point p1, Point p2)
 {
   const auto& [xDiff, yDiff] = getDiff(p1, p2);
-  return abs(xDiff) + abs(yDiff);
+  return std::abs(xDiff) + abs(yDiff);
 }
 
 auto

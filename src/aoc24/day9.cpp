@@ -62,12 +62,7 @@ calculateCheckSum(const DiskMap& diskMap)
   return checkSum;
 }
 
-}
-
-Result
-solve(Input input)
-{
-  auto diskMap = getDiskMap(input);
+auto defragment1(DiskMap& diskMap) {
 
   std::size_t nextEmptyIndex = 0;
   std::size_t nextFileIndex = diskMap.size() - 1;
@@ -103,7 +98,17 @@ solve(Input input)
   auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
                   std::ranges::to<std::vector>();
 
-  const auto part1 = calculateCheckSum(filtered);
+  return filtered;
+}
+
+}
+
+Result
+solve(Input input)
+{
+  auto diskMap = getDiskMap(input);
+
+  const auto part1 = calculateCheckSum(defragment1(diskMap));
   return { part1, part1 };
 }
 

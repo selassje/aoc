@@ -7,6 +7,7 @@
 #include <numeric>
 #include <optional>
 #include <set>
+#include <tuple>
 #include <utility>
 
 namespace aoc24::day8 {
@@ -35,78 +36,50 @@ struct Shift
 };
 
 auto
-getAntiNodes(Point p1, Point p2, Size size)
+getDiff(Point p1, Point p2)
 {
-  std::vector<Point> antinodes{};
-  const std::int64_t x =
+  const std::int64_t xdiff =
     p2.x >= p1.x ? p2.x - p1.x : -static_cast<std::int64_t>(p1.x - p2.x);
-  const std::int64_t y =
+  const std::int64_t ydiff =
     p2.y >= p1.y ? p2.y - p1.y : -static_cast<std::int64_t>(p1.y - p2.y);
 
-  const Shift shift = { x, y };
-
-  auto shiftPoint = [&size, &shift](Point p, bool add) -> std::optional<Point> {
-    const Shift newShift = add ? shift : Shift{ -shift.x, -shift.y };
-    const Shift shiftedPoint = { p.x + newShift.x, p.y + newShift.y };
-    if (shiftedPoint.x >= 0 && shiftedPoint.y >= 0 &&
-        std::cmp_less(shiftedPoint.x, size.width) &&
-        std::cmp_less(shiftedPoint.y, size.height)) {
-      return Point{ static_cast<uint32_t>(shiftedPoint.x),
-                    static_cast<uint32_t>(shiftedPoint.y) };
-    }
-    return std::nullopt;
-  };
-
-  const auto antinode1 = shiftPoint(p2, true);
-  const auto antinode2 = shiftPoint(p1, false);
-
-  if (antinode1) {
-    antinodes.push_back(*antinode1);
-  }
-  if (antinode2) {
-    antinodes.push_back(*antinode2);
-  }
-  return antinodes;
+  return std::tuple{ xdiff, ydiff };
+}
+auto
+getDistance(Point p1, Point p2)
+{
+  const auto& [xDiff, yDiff] = getDiff(p1, p2);
+  return abs(xDiff) + abs(yDiff);
 }
 
 auto
-getAntiNodes2(Point p1, Point p2, Size size)
+getAntiNodes(Point p1, Point p2, Size size)
 {
-  std::vector<Point> antinodes{};
+  const auto& [xDiff, yDiff] = getDiff(p1, p2);
+  const auto gcd = std::gcd(std::abs(xDiff), std::abs(yDiff));
 
-  const std::int64_t x =
-    p2.x >= p1.x ? p2.x - p1.x : -static_cast<std::int64_t>(p1.x - p2.x);
-  const std::int64_t y =
-    p2.y >= p1.y ? p2.y - p1.y : -static_cast<std::int64_t>(p1.y - p2.y);
-  const auto gcd = std::gcd(std::abs(x),std::abs(y));
-  const auto a = static_cast<double>(y) / static_cast<double>(x);
-  const auto b = static_cast<double>(p1.y) - (a *  static_cast<double>(p1.x));
-
-  const auto gcdx = x / gcd;
-  const auto gcdy = y / gcd;
-
-
+  const auto gcdx = xDiff / gcd;
+  const auto gcdy = yDiff / gcd;
   const auto width = static_cast<std::int64_t>(size.width);
   const auto height = static_cast<std::int64_t>(size.height);
-
-  std::int64_t x2 = p1.x;
-  std::int64_t y2 = p1.y;
-
-
-  for (;x2 < width && x2 >=0 && y2 < height && y2 >=0; x2 += gcdx,y2+=gcdy) {
-    const auto p = Point{ static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) };
-    antinodes.push_back(p);
+  std::vector<Point> antinodesPart1{};
+  std::vector<Point> antinodesPart2{};
+  for (const auto dir : std::array<std::int64_t, 2>{ 1, -1 }) {
+    std::int64_t x = p1.x;
+    std::int64_t y = p1.y;
+    for (; x < width && x >= 0 && y < height && y >= 0;
+         x += dir * gcdx, y += dir * gcdy) {
+      const auto p =
+        Point{ static_cast<uint32_t>(x), static_cast<uint32_t>(y) };
+      antinodesPart2.push_back(p);
+      const auto distP1 = getDistance(p, p1);
+      const auto distP2 = getDistance(p, p2);
+      if (distP1 == 2 * distP2 || distP2 == 2 * distP1) {
+        antinodesPart1.push_back(p);
+      }
+    }
   }
-  
-  x2 = p1.x;
-  y2 = p1.y;
-
-
-  for (;x2 < width && x2 >=0 && y2 < height && y2 >=0; x2 -= gcdx,y2-=gcdy) {
-    const auto p = Point{ static_cast<uint32_t>(x2), static_cast<uint32_t>(y2) };
-    antinodes.push_back(p);
-  }
-  return antinodes;
+  return std::tuple{ antinodesPart1, antinodesPart2 };
 }
 
 }
@@ -126,21 +99,21 @@ solve(const Input& input)
       }
     }
   }
-  std::set<Point> antinodes{};
-  std::set<Point> antinodes2{};
+  std::set<Point> uniqueAntinodesPart1{};
+  std::set<Point> uniqueAntinodesPart2{};
   for (const auto& antenna : antennas) {
     for (const auto p1 : antenna.second) {
       for (const auto p2 : antenna.second) {
         if (p1 != p2) {
-          antinodes.insert_range(getAntiNodes(p1, p2, size));
-          antinodes2.insert_range(getAntiNodes2(p1, p2, size));
+          const auto& [antinodesPart1, antinodesPart2] =
+            getAntiNodes(p1, p2, size);
+          uniqueAntinodesPart1.insert_range(antinodesPart1);
+          uniqueAntinodesPart2.insert_range(antinodesPart2);
         }
       }
     }
   }
-  const std::size_t part1 = antinodes.size();
-  const std::size_t part2 = antinodes2.size();
-  return { part1, part2 };
+  return { uniqueAntinodesPart1.size(), uniqueAntinodesPart2.size() };
 }
 
 }

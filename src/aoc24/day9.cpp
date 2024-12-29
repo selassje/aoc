@@ -1,11 +1,9 @@
 #include "aoc24/day9.hpp"
+
+#include <algorithm>
 #include <cstddef>
 #include <iterator>
-#include <optional>
-#include <print>
 #include <ranges>
-#include <set>
-#include <utility>
 #include <variant>
 #include <vector>
 
@@ -106,13 +104,13 @@ defragment(Input input)
     }
     auto& empty = std::get<Empty>(diskMap[nextEmptyIndex]);
     auto& file = std::get<File>(diskMap[nextFileIndex]);
-    std::size_t size = 0;
-    if constexpr (moveOnlyWholeFiles) {
-      size = file.size;
-    } else {
-      size = std::min(empty.size, file.size);
-    }
-
+    const std::size_t size = [&]() {
+      if constexpr (moveOnlyWholeFiles) {
+        return file.size;
+      } else {
+        return std::min(empty.size, file.size);
+      }
+    }();
     if (empty.size >= size) {
       const std::size_t id = file.id;
       empty.size -= size;

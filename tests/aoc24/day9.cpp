@@ -26,12 +26,15 @@ getInput(std::string_view line)
   return input;
 }
 
-auto
+std::vector<std::byte>
 readInput(std::string_view path)
 {
   inputs::FileReader fileReader{ path };
   const auto line = fileReader.readLine();
-  return getInput(*line);
+  if (line) {
+    return getInput(*line);
+  }
+  return {};
 }
 }
 

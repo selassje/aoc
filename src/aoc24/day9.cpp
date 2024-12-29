@@ -78,7 +78,6 @@ filterDiskMap(const DiskMap& diskMap)
 
   return filtered;
 }
-/*
 void
 printDiskMap(const DiskMap& diskMap)
 {
@@ -86,7 +85,7 @@ printDiskMap(const DiskMap& diskMap)
     if (diskElement.index() == 0) {
       const auto file = std::get<File>(diskElement);
       for (std::size_t i = 0; i < file.size; ++i) {
-        std::print("{}",file.id);
+        std::print("{}", file.id);
       }
     } else {
       const auto size = std::get<Empty>(diskElement).size;
@@ -98,7 +97,6 @@ printDiskMap(const DiskMap& diskMap)
   std::println("");
 }
 
-*/
 auto
 defragmentPart1(Input input)
 {
@@ -131,69 +129,50 @@ defragmentPart1(Input input)
   }
   return filterDiskMap(diskMap);
 }
-
-std::optional<std::size_t>
-findNextEmpty(const DiskMap& diskMap, std::size_t startIndex)
-{
-  for (std::size_t i = startIndex; i < diskMap.size(); ++i) {
-    const auto& diskElem = diskMap[i];
-    if (diskElem.index() == 1 && std::get<Empty>(diskElem).size > 0) {
-      return i;
-    }
-  }
-  return std::nullopt;
-}
-
-std::optional<std::size_t>
-findNextFile(const DiskMap& diskMap, std::size_t startIndex)
-{
-  for (std::size_t i = startIndex; i >= 0; --i) {
-    const auto& diskElem = diskMap[i];
-    if (diskElem.index() == 0 && std::get<File>(diskElem).size > 0) {
-      return i;
-    }
-    if (i == 0) {
-      return std::nullopt;
-    }
-  }
-  return std::nullopt;
-}
-
 auto
 defragmentPart2(Input input)
 {
   auto diskMap = getDiskMap(input);
-  std::optional<std::size_t> nextFileIndex = diskMap.size() - 1;
+  std::size_t nextEmptyIndex = 0;
+  std::size_t nextFileIndex = diskMap.size() - 1;
   std::set<std::size_t> alreadyMoved{};
-  while ((nextFileIndex = findNextFile(diskMap, *nextFileIndex))) {
-    std::optional<std::size_t> nextEmptyIndex = 0;
-    while ((nextEmptyIndex = findNextEmpty(diskMap, *nextEmptyIndex))) {
-      auto& empty = std::get<Empty>(diskMap[*nextEmptyIndex]);
-      auto& file = std::get<File>(diskMap[*nextFileIndex]);
-      if (empty.size >= file.size && !alreadyMoved.contains(file.id) &&
-          *nextEmptyIndex < *nextFileIndex) {
-        std::size_t size = file.size;
-        std::size_t id = file.id;
-        empty.size -= file.size;
-        file.size = 0;
-        alreadyMoved.insert(file.id);
-        diskMap[*nextFileIndex] = Empty{ size };
-        auto it = diskMap.begin();
-        std::advance(it, *nextEmptyIndex);
-        diskMap.insert(it, File{ id, size });
-        (*nextFileIndex)++;
-        break;
-      }
-      (*nextEmptyIndex)++;
+
+  while (nextFileIndex > 0) {
+    if (nextEmptyIndex >= nextFileIndex) {
+      nextEmptyIndex = 0;
+      --nextFileIndex;
+      continue;
     }
-    if (*nextFileIndex == 0) {
-      break;
+    if (diskMap[nextEmptyIndex].index() == 0 ||
+        std::get<Empty>(diskMap[nextEmptyIndex]).size == 0) {
+      ++nextEmptyIndex;
+      continue;
     }
-    (*nextFileIndex)--;
+    if (diskMap[nextFileIndex].index() == 1 ||
+        std::get<File>(diskMap[nextFileIndex]).size == 0) {
+      --nextFileIndex;
+      continue;
+    }
+
+    auto& empty = std::get<Empty>(diskMap[nextEmptyIndex]);
+    auto& file = std::get<File>(diskMap[nextFileIndex]);
+    
+    if (empty.size >= file.size) {
+      std::size_t size = file.size;
+      std::size_t id = file.id;
+      empty.size -= file.size;
+      diskMap[nextFileIndex] = Empty{ size };
+      alreadyMoved.insert(id);
+      auto it = diskMap.begin();
+      std::advance(it, nextEmptyIndex);
+      diskMap.insert(it, File{ id, size });
+      nextEmptyIndex = 0;
+      continue;
+    }
+    ++nextEmptyIndex;
   }
   return filterDiskMap(diskMap);
 }
-
 }
 
 Result

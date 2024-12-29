@@ -78,64 +78,15 @@ filterDiskMap(const DiskMap& diskMap)
 
   return filtered;
 }
-void
-printDiskMap(const DiskMap& diskMap)
-{
-  for (const auto& diskElement : diskMap) {
-    if (diskElement.index() == 0) {
-      const auto file = std::get<File>(diskElement);
-      for (std::size_t i = 0; i < file.size; ++i) {
-        std::print("{}", file.id);
-      }
-    } else {
-      const auto size = std::get<Empty>(diskElement).size;
-      for (std::size_t i = 0; i < size; ++i) {
-        std::print(".");
-      }
-    }
-  }
-  std::println("");
-}
 
+template<bool moveOnlyWholeFiles>
 auto
-defragmentPart1(Input input)
-{
-
-  auto diskMap = getDiskMap(input);
-  std::size_t nextEmptyIndex = 0;
-  std::size_t nextFileIndex = diskMap.size() - 1;
-
-  while (nextEmptyIndex != nextFileIndex) {
-    if (diskMap[nextEmptyIndex].index() == 0 ||
-        std::get<Empty>(diskMap[nextEmptyIndex]).size == 0) {
-      ++nextEmptyIndex;
-      continue;
-    }
-    if (diskMap[nextFileIndex].index() == 1 ||
-        std::get<File>(diskMap[nextFileIndex]).size == 0) {
-      --nextFileIndex;
-      continue;
-    }
-    auto& nextEmpty = std::get<Empty>(diskMap[nextEmptyIndex]);
-    auto& nextFile = std::get<File>(diskMap[nextFileIndex]);
-    const auto blocksToTransfer = std::min(nextEmpty.size, nextFile.size);
-    nextEmpty.size -= blocksToTransfer;
-    nextFile.size -= blocksToTransfer;
-    auto it = diskMap.begin();
-    std::advance(it, nextEmptyIndex);
-    diskMap.insert(it, File{ nextFile.id, blocksToTransfer });
-    ++nextEmptyIndex;
-    ++nextFileIndex;
-  }
-  return filterDiskMap(diskMap);
-}
-auto
-defragmentPart2(Input input)
+defragment(Input input)
 {
   auto diskMap = getDiskMap(input);
+
   std::size_t nextEmptyIndex = 0;
   std::size_t nextFileIndex = diskMap.size() - 1;
-  std::set<std::size_t> alreadyMoved{};
 
   while (nextFileIndex > 0) {
     if (nextEmptyIndex >= nextFileIndex) {
@@ -153,23 +104,33 @@ defragmentPart2(Input input)
       --nextFileIndex;
       continue;
     }
-
     auto& empty = std::get<Empty>(diskMap[nextEmptyIndex]);
     auto& file = std::get<File>(diskMap[nextFileIndex]);
-    
-    if (empty.size >= file.size) {
-      std::size_t size = file.size;
-      std::size_t id = file.id;
-      empty.size -= file.size;
-      diskMap[nextFileIndex] = Empty{ size };
-      alreadyMoved.insert(id);
+    std::size_t size = 0;
+    if constexpr (moveOnlyWholeFiles) {
+      size = file.size;
+    } else {
+      size = std::min(empty.size, file.size);
+    }
+
+    if (empty.size >= size) {
+      const std::size_t id = file.id;
+      empty.size -= size;
+      file.size -= size;
+      if (file.size != 0) {
+        nextFileIndex++;
+      } else {
+        diskMap[nextFileIndex] = Empty{ size };
+      }
       auto it = diskMap.begin();
       std::advance(it, nextEmptyIndex);
       diskMap.insert(it, File{ id, size });
       nextEmptyIndex = 0;
       continue;
     }
-    ++nextEmptyIndex;
+    if constexpr (moveOnlyWholeFiles) {
+      ++nextEmptyIndex;
+    }
   }
   return filterDiskMap(diskMap);
 }
@@ -178,8 +139,8 @@ defragmentPart2(Input input)
 Result
 solve(Input input)
 {
-  const auto part1 = calculateCheckSum(defragmentPart1(input));
-  const auto part2 = calculateCheckSum(defragmentPart2(input));
+  const auto part1 = calculateCheckSum(defragment<false>(input));
+  const auto part2 = calculateCheckSum(defragment<true>(input));
   return { part1, part2 };
 }
 

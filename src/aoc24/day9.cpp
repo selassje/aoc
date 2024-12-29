@@ -65,7 +65,19 @@ calculateCheckSum(const DiskMap& diskMap)
   }
   return checkSum;
 }
+auto
+filterDiskMap(const DiskMap& diskMap)
+{
+  auto emptyElem = [](const DiskElement& elem) {
+    return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
+           (elem.index() == 1 && std::get<Empty>(elem).size != 0);
+  };
 
+  auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
+                  std::ranges::to<std::vector>();
+
+  return filtered;
+}
 /*
 void
 printDiskMap(const DiskMap& diskMap)
@@ -88,7 +100,7 @@ printDiskMap(const DiskMap& diskMap)
 
 */
 auto
-defragment1(Input input)
+defragmentPart1(Input input)
 {
 
   auto diskMap = getDiskMap(input);
@@ -117,16 +129,7 @@ defragment1(Input input)
     ++nextEmptyIndex;
     ++nextFileIndex;
   }
-
-  auto emptyElem = [](const DiskElement& elem) {
-    return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
-           (elem.index() == 1 && std::get<Empty>(elem).size != 0);
-  };
-
-  auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
-                  std::ranges::to<std::vector>();
-
-  return filtered;
+  return filterDiskMap(diskMap);
 }
 
 std::optional<std::size_t>
@@ -156,11 +159,10 @@ findNextFile(const DiskMap& diskMap, std::size_t startIndex)
   return std::nullopt;
 }
 
-bool
-tryMovingWholeFile(DiskMap& diskMap)
+auto
+defragmentPart2(Input input)
 {
- // printDiskMap(diskMap);
-
+  auto diskMap = getDiskMap(input);
   std::optional<std::size_t> nextFileIndex = diskMap.size() - 1;
   std::set<std::size_t> alreadyMoved{};
   while ((nextFileIndex = findNextFile(diskMap, *nextFileIndex))) {
@@ -168,48 +170,28 @@ tryMovingWholeFile(DiskMap& diskMap)
     while ((nextEmptyIndex = findNextEmpty(diskMap, *nextEmptyIndex))) {
       auto& empty = std::get<Empty>(diskMap[*nextEmptyIndex]);
       auto& file = std::get<File>(diskMap[*nextFileIndex]);
-      if (empty.size >= file.size && !alreadyMoved.contains(file.id) && *nextEmptyIndex < *nextFileIndex) {
+      if (empty.size >= file.size && !alreadyMoved.contains(file.id) &&
+          *nextEmptyIndex < *nextFileIndex) {
         std::size_t size = file.size;
         std::size_t id = file.id;
         empty.size -= file.size;
         file.size = 0;
         alreadyMoved.insert(file.id);
-        diskMap[*nextFileIndex] =  Empty{size};
+        diskMap[*nextFileIndex] = Empty{ size };
         auto it = diskMap.begin();
         std::advance(it, *nextEmptyIndex);
         diskMap.insert(it, File{ id, size });
-     //   printDiskMap(diskMap);
-        //return true;
-        //(*nextEmptyIndex)++;
         (*nextFileIndex)++;
         break;
       }
       (*nextEmptyIndex)++;
     }
     if (*nextFileIndex == 0) {
-      return false;
+      break;
     }
     (*nextFileIndex)--;
   }
-  return false;
-}
-
-auto
-defragment2(Input input)
-{
-  auto diskMap = getDiskMap(input);
-  tryMovingWholeFile(diskMap);
- // while (tryMovingWholeFile(diskMap)) {
- // }
-  auto emptyElem = [](const DiskElement& elem) {
-    return (elem.index() == 0 && std::get<File>(elem).size != 0) ||
-           (elem.index() == 1 && std::get<Empty>(elem).size != 0);
-  };
-
-  auto filtered = diskMap | std::ranges::views::filter(emptyElem) |
-                  std::ranges::to<std::vector>();
-
-  return filtered;
+  return filterDiskMap(diskMap);
 }
 
 }
@@ -217,8 +199,8 @@ defragment2(Input input)
 Result
 solve(Input input)
 {
-  const auto part1 = calculateCheckSum(defragment1(input));
-  const auto part2 = calculateCheckSum(defragment2(input));
+  const auto part1 = calculateCheckSum(defragmentPart1(input));
+  const auto part2 = calculateCheckSum(defragmentPart2(input));
   return { part1, part2 };
 }
 

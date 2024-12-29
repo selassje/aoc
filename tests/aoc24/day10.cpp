@@ -19,19 +19,15 @@ using aoc24::day10::Input;
 Input
 readInput(std::string_view path)
 {
-  std::vector<std::byte> input{};
-  std::size_t height = 0;
-  std::size_t width = 0;
+  Input input{};
   inputs::FileReader fileReader{ path };
   while (const auto line = fileReader.readLine()) {
     auto row = inputs::parseStringDynamic<unsigned char>(*line) |
                std::ranges::views::transform(
-                 [](const auto c) { return static_cast<std::byte>(c); });
-    width = row.size();
-    input.insert_range(input.end(), row);
-    ++height;
+                 [](const auto c) { return static_cast<std::byte>(c - '0'); }) | std::ranges::to<std::vector>();
+    input.push_back(row);
   }
-  return Input{input.data(), height, width};
+  return input;
 }
 }
 

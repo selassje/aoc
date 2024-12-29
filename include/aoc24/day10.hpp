@@ -3,13 +3,11 @@
 #define AOC24_DAY10_HPP
 
 #include <cstddef>
-#include <mdspan>
+#include <vector>
 
 namespace aoc24::day10 {
 
-using Input = std::mdspan<
-  std::byte,
-  std::dextents<std::size_t, 2>>;
+using Input = std::vector<std::vector<std::byte>>;
 
 struct Result
 {
@@ -18,7 +16,7 @@ struct Result
 };
 
 Result
-solve(Input input);
+solve(const Input& input);
 
 }
 

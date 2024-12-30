@@ -42,10 +42,10 @@ getNeighbours(Point p, Size size)
   return neighbours;
 }
 
-std::size_t
-getTrailHeadScore(Point start, const Input& input)
+auto
+getTrailHeadScoreAndRating(Point start, const Input& input)
 {
-  std::size_t score = 0;
+  std::size_t rating = 0;
   const auto size = Size{ input.size(), input[0].size() };
   std::deque<Point> toBeVisitedPoints{ start };
   std::set<Point> visitedPoints{};
@@ -60,7 +60,7 @@ getTrailHeadScore(Point start, const Input& input)
           static_cast<unsigned char>(input[point.y][point.x]) + 1 ==
             static_cast<unsigned char>(input[neighbour.y][neighbour.x])) {
         if (input[neighbour.y][neighbour.x] == static_cast<std::byte>(9)) {
-        //  ++score;
+          ++rating;
           topsReached.insert(neighbour);
         } else {
           toBeVisitedPoints.push_back(neighbour);
@@ -68,7 +68,7 @@ getTrailHeadScore(Point start, const Input& input)
       }
     }
   }
-  return topsReached.size();
+  return std::tuple{topsReached.size(),rating};
 }
 
 }
@@ -77,15 +77,18 @@ Result
 solve(const Input& input)
 {
   std::size_t part1 = 0;
+  std::size_t part2 = 0;
   const auto size = Size{ input.size(), input[0].size() };
   for (std::size_t y = 0; y < size.height; ++y) {
     for (std::size_t x = 0; x < size.width; ++x) {
       if (input[y][x] == static_cast<std::byte>(0)) {
-         part1 += getTrailHeadScore({ x, y }, input);
+        const auto& [score,rating] = getTrailHeadScoreAndRating({ x, y }, input);
+        part1 += score;
+        part2 += rating;
       }
     }
   }
-  return { part1, part1 };
+  return { part1, part2 };
 }
 
 }

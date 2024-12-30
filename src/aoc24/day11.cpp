@@ -8,9 +8,10 @@ namespace aoc24::day11 {
 
 namespace {
 
-void
-blink(std::size_t times, Input& output)
+auto
+blink(std::size_t times, const Input& input)
 {
+  auto output = input;
   auto split = [](const std::string& strNumber) {
     const auto halfSize = strNumber.size() / 2;
     const auto left = strNumber.substr(0, halfSize);
@@ -40,6 +41,7 @@ blink(std::size_t times, Input& output)
     }
     --times;
   }
+  return output.size();
 }
 
 }
@@ -47,10 +49,9 @@ blink(std::size_t times, Input& output)
 Result
 solve(const Input& input)
 {
-  auto output = input;
-  blink(25, output); // NOLINT
-  const std::size_t part1 = output.size();
-  return { part1, part1 };
+  const std::size_t part1 = blink(25,input);
+  const std::size_t part2 = part1;
+  return { part1, part2 };
 }
 
 }

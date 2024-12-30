@@ -28,15 +28,13 @@ readInput(std::string_view path)
 TEST_CASE("Aoc24 Day11 Example", "[AoC24_Day11]")
 {
   auto input = Input{ 125, 17 }; // NOLINT
-  const auto [part1, part2] = aoc24::day11::solve(input);
+  const auto [part1, _] = aoc24::day11::solve(input);
   REQUIRE(part1 == 55312);
-  REQUIRE(part2 == 55312);
 }
 
 TEST_CASE("Aoc24 Day11 Input", "[AoC24_Day11]")
 {
   auto input = readInput(inputs::day11::INPUT);
-  const auto [part1, part2] = aoc24::day11::solve(input);
+  const auto [part1, _] = aoc24::day11::solve(input);
   REQUIRE(part1 == 185894);
-  REQUIRE(part2 == 185894);
 }

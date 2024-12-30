@@ -1,7 +1,9 @@
 #include "aoc24/day10.hpp"
 #include <compare>
+#include <cstddef>
 #include <deque>
 #include <set>
+#include <tuple>
 #include <vector>
 
 namespace aoc24::day10 {
@@ -45,21 +47,20 @@ getNeighbours(Point p, Size size)
 auto
 getTrailHeadScoreAndRating(Point start, const Input& input)
 {
+
   std::size_t rating = 0;
   const auto size = Size{ input.size(), input[0].size() };
   std::deque<Point> toBeVisitedPoints{ start };
-  std::set<Point> visitedPoints{};
   std::set<Point> topsReached{};
 
   while (!toBeVisitedPoints.empty()) {
     const auto point = toBeVisitedPoints.front();
-    visitedPoints.insert(point);
     toBeVisitedPoints.pop_front();
     for (const auto& neighbour : getNeighbours(point, size)) {
-      if (!visitedPoints.contains(neighbour) &&
-          static_cast<unsigned char>(input[point.y][point.x]) + 1 ==
-            static_cast<unsigned char>(input[neighbour.y][neighbour.x])) {
-        if (input[neighbour.y][neighbour.x] == static_cast<std::byte>(9)) {
+      if (static_cast<unsigned char>(input[point.y][point.x]) + 1 ==
+          static_cast<unsigned char>(input[neighbour.y][neighbour.x])) {
+        constexpr static auto maxHeight = static_cast<std::byte>(9);
+        if (input[neighbour.y][neighbour.x] == maxHeight) {
           ++rating;
           topsReached.insert(neighbour);
         } else {
@@ -68,7 +69,7 @@ getTrailHeadScoreAndRating(Point start, const Input& input)
       }
     }
   }
-  return std::tuple{topsReached.size(),rating};
+  return std::tuple{ topsReached.size(), rating };
 }
 
 }
@@ -82,7 +83,8 @@ solve(const Input& input)
   for (std::size_t y = 0; y < size.height; ++y) {
     for (std::size_t x = 0; x < size.width; ++x) {
       if (input[y][x] == static_cast<std::byte>(0)) {
-        const auto& [score,rating] = getTrailHeadScoreAndRating({ x, y }, input);
+        const auto& [score, rating] =
+          getTrailHeadScoreAndRating({ x, y }, input);
         part1 += score;
         part2 += rating;
       }

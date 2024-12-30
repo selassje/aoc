@@ -1,10 +1,12 @@
 #include "aoc24/day8.hpp"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <compare>
 #include <cstddef>
 #include <cstdint>
+#include <iterator>
 #include <map>
 #include <numeric>
 #include <set>
@@ -45,7 +47,7 @@ auto
 getDistance(Point p1, Point p2)
 {
   const auto& [xDiff, yDiff] = getDiff(p1, p2);
-  return std::abs(xDiff) + abs(yDiff);
+  return std::abs(xDiff) + std::abs(yDiff);
 }
 
 auto
@@ -103,8 +105,12 @@ solve(const Input& input)
         if (p1 != p2) {
           const auto& [antinodesPart1, antinodesPart2] =
             getAntiNodes(p1, p2, size);
-          uniqueAntinodesPart1.insert_range(antinodesPart1);
-          uniqueAntinodesPart2.insert_range(antinodesPart2);
+          std::ranges::copy(
+            antinodesPart1,
+            std::inserter(uniqueAntinodesPart1, uniqueAntinodesPart1.begin()));
+          std::ranges::copy(
+            antinodesPart2,
+            std::inserter(uniqueAntinodesPart2, uniqueAntinodesPart2.begin()));
         }
       }
     }

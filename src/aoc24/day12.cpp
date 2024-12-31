@@ -71,6 +71,12 @@ getTotalPrice(const std::vector<Region>& regions)
     });
 }
 
+bool arePointsTouching(const Point &p1, const Point &p2) {
+    const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
+    const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
+    return (xDiff == 0 && yDiff == 1) || (xDiff == 1 && yDiff == 0);
+}
+
 auto getSides(const std::vector<Point> edges) {
     std::size_t sides = 0;
 

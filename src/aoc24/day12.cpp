@@ -30,6 +30,7 @@ struct Region
 {
   std::vector<Point> points;
   std::size_t perimeter;
+  std::size_t sides;
 };
 
 auto
@@ -57,19 +58,24 @@ auto
 getTotalPrice(const std::vector<Region>& regions)
 {
   namespace rng = std::ranges;
-  auto prices = regions | rng::views::transform([](const auto& r) {
-                  return r.perimeter * r.points.size();
-                });
+  using pair = std::pair<std::size_t, std::size_t>;
+  auto prices =
+    regions | rng::views::transform([](const auto& r) {
+      return pair{ r.perimeter * r.points.size(), r.sides * r.points.size() };
+    });
   return rng::fold_left( // NOLINT
     prices,
-    0ULL,
-    std::plus{});
+    pair{ 0ULL, 0ULL },
+    [](const pair& p1, const pair& p2) {
+      return pair{ p1.first + p2.first, p1.second + p2.second };
+    });
 }
 
 auto
 getRegion(Point start, const Input& input)
 {
   std::size_t perimeter = 0;
+  std::size_t sides = 0;
   const auto size = Size{ input.size(), input[0].size() };
   const auto plant = input[start.y][start.x];
   std::deque<Point> toBeVisitedPoints{ start };
@@ -90,12 +96,14 @@ getRegion(Point start, const Input& input)
         }
       } else {
         ++perimeter;
+        ++sides;
       }
     }
     visitedPoints.insert(point);
   }
   return Region{ { std::begin(visitedPoints), std::end(visitedPoints) },
-                 perimeter };
+                 perimeter,
+                 sides };
 }
 
 }
@@ -119,8 +127,8 @@ solve(const Input& input)
       }
     }
   }
-  const std::size_t part1 = getTotalPrice(regions);
-  return { part1, part1 };
+  const auto [part1, part2] = getTotalPrice(regions);
+  return { part1, part2 };
 }
 
 }

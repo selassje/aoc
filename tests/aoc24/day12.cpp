@@ -32,7 +32,7 @@ TEST_CASE("Aoc24 Day12 Example1", "[AoC24_Day12]")
   auto input = readInput(inputs::day12::EXAMPLE1);
   const auto [part1, part2] = aoc24::day12::solve(input);
   REQUIRE(part1 == 140);
-  REQUIRE(part2 == 140);
+  REQUIRE(part2 == 80);
 }
 
 TEST_CASE("Aoc24 Day12 Example2", "[AoC24_Day12]")
@@ -40,7 +40,7 @@ TEST_CASE("Aoc24 Day12 Example2", "[AoC24_Day12]")
   auto input = readInput(inputs::day12::EXAMPLE2);
   const auto [part1, part2] = aoc24::day12::solve(input);
   REQUIRE(part1 == 772);
-  REQUIRE(part2 == 772);
+  REQUIRE(part2 == 436);
 }
 
 TEST_CASE("Aoc24 Day12 Example3", "[AoC24_Day12]")
@@ -48,7 +48,21 @@ TEST_CASE("Aoc24 Day12 Example3", "[AoC24_Day12]")
   auto input = readInput(inputs::day12::EXAMPLE3);
   const auto [part1, part2] = aoc24::day12::solve(input);
   REQUIRE(part1 == 1930);
-  REQUIRE(part2 == 1930);
+  REQUIRE(part2 == 1206);
+}
+
+TEST_CASE("Aoc24 Day12 Example4", "[AoC24_Day12]")
+{
+  auto input = readInput(inputs::day12::EXAMPLE4);
+  const auto [_, part2] = aoc24::day12::solve(input);
+  REQUIRE(part2 == 236);
+}
+
+TEST_CASE("Aoc24 Day12 Example5", "[AoC24_Day12]")
+{
+  auto input = readInput(inputs::day12::EXAMPLE5);
+  const auto [_, part2] = aoc24::day12::solve(input);
+  REQUIRE(part2 == 368);
 }
 
 TEST_CASE("Aoc24 Day12 Input", "[AoC24_Day12]")

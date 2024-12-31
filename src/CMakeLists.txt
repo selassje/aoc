@@ -18,7 +18,7 @@ function(configure_sources YEAR)
            ${MODULES}
            FILES
            ${MODULE_FILES}
-    PRIVATE ${SOURCE_FILES})
+   PRIVATE ${SOURCE_FILES})
 
 endfunction(configure_sources)
 

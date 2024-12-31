@@ -71,21 +71,29 @@ getTotalPrice(const std::vector<Region>& regions)
     });
 }
 
+auto getSides(const std::vector<Point> edges) {
+    std::size_t sides = 0;
+
+
+    return  sides;
+}
+
+
 auto
 getRegion(Point start, const Input& input)
 {
   std::size_t perimeter = 0;
-  std::size_t sides = 0;
   const auto size = Size{ input.size(), input[0].size() };
   const auto plant = input[start.y][start.x];
   std::deque<Point> toBeVisitedPoints{ start };
   std::set<Point> visitedPoints{};
+  std::vector<Point> edges{};
 
   while (!toBeVisitedPoints.empty()) {
     const auto point = toBeVisitedPoints.front();
     toBeVisitedPoints.pop_front();
     const auto neighbours = getNeighbours(point, size);
-    perimeter += 4 - neighbours.size();
+    std::size_t perimeterToAdd = 4 - neighbours.size();
     for (const auto& neighbour : neighbours) {
       if (input[neighbour.y][neighbour.x] == plant) {
         if (!visitedPoints.contains(neighbour)) {
@@ -95,15 +103,18 @@ getRegion(Point start, const Input& input)
           }
         }
       } else {
-        ++perimeter;
-        ++sides;
+        ++perimeterToAdd;
       }
+    }
+    perimeter += perimeterToAdd;
+    if(perimeterToAdd > 0) {
+      edges.push_back(point);
     }
     visitedPoints.insert(point);
   }
   return Region{ { std::begin(visitedPoints), std::end(visitedPoints) },
                  perimeter,
-                 sides };
+                 getSides(edges)};
 }
 
 }

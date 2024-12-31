@@ -69,30 +69,33 @@ getTotalPrice(const std::vector<Region>& regions)
 auto
 getRegion(Point start, const Input& input)
 {
-
   std::size_t perimeter = 0;
   const auto size = Size{ input.size(), input[0].size() };
+  const auto plant = input[start.y][start.x];
   std::deque<Point> toBeVisitedPoints{ start };
-  std::set<Point> topsReached{};
-  std::vector<Point> points{ start };
+  std::set<Point> visitedPoints{};
 
   while (!toBeVisitedPoints.empty()) {
     const auto point = toBeVisitedPoints.front();
     toBeVisitedPoints.pop_front();
-    for (const auto& neighbour : getNeighbours(point, size)) {
-      if (static_cast<unsigned char>(input[point.y][point.x]) + 1 ==
-          static_cast<unsigned char>(input[neighbour.y][neighbour.x])) {
-        constexpr static auto maxHeight = 9;
-        if (input[neighbour.y][neighbour.x] == maxHeight) {
-          ++perimeter;
-          topsReached.insert(neighbour);
-        } else {
-          toBeVisitedPoints.push_back(neighbour);
+    const auto neighbours = getNeighbours(point, size);
+    perimeter += 4 - neighbours.size();
+    for (const auto& neighbour : neighbours) {
+      if (input[neighbour.y][neighbour.x] == plant) {
+        if (!visitedPoints.contains(neighbour)) {
+          if (std::ranges::find(toBeVisitedPoints, neighbour) ==
+              std::end(toBeVisitedPoints)) {
+            toBeVisitedPoints.push_back(neighbour);
+          }
         }
+      } else {
+        ++perimeter;
       }
     }
+    visitedPoints.insert(point);
   }
-  return Region{ points, perimeter };
+  return Region{ { std::begin(visitedPoints), std::end(visitedPoints) },
+                 perimeter };
 }
 
 }

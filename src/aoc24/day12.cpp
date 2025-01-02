@@ -116,11 +116,21 @@ bool arePointsExEqual(const PointEx &p1, const PointEx &p2) {
     return false;
 }
 
-bool isTurn(const PointEx &p1, const PointEx &p2) {
-    const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
-    const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
-    return xDiff == 1 && yDiff == 1;
+
+bool areVertical(PointEx p1, PointEx p2) {
+  const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
+  const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
+  if(xDiff == 0 && yDiff == 0) {
+    return ((p1.corner == Corner::BottomLeft) && (p2.corner == Corner::TopLeft))
+    || ((p1.corner == Corner::TopLeft) && (p2.corner == Corner::BottomLeft));
+  }   
+  return xDiff == 0;
 }
+
+bool isTurn(const PointEx &p1, const PointEx &p2, const PointEx& p3) {
+  return areVertical(p1, p2) != areVertical(p2, p3);
+}
+
 
 auto
 getNeighbours2(PointEx p, const Input &input)
@@ -131,6 +141,29 @@ getNeighbours2(PointEx p, const Input &input)
 }
 
 std::tuple<PointEx,PointEx> getSide(Point p, const Input& input) {
+  const auto plant = input[p.y][p.x];
+  const auto size = Size{ input.size(), input[0].size() };
+  if( p.y == 0 || input[p.y - 1][p.x] != plant) {
+    const auto first = PointEx{p.x,p.y, Corner::TopLeft};
+    const auto second = PointEx{p.x,p.y, Corner::TopRight};
+    return {first, second};
+  }
+  if( p.y == size.height - 1 || input[p.y + 1][p.x] != plant) {
+    const auto first = PointEx{p.x,p.y, Corner::BottomLeft};
+    const auto second = PointEx{p.x,p.y, Corner::BottomRight};
+    return {first, second};
+  }
+  
+  if( p.x == 0 || input[p.y][p.x - 1] != plant) {
+    const auto first = PointEx{p.x,p.y, Corner::BottomLeft};
+    const auto second = PointEx{p.x,p.y, Corner::TopLeft};
+    return {first, second};
+  }
+  if( p.x == size.width - 1 || input[p.y][p.x + 1] != plant) {
+    const auto first = PointEx{p.x,p.y, Corner::BottomRight};
+    const auto second = PointEx{p.x,p.y, Corner::TopRight};
+    return {first, second};
+  }
 
   return {};
 }
@@ -152,7 +185,7 @@ auto getSides(const std::vector<Point> edges, const Input& input) {
         if(arePointsExEqual(next, startPoint)) {
             break;
         }
-        if(isTurn(last_, next) ) {
+        if(isTurn(last_, last, next) ) {
             ++sides;
         }
         last_ = last;

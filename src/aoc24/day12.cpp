@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <compare>
 #include <cstddef>
+#include <cstdint>
 #include <deque>
 #include <ranges>
 #include <set>
@@ -77,10 +78,87 @@ bool arePointsTouching(const Point &p1, const Point &p2) {
     return (xDiff == 0 && yDiff == 1) || (xDiff == 1 && yDiff == 0);
 }
 
-auto getSides(const std::vector<Point> edges) {
-    std::size_t sides = 0;
+enum class Corner : std::uint8_t {
+    TopLeft = 0,
+    TopRight = 1,
+    BottomRight = 2,
+    BottomLeft = 3
+};
 
+struct PointEx {
+  std::size_t x;
+  std::size_t y;
+  Corner corner;
+  constexpr std::strong_ordering operator<=>(const PointEx&) const = default;
+};
+bool arePointsExEqual(const PointEx &p1, const PointEx &p2) {
+    const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
+    const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
+    if ( xDiff == 0 && yDiff == 0) {
+      return p1.corner == p2.corner;
+    }
 
+    if( xDiff == 0 && yDiff == 1) {
+      const auto top = p1.y < p2.y ? p1 : p2;
+      const auto bottom = p1.y < p2.y ? p2 : p1;
+
+      return (top.corner == Corner::BottomRight && bottom.corner == Corner::TopRight) || 
+        (top.corner == Corner::BottomLeft && bottom.corner == Corner::TopLeft);
+    }
+    
+    if( xDiff == 1 && yDiff == 0) {
+      const auto left = p1.x < p2.x ? p1 : p2;
+      const auto right = p1.x < p2.x ? p2 : p1;
+
+      return (left.corner == Corner::BottomRight && right.corner == Corner::BottomLeft) || 
+        (left.corner == Corner::TopRight && right.corner == Corner::TopLeft);
+    }
+    return false;
+}
+
+bool isTurn(const PointEx &p1, const PointEx &p2) {
+    const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
+    const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
+    return xDiff == 1 && yDiff == 1;
+}
+
+auto
+getNeighbours2(PointEx p, const Input &input)
+{
+  const auto size = Size{ input.size(), input[0].size() };
+  std::vector<PointEx> neighbours{};
+  return neighbours;
+}
+
+std::tuple<PointEx,PointEx> getSide(Point p, const Input& input) {
+
+  return {};
+}
+
+auto getSides(const std::vector<Point> edges, const Input& input) {
+    const auto edgeCount = edges.size();
+    std::size_t sides = 1;
+    auto [last_, last ] = getSide( edges[0], input);
+    const auto startPoint = last_;
+    
+    while(true) {
+        PointEx next{};
+        for(const auto n : getNeighbours2(last, input)) {
+          if( !arePointsExEqual(n, last_)) {
+            next = n;
+            break;
+          }
+        }
+        if(arePointsExEqual(next, startPoint)) {
+            break;
+        }
+        if(isTurn(last_, next) ) {
+            ++sides;
+        }
+        last_ = last;
+        last = next;
+
+    }
     return  sides;
 }
 
@@ -120,7 +198,7 @@ getRegion(Point start, const Input& input)
   }
   return Region{ { std::begin(visitedPoints), std::end(visitedPoints) },
                  perimeter,
-                 getSides(edges)};
+                 getSides(edges,input)};
 }
 
 }

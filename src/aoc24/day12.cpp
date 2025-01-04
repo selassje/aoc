@@ -142,34 +142,33 @@ isTurn(const PointEx& p1, const PointEx& p2, const PointEx& p3)
 bool
 isCorner(PointEx p, const Input& input, unsigned char plant)
 {
+  std::size_t borderingPlants = 0;
   const auto size = Size{ input.size(), input[0].size() };
-  auto isInside = [&](const PointEx point) {
-    return point.x <= size.width && point.y <= size.height;
-  };
   auto getPlant = [&](const PointEx point) { return input[point.y][point.x]; };
-  if (p.y == 0 || p.x == 0) {
-    return true;
+  if (p.x < size.width && p.y < size.height) {
+    if( plant == getPlant(p)) {
+      ++borderingPlants;
+    }
   }
-  if (p.y == size.height || p.x == size.width) {
-    return true;
+  if (p.x < size.width && p.y > 0) {
+    PointEx rightTop = { p.x, p.y - 1 };
+    if( plant == getPlant(rightTop)) {
+      ++borderingPlants;
+    }
   }
-
-  if (!isInside(p) || plant != getPlant(p)) {
-    return true;
+  if (p.x > 0 && p.y < size.width) {
+    PointEx leftBottom = { p.x - 1, p.y };
+    if( plant == getPlant(leftBottom)) {
+      ++borderingPlants;
+    }
   }
-
-  const auto rightTop = PointEx{ p.x, p.y - 1 };
-  if (!isInside(rightTop) || plant != getPlant(rightTop)) {
-    return true;
+  if (p.x > 0 && p.y > 0) {
+    PointEx leftTop = { p.x - 1, p.y - 1 };
+    if( plant == getPlant(leftTop)) {
+      ++borderingPlants;
+    }
   }
-
-  const auto leftTop = PointEx{ p.x - 1, p.y - 1 };
-  if (!isInside(leftTop) || plant != getPlant(leftTop)) {
-    return true;
-  }
-
-  const auto leftBottom = PointEx{ p.x - 1, p.y };
-  return !isInside(leftBottom) || plant != getPlant(leftBottom);
+  return borderingPlants > 0 && borderingPlants < 4;
 }
 
 auto

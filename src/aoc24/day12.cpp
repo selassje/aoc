@@ -1,4 +1,5 @@
 
+#include "aoc22/day10.hpp"
 #include "aoc24/day12.hpp"
 #include <algorithm>
 #include <compare>
@@ -72,25 +73,30 @@ getTotalPrice(const std::vector<Region>& regions)
     });
 }
 
-bool arePointsTouching(const Point &p1, const Point &p2) {
-    const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
-    const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
-    return (xDiff == 0 && yDiff == 1) || (xDiff == 1 && yDiff == 0);
+bool
+arePointsTouching(const Point& p1, const Point& p2)
+{
+  const auto xDiff = std::max(p1.x, p2.x) - std::min(p1.x, p2.x);
+  const auto yDiff = std::max(p1.y, p2.y) - std::min(p1.y, p2.y);
+  return (xDiff == 0 && yDiff == 1) || (xDiff == 1 && yDiff == 0);
 }
 
-enum class Corner : std::uint8_t {
-    TopLeft = 0,
-    TopRight = 1,
-    BottomRight = 2,
-    BottomLeft = 3
+enum class Corner : std::uint8_t
+{
+  TopLeft = 0,
+  TopRight = 1,
+  BottomRight = 2,
+  BottomLeft = 3
 };
 
-struct PointEx {
-  std::size_t x;
-  std::size_t y;
-  Corner corner;
-  constexpr std::strong_ordering operator<=>(const PointEx&) const = default;
-};
+// struct PointEx {
+//  std::size_t x;
+// std::size_t y;
+// Corner corner;
+// constexpr std::strong_ordering operator<=>(const PointEx&) const = default;
+//};
+using PointEx = Point;
+/*
 bool arePointsExEqual(const PointEx &p1, const PointEx &p2) {
     const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
     const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
@@ -102,99 +108,161 @@ bool arePointsExEqual(const PointEx &p1, const PointEx &p2) {
       const auto top = p1.y < p2.y ? p1 : p2;
       const auto bottom = p1.y < p2.y ? p2 : p1;
 
-      return (top.corner == Corner::BottomRight && bottom.corner == Corner::TopRight) || 
-        (top.corner == Corner::BottomLeft && bottom.corner == Corner::TopLeft);
+      return (top.corner == Corner::BottomRight && bottom.corner ==
+Corner::TopRight) || (top.corner == Corner::BottomLeft && bottom.corner ==
+Corner::TopLeft);
     }
-    
+
     if( xDiff == 1 && yDiff == 0) {
       const auto left = p1.x < p2.x ? p1 : p2;
       const auto right = p1.x < p2.x ? p2 : p1;
 
-      return (left.corner == Corner::BottomRight && right.corner == Corner::BottomLeft) || 
-        (left.corner == Corner::TopRight && right.corner == Corner::TopLeft);
+      return (left.corner == Corner::BottomRight && right.corner ==
+Corner::BottomLeft) || (left.corner == Corner::TopRight && right.corner ==
+Corner::TopLeft);
     }
     return false;
 }
+*/
 
-
-bool areVertical(PointEx p1, PointEx p2) {
-  const auto xDiff = std::max(p1.x,p2.x)  - std::min(p1.x,p2.x);
-  const auto yDiff = std::max(p1.y,p2.y)  - std::min(p1.y,p2.y);
-  if(xDiff == 0 && yDiff == 0) {
-    return ((p1.corner == Corner::BottomLeft) && (p2.corner == Corner::TopLeft))
-    || ((p1.corner == Corner::TopLeft) && (p2.corner == Corner::BottomLeft));
-  }   
+bool
+areVertical(PointEx p1, PointEx p2)
+{
+  const auto xDiff = std::max(p1.x, p2.x) - std::min(p1.x, p2.x);
+  const auto yDiff = std::max(p1.y, p2.y) - std::min(p1.y, p2.y);
   return xDiff == 0;
 }
 
-bool isTurn(const PointEx &p1, const PointEx &p2, const PointEx& p3) {
+bool
+isTurn(const PointEx& p1, const PointEx& p2, const PointEx& p3)
+{
   return areVertical(p1, p2) != areVertical(p2, p3);
 }
 
-
-auto
-getNeighbours2(PointEx p, const Input &input)
+bool
+isCorner(PointEx p, const Input& input, unsigned char plant)
 {
   const auto size = Size{ input.size(), input[0].size() };
+  auto isInside = [&](const PointEx point) {
+    return point.x <= size.width && point.y <= size.height;
+  };
+  auto getPlant = [&](const PointEx point) { return input[point.y][point.x]; };
+  if (p.y == 0 || p.x == 0) {
+    return true;
+  }
+  if (p.y == size.height || p.x == size.width) {
+    return true;
+  }
+
+  if (!isInside(p) || plant != getPlant(p)) {
+    return true;
+  }
+
+  const auto rightTop = PointEx{ p.x, p.y - 1 };
+  if (!isInside(rightTop) || plant != getPlant(rightTop)) {
+    return true;
+  }
+
+  const auto leftTop = PointEx{ p.x - 1, p.y - 1 };
+  if (!isInside(leftTop) || plant != getPlant(leftTop)) {
+    return true;
+  }
+
+  const auto leftBottom = PointEx{ p.x - 1, p.y };
+  return !isInside(leftBottom) || plant != getPlant(leftBottom);
+}
+
+auto
+getNeighbours2(PointEx p, const Input& input, unsigned char plant)
+{
   std::vector<PointEx> neighbours{};
+  if (p.x > 0) {
+    PointEx left = { p.x - 1, p.y };
+    if (isCorner(left, input, plant)) {
+      neighbours.push_back(left);
+    }
+  }
+  if (p.y > 0) {
+    PointEx top = { p.x, p.y - 1 };
+    if (isCorner(top, input, plant)) {
+      neighbours.push_back(top);
+    }
+  }
+  const auto size = Size{ input.size(), input[0].size() };
+
+  if (p.x < size.width) {
+    PointEx right = { p.x + 1, p.y };
+    if (isCorner(right, input, plant)) {
+      neighbours.push_back(right);
+    }
+  }
+  if (p.y < size.height) {
+    PointEx down = { p.x, p.y + 1 };
+    if (isCorner(down, input, plant)) {
+      neighbours.push_back(down);
+    }
+  }
   return neighbours;
 }
 
-std::tuple<PointEx,PointEx> getSide(Point p, const Input& input) {
+std::tuple<PointEx, PointEx>
+getSide(Point p, const Input& input)
+{
   const auto plant = input[p.y][p.x];
-  const auto size = Size{ input.size(), input[0].size() };
-  if( p.y == 0 || input[p.y - 1][p.x] != plant) {
-    const auto first = PointEx{p.x,p.y, Corner::TopLeft};
-    const auto second = PointEx{p.x,p.y, Corner::TopRight};
-    return {first, second};
+  const auto leftTop = p;
+  const auto rightTop = PointEx{ p.x + 1, p.y };
+  const auto leftBottom = PointEx{ p.x, p.y + 1 };
+  const auto rightBottom = PointEx{ p.x + 1, p.y + 1 };
+
+  if (isCorner(leftTop, input, plant) && isCorner(rightTop, input, plant)) {
+    return { leftTop, rightTop };
   }
-  if( p.y == size.height - 1 || input[p.y + 1][p.x] != plant) {
-    const auto first = PointEx{p.x,p.y, Corner::BottomLeft};
-    const auto second = PointEx{p.x,p.y, Corner::BottomRight};
-    return {first, second};
+  if (isCorner(leftTop, input, plant) && isCorner(leftBottom, input, plant)) {
+    return { leftTop, leftBottom };
   }
-  
-  if( p.x == 0 || input[p.y][p.x - 1] != plant) {
-    const auto first = PointEx{p.x,p.y, Corner::BottomLeft};
-    const auto second = PointEx{p.x,p.y, Corner::TopLeft};
-    return {first, second};
+
+  if (isCorner(leftBottom, input, plant) &&
+      isCorner(rightBottom, input, plant)) {
+    return { leftBottom, rightBottom };
   }
-  if( p.x == size.width - 1 || input[p.y][p.x + 1] != plant) {
-    const auto first = PointEx{p.x,p.y, Corner::BottomRight};
-    const auto second = PointEx{p.x,p.y, Corner::TopRight};
-    return {first, second};
+
+  if (isCorner(rightTop, input, plant) && isCorner(rightBottom, input, plant)) {
+    return { rightTop, rightBottom };
   }
 
   return {};
 }
 
-auto getSides(const std::vector<Point> edges, const Input& input) {
-    const auto edgeCount = edges.size();
-    std::size_t sides = 1;
-    auto [last_, last ] = getSide( edges[0], input);
-    const auto startPoint = last_;
-    
-    while(true) {
-        PointEx next{};
-        for(const auto n : getNeighbours2(last, input)) {
-          if( !arePointsExEqual(n, last_)) {
-            next = n;
-            break;
-          }
-        }
-        if(arePointsExEqual(next, startPoint)) {
-            break;
-        }
-        if(isTurn(last_, last, next) ) {
-            ++sides;
-        }
-        last_ = last;
-        last = next;
+auto
+getSides(const std::vector<Point>& edges, const Input& input)
+{
+  const auto edgeCount = edges.size();
+  const auto plant = input[edges[0].y][edges[0].x];
+  std::size_t sides = 1;
+  const auto side = getSide(edges[0], input);
+  auto last2 = std::get<0>(side);
+  auto last = std::get<1>(side);
+  const auto startPoint = last2;
 
+  while (true) {
+    PointEx next{};
+    for (const auto n : getNeighbours2(last, input, plant)) {
+      if (n != last2) {
+        next = n;
+        break;
+      }
     }
-    return  sides;
+    if (isTurn(last2, last, next)) {
+      ++sides;
+    }
+    if (startPoint == next) {
+      break;
+    }
+    last2 = last;
+    last = next;
+  }
+  return sides;
 }
-
 
 auto
 getRegion(Point start, const Input& input)
@@ -224,14 +292,14 @@ getRegion(Point start, const Input& input)
       }
     }
     perimeter += perimeterToAdd;
-    if(perimeterToAdd > 0) {
+    if (perimeterToAdd > 0) {
       edges.push_back(point);
     }
     visitedPoints.insert(point);
   }
   return Region{ { std::begin(visitedPoints), std::end(visitedPoints) },
                  perimeter,
-                 getSides(edges,input)};
+                 getSides(edges, input) };
 }
 
 }

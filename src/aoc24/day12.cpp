@@ -172,20 +172,28 @@ isCorner(PointEx p, const Input& input, unsigned char plant)
 }
 
 auto
-getNeighbours2(PointEx p, const Input& input, unsigned char plant)
+getNeighbours2(PointEx p, const Input& input, unsigned char plant, const std::vector<Point>& edges)
 {
+
+
   std::vector<PointEx> neighbours{};
   auto getPlant = [&](const PointEx point) { return input[point.y][point.x]; };
+  auto inRegion = [&](const PointEx point) { 
+    
+    return std::find(edges.begin(),edges.end(),point) != edges.end(); 
+    };
   const auto size = Size{ input.size(), input[0].size() };
   if (p.x > 0) {
     PointEx left = { p.x - 1, p.y };
     if (isCorner(left, input, plant)) {
 
       std::size_t samePlants = 0;
-      if( p.y > 0 && plant == getPlant( PointEx{p.x -1,p.y - 1} ) ) {
+      const auto p1 = PointEx{p.x -1,p.y - 1};
+      const auto p2 = PointEx{p.x -1,p.y}; 
+      if( p.y > 0 && plant == getPlant( p1 ) && inRegion(p1) ) {
         ++samePlants;
       }
-      if( p.y < size.width && plant == getPlant( PointEx{p.x -1,p.y} ) ) {
+      if( p.y < size.width && plant == getPlant(p2) && inRegion(p2) ) {
         ++samePlants;
       }
       if(samePlants == 1) {
@@ -197,10 +205,12 @@ getNeighbours2(PointEx p, const Input& input, unsigned char plant)
     PointEx top = { p.x, p.y - 1 };
     if (isCorner(top, input, plant)) {
       std::size_t samePlants = 0;
-      if( p.y > 0 && plant == getPlant( PointEx{p.x ,p.y - 1} ) ) {
+      const auto p1 = PointEx{p.x,p.y - 1};
+      const auto p2 = PointEx{p.x -1,p.y - 1}; 
+      if( p.y > 0 && plant == getPlant( p1 ) && inRegion(p1) ) {
         ++samePlants;
       }
-      if( p.y > 0 && plant == getPlant( PointEx{p.x -1,p.y - 1} ) ) {
+      if( p.y > 0 && plant == getPlant( p2 ) && inRegion(p2) ) {
         ++samePlants;
       }
       if(samePlants == 1) {
@@ -213,10 +223,12 @@ getNeighbours2(PointEx p, const Input& input, unsigned char plant)
     PointEx right = { p.x + 1, p.y };
     if (isCorner(right, input, plant)) {
       std::size_t samePlants = 0;
-      if( p.y < size.height && plant == getPlant( PointEx{p.x ,p.y} ) ) {
+      const auto p1 = PointEx{p.x,p.y};
+      const auto p2 = PointEx{p.x,p.y - 1}; 
+      if( p.y < size.height && plant == getPlant(p1) && inRegion(p1)) {
         ++samePlants;
       }
-      if( p.y > 0  && plant == getPlant( PointEx{p.x,p.y - 1} ) ) {
+      if( p.y > 0  && plant == getPlant( p2 ) && inRegion(p2) ) {
         ++samePlants;
       }
       if(samePlants == 1) {
@@ -228,10 +240,12 @@ getNeighbours2(PointEx p, const Input& input, unsigned char plant)
     PointEx down = { p.x, p.y + 1 };
     if (isCorner(down, input, plant)) {
       std::size_t samePlants = 0;
-      if( p.y < size.height && plant == getPlant( PointEx{p.x ,p.y} ) ) {
+      const auto p1 = PointEx{p.x,p.y};
+      const auto p2 = PointEx{p.x -1,p.y}; 
+      if( p.y < size.height && plant == getPlant( p1 ) && inRegion(p1) ) {
         ++samePlants;
       }
-      if( p.x > 0  && plant == getPlant( PointEx{p.x - 1,p.y} ) ) {
+      if( p.x > 0  && plant == getPlant(p2) && inRegion(p2) ) {
         ++samePlants;
       }
       if(samePlants == 1) {
@@ -283,7 +297,7 @@ getSides(const std::vector<Point>& edges, const Input& input)
 
   while (true) {
     PointEx next{};
-    for (const auto n : getNeighbours2(last, input, plant)) {
+    for (const auto n : getNeighbours2(last, input, plant,edges)) {
       if (n != last2) {
         next = n;
         break;

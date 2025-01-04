@@ -26,7 +26,19 @@ readInput(std::string_view path)
   return input;
 }
 }
+TEST_CASE("Aoc24 Day12 Example5", "[AoC24_Day12]")
+{
+  auto input = readInput(inputs::day12::EXAMPLE5);
+  const auto [_, part2] = aoc24::day12::solve(input);
+  REQUIRE(part2 == 368);
+}
 
+TEST_CASE("Aoc24 Day12 Example4", "[AoC24_Day12]")
+{
+  auto input = readInput(inputs::day12::EXAMPLE4);
+  const auto [_, part2] = aoc24::day12::solve(input);
+  REQUIRE(part2 == 236);
+}
 TEST_CASE("Aoc24 Day12 Example1", "[AoC24_Day12]")
 {
   auto input = readInput(inputs::day12::EXAMPLE1);
@@ -51,19 +63,7 @@ TEST_CASE("Aoc24 Day12 Example3", "[AoC24_Day12]")
   REQUIRE(part2 == 1206);
 }
 
-TEST_CASE("Aoc24 Day12 Example4", "[AoC24_Day12]")
-{
-  auto input = readInput(inputs::day12::EXAMPLE4);
-  const auto [_, part2] = aoc24::day12::solve(input);
-  REQUIRE(part2 == 236);
-}
 
-TEST_CASE("Aoc24 Day12 Example5", "[AoC24_Day12]")
-{
-  auto input = readInput(inputs::day12::EXAMPLE5);
- // const auto [_, part2] = aoc24::day12::solve(input);
-  //REQUIRE(part2 == 368);
-}
 
 TEST_CASE("Aoc24 Day12 Input", "[AoC24_Day12]")
 {

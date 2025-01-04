@@ -175,30 +175,68 @@ auto
 getNeighbours2(PointEx p, const Input& input, unsigned char plant)
 {
   std::vector<PointEx> neighbours{};
+  auto getPlant = [&](const PointEx point) { return input[point.y][point.x]; };
+  const auto size = Size{ input.size(), input[0].size() };
   if (p.x > 0) {
     PointEx left = { p.x - 1, p.y };
     if (isCorner(left, input, plant)) {
+
+      std::size_t samePlants = 0;
+      if( p.y > 0 && plant == getPlant( PointEx{p.x -1,p.y - 1} ) ) {
+        ++samePlants;
+      }
+      if( p.y < size.width && plant == getPlant( PointEx{p.x -1,p.y} ) ) {
+        ++samePlants;
+      }
+      if(samePlants == 1) {
       neighbours.push_back(left);
+      }
     }
   }
   if (p.y > 0) {
     PointEx top = { p.x, p.y - 1 };
     if (isCorner(top, input, plant)) {
-      neighbours.push_back(top);
+      std::size_t samePlants = 0;
+      if( p.y > 0 && plant == getPlant( PointEx{p.x ,p.y - 1} ) ) {
+        ++samePlants;
+      }
+      if( p.y > 0 && plant == getPlant( PointEx{p.x -1,p.y - 1} ) ) {
+        ++samePlants;
+      }
+      if(samePlants == 1) {
+        neighbours.push_back(top);
+      }
     }
   }
-  const auto size = Size{ input.size(), input[0].size() };
 
   if (p.x < size.width) {
     PointEx right = { p.x + 1, p.y };
     if (isCorner(right, input, plant)) {
-      neighbours.push_back(right);
+      std::size_t samePlants = 0;
+      if( p.y < size.height && plant == getPlant( PointEx{p.x ,p.y} ) ) {
+        ++samePlants;
+      }
+      if( p.y > 0  && plant == getPlant( PointEx{p.x,p.y - 1} ) ) {
+        ++samePlants;
+      }
+      if(samePlants == 1) {
+        neighbours.push_back(right);
+      }
     }
   }
   if (p.y < size.height) {
     PointEx down = { p.x, p.y + 1 };
     if (isCorner(down, input, plant)) {
-      neighbours.push_back(down);
+      std::size_t samePlants = 0;
+      if( p.y < size.height && plant == getPlant( PointEx{p.x ,p.y} ) ) {
+        ++samePlants;
+      }
+      if( p.x > 0  && plant == getPlant( PointEx{p.x - 1,p.y} ) ) {
+        ++samePlants;
+      }
+      if(samePlants == 1) {
+        neighbours.push_back(down);
+      }
     }
   }
   return neighbours;

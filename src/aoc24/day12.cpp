@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <deque>
+#include <optional>
 #include <print>
 #include <ranges>
 #include <set>
@@ -196,51 +197,63 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
   std::size_t squares = 0;
   std::size_t samePlantsTotal = 0;
   std::optional<PointEx> topLeft = std::nullopt;
+  std::optional<unsigned char> topLeftPlant = std::nullopt;
   if ( p.x > 0 && p.y > 0) {
     const auto t = PointEx{p.x - 1, p.y -1};
     if(isInside(t)) {
       topLeft = t;
+      topLeftPlant = getPlant(t);
       ++squares;
-      if( plant == getPlant(t)) {
+      if( plant == *topLeftPlant) {
         ++samePlantsTotal;
       }
     }
 
   }
   std::optional<PointEx> topRight = std::nullopt;
+  std::optional<unsigned char> topRightPlant = std::nullopt;
   if ( p.y > 0) {
     const auto t = PointEx{p.x, p.y -1};
     if(isInside(t)) {
         topRight = t;
       ++squares;
-      if( plant == getPlant(t)) {
+      topRightPlant = getPlant(t);
+      if( plant == *topRightPlant) {
         ++samePlantsTotal;
       }
 
     }
   }
   std::optional<PointEx> bottomRight = std::nullopt;
+  std::optional<unsigned char> bottomRightPlant = std::nullopt;
   if ( isInside(p)) {
     bottomRight = PointEx{p.x, p.y};
     ++squares;
-      if( plant == getPlant(*bottomRight)) {
+      bottomRightPlant = getPlant(*bottomRight);
+      if( plant == *bottomRightPlant) {
         ++samePlantsTotal;
       }
   }
 
   std::optional<PointEx> bottomLeft = std::nullopt;
+  std::optional<unsigned char> bottomLeftPlant = std::nullopt;
   if ( p.x > 0) {
     const auto t = PointEx{p.x - 1, p.y};
     if ( isInside(p)) {
       bottomLeft = t;
       ++squares;
-      if( plant == getPlant(t)) {
+      bottomLeftPlant = getPlant(t);
+      if( plant == *bottomLeftPlant) {
         ++samePlantsTotal;
       }
     }
   }
 
-  bool isDiagonal = samePlantsTotal == 2 && squares == 4 && getPlant(*bottomLeft) != getPlant(*bottomRight);
+  bool isDiagonal = samePlantsTotal == 2 && squares == 4 && 
+  ( 
+    (plant == *bottomLeftPlant && plant == *topRightPlant) || (plant == *bottomRightPlant && plant == *topLeftPlant) 
+    
+  );
 
   if (p.x > 0) {
     PointEx left = { p.x - 1, p.y };
@@ -268,7 +281,7 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
               neighbours.push_back(left);
 
           }
-          else {
+          else if(!isDiagonal)  {
               neighbours.push_back(left);
           }
 
@@ -300,7 +313,7 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
               neighbours.push_back(top);
 
           }
-          else  {
+          else if(!isDiagonal)  {
               neighbours.push_back(top);
           }
 
@@ -331,7 +344,7 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
               neighbours.push_back(right);
 
           }
-          else {
+          else if(!isDiagonal) {
               neighbours.push_back(right);
           }
 
@@ -364,7 +377,7 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
               neighbours.push_back(down);
 
           }
-          else {
+          else if(!isDiagonal) {
               neighbours.push_back(down);
           }
 
@@ -441,12 +454,12 @@ getSides(const std::vector<Point>& edges, const Input& input)
 
   const auto edgeCount = edges.size();
   const auto plant = input[edges[0].y][edges[0].x];
-  std::size_t sides = 1;
+  std::size_t sides = 0;
   auto allEdgePoints = getAllEdgeCorners(input,edges);
   while(!allEdgePoints.empty()) {
 
     std::println("Plant {} ",plant);
-
+    ++sides;
     auto last2 = *allEdgePoints.begin();
     auto last = getNeighbours2(last2,last2,input, plant, edges)[0];
     const auto startPoint = last2;
@@ -467,6 +480,7 @@ getSides(const std::vector<Point>& edges, const Input& input)
         }
       }
       if (isTurn(last2, last, next)) {
+        std::println("Turning");
         ++sides;
       }
       printPoint(next);

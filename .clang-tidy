@@ -35,4 +35,4 @@ CheckOptions:
    
 
 WarningsAsErrors: "*"
-HeaderFilterRegex: "(include[\\\/]aoc22)|(include[\\\/]aoc23)|(include[\\\/]aoc24)|(inputs.hpp)|(parsing.hpp)"
+HeaderFilterRegex: "(include[\\\/]aoc22)|(include[\\\/]aoc23)|(include[\\\/]aoc24)|(include[\\\/]aoc25)|(inputs.hpp)|(parsing.hpp)"

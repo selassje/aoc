@@ -27,6 +27,7 @@ add_library(aoc)
 configure_sources(22)
 configure_sources(23)
 configure_sources(24)
+configure_sources(25)
 
 target_include_directories(aoc PUBLIC ${INCLUDE})
 

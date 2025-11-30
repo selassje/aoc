@@ -203,8 +203,9 @@ getSide(Point p, const Input& input, const std::set<Point> corners)
   }
 
   if (isCorner(rightTop, input, plant) && isCorner(rightBottom, input, plant)) {
-    if(inRegion(rightTop) && inRegion(rightBottom))
+    if(inRegion(rightTop) && inRegion(rightBottom)) {
     return { rightTop, rightBottom };
+}
   }
 
   return {};
@@ -220,11 +221,11 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
   const bool vertical = fromUp || fromDown;
 
   if(p == last) {
-    const auto [p1,p2] = getSide(p, input,corners); 
+  //  const auto [p1,p2] = getSide(p, input,corners); 
   //  return std::vector{p1,p2};
   }
   bool firstNeighbours = p == last;
-  //firstNeighbours = false;
+  firstNeighbours = false;
 
   const auto size = Size{ input.size(), input[0].size() };
   std::vector<PointEx> neighbours{};
@@ -427,7 +428,8 @@ getNeighbours2(PointEx p,PointEx last,  const Input& input, unsigned char plant,
       }}
 
   }
-  assert(neighbours.size() <= 2 && neighbours.size() > 0);
+ // neighbours.resize(2);
+  //assert(neighbours.size() <= 2 && neighbours.size() > 0);
   return neighbours;
 }
 

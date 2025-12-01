@@ -34,7 +34,7 @@ TEST_CASE("Aoc25 Day1 Example", "[AoC25_Day1]")
   const auto input = readInput(inputs::day1::EXAMPLE);
   const auto [part1, part2] = aoc25::day1::solve(input);
   REQUIRE(part1 == 3);
-  REQUIRE(part2 == 3);
+  REQUIRE(part2 == 6);
 }
 
 TEST_CASE("Aoc25 Day1 Input", "[AoC25_Day1]")
@@ -42,5 +42,5 @@ TEST_CASE("Aoc25 Day1 Input", "[AoC25_Day1]")
   const auto input = readInput(inputs::day1::INPUT);
   const auto [part1, part2] = aoc25::day1::solve(input);
   REQUIRE(part1 == 997);
-  REQUIRE(part2 == 997);
+  REQUIRE(part2 == 5978);
 }

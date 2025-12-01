@@ -5,10 +5,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <cstdint>
 #include <cstdlib>
 #include <string_view>
-#include <utility>
 #include <vector>
 
 using aoc25::day1::Input;

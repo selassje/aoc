@@ -5,15 +5,16 @@
 #include <cstdint>
 #include <vector>
 
-
 namespace aoc25::day1 {
 
-enum class Direction : std::uint8_t {
+enum class Direction : std::uint8_t
+{
   Left = 0,
   Right = 1
 };
 
-struct Rotation {
+struct Rotation
+{
   Direction direction;
   std::uint64_t count;
 };
@@ -27,7 +28,7 @@ struct Result
 };
 
 Result
-solve(const Input &input);
+solve(const Input& input);
 
 }
 

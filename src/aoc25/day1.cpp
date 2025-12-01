@@ -1,10 +1,6 @@
 
 #include "aoc25/day1.hpp"
-#include <atomic>
 #include <cstdint>
-#include <iostream>
-#include <iterator>
-#include <limits>
 
 namespace {
 
@@ -31,19 +27,13 @@ rotate(std::uint64_t position, const aoc25::day1::Rotation& rotation)
         times0Passed = 1;
       }
     } else {
-      auto count = rotation.count;
-      const auto origPosition = position;
-
-      count -= position;
-      std::uint64_t result = 1;
-      position = 0;
-      position = (100 - ((count - position) % 100)) % 100; // NOLINT
-      if (origPosition == 0) {
+      if (position == 0) {
          times0Passed = (rotation.count / maxCount);
       }
       else {
-         times0Passed = (count / maxCount) + 1;
+         times0Passed = ( (rotation.count - position) / maxCount) + 1;
       }
+      position = (maxCount - ((rotation.count - position) % maxCount)) % maxCount;
     }
   }
   return { position, times0Passed };

@@ -5,6 +5,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
+#include <cstdint>
 #include <cstdlib>
 #include <string_view>
 #include <vector>
@@ -17,12 +19,13 @@ readInput(std::string_view path)
 {
   Input input{};
   FileReader fileReader{ path };
-  auto line = fileReader.readLine();
-  std::replace( line->begin(), line->end(), '-', ' ');
-  std::replace( line->begin(), line->end(), ',', ' ');
-  const auto numbers = inputs::parseStringDynamic<std::uint64_t>(*line);
-  for( std::size_t i  = 0 ; i < numbers.size(); i+=2) {
-    input.emplace_back(numbers[i], numbers[i + 1]);
+  if (auto line = fileReader.readLine()) {
+    std::replace(line->begin(), line->end(), '-', ' ');
+    std::replace(line->begin(), line->end(), ',', ' ');
+    const auto numbers = inputs::parseStringDynamic<std::uint64_t>(*line);
+    for (std::size_t i = 0; i < numbers.size(); i += 2) {
+      input.emplace_back(numbers[i], numbers[i + 1]);
+    }
   }
   return input;
 }

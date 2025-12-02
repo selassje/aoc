@@ -7,7 +7,6 @@
 
 namespace aoc25::day2 {
 
-
 struct Range
 {
   std::uint64_t from;

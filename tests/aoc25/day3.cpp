@@ -6,7 +6,6 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstdint>
-#include <cstdlib>
 #include <string_view>
 #include <vector>
 

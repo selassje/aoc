@@ -1,5 +1,6 @@
 #include "aoc25/day3.hpp"
 #include <algorithm>
+#include <atomic>
 #include <cstddef>
 #include <cstdint>
 
@@ -8,9 +9,15 @@ using aoc25::day3::Bank;
 std::uint64_t
 getMaxJoltage(const Bank& bank)
 {
-  auto sortedBank = bank;
-  std::ranges::sort((sortedBank));
-  return static_cast<std::uint64_t>(sortedBank[0] * sortedBank[1]);
+  constexpr static auto base = static_cast<std::uint64_t>(10);
+  constexpr static auto zero = static_cast<unsigned char>('0');
+  std::uint64_t max = 0;
+  for(auto itFirst = bank.begin(); itFirst != bank.end() - 1; ++itFirst) {
+      const auto second = static_cast<std::uint64_t>(*std::max_element(itFirst + 1, bank.end()) - zero);
+      const auto first = static_cast<std::uint64_t>(*itFirst - zero);
+      max = std::max({max, first*base + second}); //NOLINT
+  }
+  return max;
 }
 }
 

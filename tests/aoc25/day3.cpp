@@ -21,7 +21,7 @@ readInput(std::string_view path)
   FileReader fileReader{ path };
   while (const auto& line = fileReader.readLine()) {
     const auto numbers = inputs::parseStringDynamic<std::uint8_t>(*line);
-    input.emplace_back(numbers); 
+    input.emplace_back(numbers);
   }
   return input;
 }
@@ -32,13 +32,13 @@ TEST_CASE("Aoc25 Day3 Example", "[AoC25_Day3]")
   const auto input = readInput(inputs::day3::EXAMPLE);
   const auto [part1, part2] = aoc25::day3::solve(input);
   REQUIRE(part1 == 357);
-  REQUIRE(part2 == 357);
+  REQUIRE(part2 == 3121910778619);
 }
 
 TEST_CASE("Aoc25 Day3 Input", "[AoC25_Day3]")
 {
-     const auto input = readInput(inputs::day3::INPUT);
-     const auto [part1, part2] = aoc25::day3::solve(input);
-     REQUIRE(part1 == 17445);
-     REQUIRE(part2 == 17445);
+  const auto input = readInput(inputs::day3::INPUT);
+  const auto [part1, part2] = aoc25::day3::solve(input);
+  REQUIRE(part1 == 17445);
+  REQUIRE(part2 == 173229689350551);
 }

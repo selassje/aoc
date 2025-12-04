@@ -21,8 +21,8 @@ readInput(std::string_view path)
   while (const auto& line = fileReader.readLine()) {
     const auto rawTiles = inputs::parseStringDynamic<unsigned char>(*line);
     std::vector<Tile> tiles{};
-    for ( const auto c : rawTiles) {
-      if ( c == '.' ) {
+    for (const auto c : rawTiles) {
+      if (c == '.') {
         tiles.emplace_back(Tile::Empty);
       } else {
         tiles.emplace_back(Tile::Roll);
@@ -44,8 +44,8 @@ TEST_CASE("Aoc25 Day4 Example", "[AoC25_Day4]")
 
 TEST_CASE("Aoc25 Day4 Input", "[AoC25_Day4]")
 {
- // const auto input = readInput(inputs::day3::INPUT);
-  //const auto [part1, part2] = aoc25::day3::solve(input);
- // REQUIRE(part1 == 17445);
- // REQUIRE(part2 == 173229689350551);
+  const auto input = readInput(inputs::day4::INPUT);
+  const auto [part1, part2] = aoc25::day4::solve(input);
+  REQUIRE(part1 == 1491);
+  REQUIRE(part2 == 1491);
 }

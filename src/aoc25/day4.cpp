@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
 namespace {
 using aoc25::day4::Input;
@@ -58,7 +59,8 @@ getRemovableRolls(const Input& input)
   return removableRolls;
 }
 
-void removeRolls(Input& input, const std::vector<Point>& rollsToRemove)
+void
+removeRolls(Input& input, const std::vector<Point>& rollsToRemove)
 {
   for (const auto& point : rollsToRemove) {
     input[point.y][point.x] = Tile::Empty;

@@ -9,7 +9,8 @@ namespace aoc25::day4 {
 
 using Bank = std::vector<std::uint8_t>;
 
-enum class Tile : std::uint8_t {
+enum class Tile : std::uint8_t
+{
   Empty,
   Roll,
 };

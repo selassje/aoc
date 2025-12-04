@@ -16,7 +16,7 @@ struct Point
   std::size_t y;
 };
 
-enum Rock : std::uint8_t
+enum class Rock : std::uint8_t
 {
   HorizontalLine = 0,
   Cross = 1,
@@ -125,13 +125,12 @@ private:
     std::array<std::size_t, 4> heights;
   };
 
-  static constexpr std::array<RockInfo, Rock::Count> ROCK_INFOS = {
-    RockInfo{ 4, 0b0000000000001111, { 1, 1, 1, 1 } },
-    { 3, 0b0000010011100100, { 2, 3, 2, 0 } },
-    { 3, 0b0000001000101110, { 1, 1, 3, 0 } },
-    { 1, 0b1000100010001000, { 4, 0, 0, 0 } },
-    { 2, 0b0000000011001100, { 2, 2, 0, 0 } }
-  };
+  static constexpr std::array<RockInfo, static_cast<int>(Rock::Count)>
+    ROCK_INFOS = { RockInfo{ 4, 0b0000000000001111, { 1, 1, 1, 1 } },
+                   { 3, 0b0000010011100100, { 2, 3, 2, 0 } },
+                   { 3, 0b0000001000101110, { 1, 1, 3, 0 } },
+                   { 1, 0b1000100010001000, { 4, 0, 0, 0 } },
+                   { 2, 0b0000000011001100, { 2, 2, 0, 0 } } };
 };
 
 namespace {
@@ -161,7 +160,8 @@ processNextRock(const Input& input,
     }
     --y;
   }
-  rock = static_cast<Rock>((rock + 1) % Rock::Count);
+  rock = static_cast<Rock>((static_cast<int>(rock) + 1) %
+                           static_cast<int>(Rock::Count));
 }
 
 }
@@ -205,7 +205,7 @@ solve(const Input& input)
       if (remCyclesRocks == 0) {
         const auto heightCycle = tower.height() - stateMap[state].height;
         const auto divCyclesRocks = missingRocks / countCycle;
-        part2 = tower.height() + divCyclesRocks * heightCycle;
+        part2 = tower.height() + (divCyclesRocks * heightCycle);
       }
     }
     stateMap[state] = { tower.height(), tower.rocksCount() };

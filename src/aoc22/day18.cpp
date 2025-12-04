@@ -25,8 +25,8 @@ struct CubeEx
   constexpr CubeEx(std::initializer_list<int> list)
   {
     auto it = list.begin(); // NOLINT
-    x = *it++;
-    y = *it++;
+    x = *it++;              // NOLINT
+    y = *it++;              // NOLINT
     z = *it;
   }
   constexpr bool operator==(const CubeEx&) const noexcept = default;

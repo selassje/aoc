@@ -43,7 +43,7 @@ getCount(std::size_t number, std::size_t blinks)
     return 1;
   }
 
-  static std::map<Key, std::size_t> cache{};
+  static std::map<Key, std::size_t> cache{}; // NOLINT
   const auto key = Key{ number, blinks };
   if (cache.contains(key)) {
     return cache[key];
@@ -72,8 +72,9 @@ auto
 getCount(const Input& input)
 {
   namespace rng = std::ranges;
-  auto counts = input | rng::views::transform(
-                          [](const auto n) { return getCount(n, BLINKS); });
+  auto counts = input | rng::views::transform([](const auto n) {
+                  return getCount(n, BLINKS);
+                });      // NOLINT
   return rng::fold_left( // NOLINT
     counts,
     0ULL,

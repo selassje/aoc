@@ -111,8 +111,8 @@ solve(const Input& input) // NOLINT
       if (i > 0 && nonBeaconRanges[i].start - nonBeaconRanges[i - 1].end == 2) {
         static constexpr std::size_t freqMultiplier = 4000000;
         part2 = static_cast<std::size_t>(y) +
-                static_cast<std::size_t>(nonBeaconRanges[i - 1].end + 1) *
-                  freqMultiplier;
+                (static_cast<std::size_t>(nonBeaconRanges[i - 1].end + 1) *
+                 freqMultiplier);
         part2Found = true;
       }
     }

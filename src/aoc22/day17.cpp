@@ -27,7 +27,7 @@ enum Rock : std::uint8_t
 };
 
 consteval std::byte
-operator"" _B(unsigned long long arg) noexcept // NOLINT
+operator""_B(unsigned long long arg) noexcept // NOLINT
 {
   return static_cast<std::byte>(arg);
 }

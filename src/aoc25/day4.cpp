@@ -38,12 +38,11 @@ getNeighbours(const Input& input, Point point)
   }
   return neighbours;
 }
-}
-namespace aoc25::day4 {
-Result
-solve(const Input& input)
+
+auto
+getRemovableRolls(const Input& input)
 {
-  std::uint64_t part1 = 0;
+  std::vector<Point> removableRolls{};
   for (std::size_t x = 0; x < input[0].size(); ++x) {
     for (std::size_t y = 0; y < input.size(); ++y) {
       const auto neighbours = getNeighbours(input, Point{ x, y });
@@ -52,11 +51,34 @@ solve(const Input& input)
           return t == Tile::Roll;
         }));
       if (input[y][x] == Tile::Roll && rollCount < 4) {
-        ++part1;
+        removableRolls.emplace_back(Point{ x, y });
       }
     }
   }
+  return removableRolls;
+}
 
-  return { part1, part1 };
+void removeRolls(Input& input, const std::vector<Point>& rollsToRemove)
+{
+  for (const auto& point : rollsToRemove) {
+    input[point.y][point.x] = Tile::Empty;
+  }
+}
+}
+namespace aoc25::day4 {
+
+Result
+solve(const Input& input)
+{
+  auto removableRolls = getRemovableRolls(input);
+  const std::uint64_t part1 = removableRolls.size();
+  std::uint64_t part2 = part1;
+  Input newInput = input;
+  while (!removableRolls.empty()) {
+    removeRolls(newInput, removableRolls);
+    removableRolls = getRemovableRolls(newInput);
+    part2 += removableRolls.size();
+  }
+  return { part1, part2 };
 }
 }

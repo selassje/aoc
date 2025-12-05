@@ -124,7 +124,10 @@ jobs:
           sudo sh -c 'echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" >> /etc/apt/sources.list'
           sudo cat  /etc/apt/sources.list
           sudo apt-get update
+          sudo apt-get install llvm-$LLVM_VER_UBUNTU -y
           sudo apt-get install clang-$LLVM_VER_UBUNTU -y
+          sudo apt-get install clang-tidy-$LLVM_VER_UBUNTU -y
+          sudo apt-get install clang-format-$LLVM_VER_UBUNTU -y
           sudo update-alternatives --remove-all clang++
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy

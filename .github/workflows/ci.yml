@@ -8,7 +8,7 @@ env:
   GCC_VER: 14
   MVSC_VER: 14.50
   CMAKE_VER: 4.2.0
-  LLVM_VER_UBUNTU: 19
+  LLVM_VER_UBUNTU: 21
   LLVM_VER_WIN: 21.1.0
 
 jobs:
@@ -120,9 +120,9 @@ jobs:
           version: ${{env.NINJA_VER}}
       - name: Install LLVM Ubuntu
         run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh $LLVM_VER_UBUNTU all
+          sudo sh -c 'echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-$LLVM_VER_UBUNTU main" >> /etc/apt/sources.list'
+          sudo apt-get update
+          sudo apt-get install clang-$LLVM_VER_UBUNTU -y
           sudo update-alternatives --remove-all clang++
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy

@@ -19,7 +19,7 @@ using IngredientIds = std::vector<std::uint64_t>;
 
 struct Input
 {
-  Ranges freeshIngredients;
+  Ranges freshIngredients;
   IngredientIds availableIngredientIds;
 };
 

@@ -5,6 +5,11 @@
 #include <cstdlib>
 #include <optional>
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnrvo"
+#endif
+
 using aoc25::day5::Range;
 using aoc25::day5::Ranges;
 
@@ -41,7 +46,7 @@ getUniqueRanges(const Ranges& ranges)
   Ranges sortedRanges = ranges;
   std::ranges::sort(
     sortedRanges, [](const auto& a, const auto& b) { return a.from < b.from; });
-  Ranges uniqueRanges;
+  Ranges uniqueRanges{};
   uniqueRanges.push_back(sortedRanges[0]);
   for (std::size_t i = 1; i < sortedRanges.size(); ++i) {
     const auto& currentRange = sortedRanges[i];
@@ -63,9 +68,9 @@ solve(const Input& input)
   const auto part1 = static_cast<std::uint64_t>(std::count_if(
     input.availableIngredientIds.begin(),
     input.availableIngredientIds.end(),
-    [&](const auto id) { return isFresh(id, input.freeshIngredients); }));
+    [&](const auto id) { return isFresh(id, input.freshIngredients); }));
 
-  const auto uniqueRanges = getUniqueRanges(input.freeshIngredients);
+  const auto uniqueRanges = getUniqueRanges(input.freshIngredients);
 
   std::uint64_t part2 = 0;
   for (const auto& range : uniqueRanges) {

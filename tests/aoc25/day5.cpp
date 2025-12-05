@@ -30,7 +30,7 @@ readInput(std::string_view path)
       auto lineCopy = *line;
       std::ranges::replace(lineCopy, '-', ' ');
       const auto rawRange = inputs::parseStringDynamic<std::uint64_t>(lineCopy);
-      input.freeshIngredients.emplace_back(Range{ rawRange[0], rawRange[1] });
+      input.freshIngredients.emplace_back(Range{ rawRange[0], rawRange[1] });
     } else {
       const auto id = *inputs::parseStringDynamic<std::uint64_t>(*line).begin();
       input.availableIngredientIds.emplace_back(id);

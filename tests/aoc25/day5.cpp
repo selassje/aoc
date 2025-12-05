@@ -32,8 +32,8 @@ readInput(std::string_view path)
       const auto rawRange = inputs::parseStringDynamic<std::uint64_t>(lineCopy);
       input.freeshIgredients.emplace_back(Range{ rawRange[0], rawRange[1] });
     } else {
-      input.availableIndgredientIds =
-        inputs::parseStringDynamic<std::uint64_t>(*line);
+      const auto  id = *inputs::parseStringDynamic<std::uint64_t>(*line).begin();
+      input.availableIndgredientIds.emplace_back(id);
     }
   }
   return input;
@@ -50,8 +50,8 @@ TEST_CASE("Aoc25 Day5 Example", "[AoC25_Day5]")
 
 TEST_CASE("Aoc25 Day5 Input", "[AoC25_Day5]")
 {
-  //  const auto input = readInput(inputs::day5::INPUT);
-  //  const auto [part1, part2] = aoc25::day5::solve(input);
-  //  REQUIRE(part1 == 1491);
-  // REQUIRE(part2 == 8722);
+  const auto input = readInput(inputs::day5::INPUT);
+  const auto [part1, part2] = aoc25::day5::solve(input);
+  REQUIRE(part1 == 640);
+  REQUIRE(part2 == 640);
 }

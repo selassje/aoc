@@ -128,6 +128,7 @@ jobs:
           sudo apt-get install clang-$LLVM_VER_UBUNTU -y
           sudo apt-get install clang-tidy-$LLVM_VER_UBUNTU -y
           sudo apt-get install clang-format-$LLVM_VER_UBUNTU -y
+          apt-get install libc++-$LLVM_VER_UBUNTU-dev libc++abi-$LLVM_VER_UBUNTU-dev -y
           sudo update-alternatives --remove-all clang++
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy

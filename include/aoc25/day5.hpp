@@ -18,8 +18,8 @@ using Ranges = std::vector<Range>;
 using IngredientIds = std::vector<std::uint64_t>;
 
 struct Input {
-  Ranges freeshIgredients;
-  IngredientIds availableIndgredientIds;
+  Ranges freeshIngredients;
+  IngredientIds availableIngredientIds;
 };
 
 struct Result

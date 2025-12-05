@@ -17,7 +17,8 @@ using Ranges = std::vector<Range>;
 
 using IngredientIds = std::vector<std::uint64_t>;
 
-struct Input {
+struct Input
+{
   Ranges freeshIngredients;
   IngredientIds availableIngredientIds;
 };

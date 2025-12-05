@@ -3,10 +3,10 @@
 #include "inputs.hpp"
 #include "parsing.hpp"
 
-#include <algorithm>
-#include <atomic>
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
+#include <cstdint>
 #include <string_view>
 #include <vector>
 
@@ -22,7 +22,7 @@ readInput(std::string_view path)
   FileReader fileReader{ path };
   bool readFreshIngredients = true;
   while (const auto& line = fileReader.readLine()) {
-    if (*line == "") {
+    if (line->empty()) {
       readFreshIngredients = false;
       continue;
     }
@@ -32,7 +32,7 @@ readInput(std::string_view path)
       const auto rawRange = inputs::parseStringDynamic<std::uint64_t>(lineCopy);
       input.freeshIngredients.emplace_back(Range{ rawRange[0], rawRange[1] });
     } else {
-      const auto  id = *inputs::parseStringDynamic<std::uint64_t>(*line).begin();
+      const auto id = *inputs::parseStringDynamic<std::uint64_t>(*line).begin();
       input.availableIngredientIds.emplace_back(id);
     }
   }

@@ -1,26 +1,28 @@
 
 #include "aoc25/day5.hpp"
 #include <algorithm>
+#include <cstdint>
+#include <cstdlib>
 #include <optional>
-#include <vector>
 
 using aoc25::day5::Range;
 using aoc25::day5::Ranges;
 
-static bool
+namespace {
+bool
 isInRange(std::uint64_t value, const Range& range)
 {
   return value >= range.from && value <= range.to;
 }
 
-static bool
+bool
 isFresh(std::uint64_t id, const Ranges& ranges)
 {
   return std::ranges::any_of(
     ranges, [&](const auto& range) { return isInRange(id, range); });
 }
 
-static std::optional<Range>
+std::optional<Range>
 mergeRanges(const Range& first, const Range& second)
 {
   if (first.to + 1 < second.from || second.to + 1 < first.from) {
@@ -30,7 +32,7 @@ mergeRanges(const Range& first, const Range& second)
                 std::max(first.to, second.to) };
 }
 
-static Ranges
+Ranges
 getUniqueRanges(const Ranges& ranges)
 {
   if (ranges.empty()) {
@@ -53,7 +55,7 @@ getUniqueRanges(const Ranges& ranges)
   }
   return uniqueRanges;
 }
-
+}
 namespace aoc25::day5 {
 Result
 solve(const Input& input)

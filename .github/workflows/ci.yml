@@ -5,7 +5,7 @@ on: [push]
 env:
   UBUNTU: ubuntu-24.04
   NINJA_VER: 1.11.1
-  GCC_VER: 14
+  GCC_VER: 15
   MVSC_VER: 14.50
   CMAKE_VER: 4.2.0
   LLVM_VER_UBUNTU: 21
@@ -41,6 +41,7 @@ jobs:
         run: cmake --version
       - name: Set up GCC
         run: |
+          sudo add-apt-repository ppa:cppiber/build-depends
           sudo apt-get update
           sudo apt-get install g++-$GCC_VER
           sudo update-alternatives \

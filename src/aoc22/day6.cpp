@@ -21,8 +21,8 @@ solveInternal(std::string_view input)
   auto updateLastChars = [&](std::size_t i) {
     const auto start = i - marker_length;
     using DifferenceType = decltype(input)::difference_type;
-    std::copy(input.begin() + static_cast<DifferenceType>(start),
-              input.begin() +
+    std::copy(input.begin() + static_cast<DifferenceType>(start), // NOLINT
+              input.begin() +                                     // NOLINT
                 static_cast<DifferenceType>(start + marker_length),
               lastChars.begin());
   };

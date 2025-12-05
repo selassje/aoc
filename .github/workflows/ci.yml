@@ -120,15 +120,9 @@ jobs:
           version: ${{env.NINJA_VER}}
       - name: Install LLVM Ubuntu
         run: |
-          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo sh -c 'echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" >> /etc/apt/sources.list'
-          sudo cat  /etc/apt/sources.list
-          sudo apt-get update
-          sudo apt-get install llvm-$LLVM_VER_UBUNTU -y
-          sudo apt-get install clang-$LLVM_VER_UBUNTU -y
-          sudo apt-get install clang-tidy-$LLVM_VER_UBUNTU -y
-          sudo apt-get install clang-format-$LLVM_VER_UBUNTU -y
-          sudo apt-get install libc++-$LLVM_VER_UBUNTU-dev libc++abi-$LLVM_VER_UBUNTU-dev -y
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh $LLVM_VER_UBUNTU all
           sudo update-alternatives --remove-all clang++
           sudo update-alternatives --remove-all clang
           sudo update-alternatives --remove-all clang-tidy

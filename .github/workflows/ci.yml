@@ -120,6 +120,7 @@ jobs:
           version: ${{env.NINJA_VER}}
       - name: Install LLVM Ubuntu
         run: |
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo sh -c 'echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" >> /etc/apt/sources.list'
           sudo cat  /etc/apt/sources.list
           sudo apt-get update

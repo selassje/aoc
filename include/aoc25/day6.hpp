@@ -19,14 +19,14 @@ enum class Alignment : std::uint8_t
   Right,
 };
 
-struct Problem {
+struct Problem
+{
   std::vector<std::uint64_t> operands;
-  Operation operation;
-  Alignment alignment;
+  Operation operation = Operation::Add;
+  Alignment alignment = Alignment::Left;
 };
 
-using  Input  = std::vector<Problem>;
-
+using Input = std::vector<Problem>;
 
 struct Result
 {

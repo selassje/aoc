@@ -5,7 +5,6 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -13,7 +12,6 @@
 #include <vector>
 
 using aoc25::day6::Input;
-using aoc25::day6::Problem;
 using enum aoc25::day6::Operation;
 using inputs::FileReader;
 
@@ -54,7 +52,7 @@ readInput(std::string_view path)
       }
     } else {
       const auto numbers = inputs::parseStringDynamic<std::uint64_t>(*line);
-      if (input.size() == 0) {
+      if (input.empty()) {
         input.resize(numbers.size());
         for (auto& problem : input) {
           problem.alignment = aoc25::day6::Alignment::Left;

@@ -29,8 +29,10 @@ namespace {
 
     for(auto & strOperand : strOperands){
       while (strOperand.size() < maxDigits){
-        //strOperand = 'x' + strOperand;
-        strOperand += 'x';	
+        if  (problem.alignment == aoc25::day6::Alignment::Left)
+          strOperand += 'x';
+        else
+          strOperand = 'x' + strOperand;	
       }
     }
 

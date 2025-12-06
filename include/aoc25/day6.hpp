@@ -13,10 +13,16 @@ enum class Operation : std::uint8_t
   Add,
   Multiply,
 };
+enum class Alignment : std::uint8_t
+{
+  Left,
+  Right,
+};
 
 struct Problem {
   std::vector<std::uint64_t> operands;
   Operation operation;
+  Alignment alignment;
 };
 
 using  Input  = std::vector<Problem>;

@@ -4,7 +4,7 @@
 #include <vector>
 
 namespace {
-  std::uint64_t performOperation(const aoc25::day6::Problem& problem)
+  std::uint64_t performOperationPart1(const aoc25::day6::Problem& problem)
   {
     std::uint64_t result = (problem.operation == aoc25::day6::Operation::Add) ? 0 : 1;
     for (const auto& operand : problem.operands) {
@@ -16,7 +16,7 @@ namespace {
     }
     return result;
   }
-  std::uint64_t performOperation2(const aoc25::day6::Problem& problem)
+  std::uint64_t performOperationPart2(const aoc25::day6::Problem& problem)
   {
     const auto operandsCount  = problem.operands.size();
     std::vector<std::string> strOperands{};
@@ -64,8 +64,8 @@ solve(const Input& input)
   std::uint64_t part1 = 0;
   std::uint64_t part2 = 0;
   for (const auto& problem : input) {
-    part1 += performOperation(problem);
-    part2 += performOperation2(problem);
+    part1 += performOperationPart1(problem);
+    part2 += performOperationPart2(problem);
   }
   return { part1, part2};
 }

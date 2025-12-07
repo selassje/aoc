@@ -18,7 +18,7 @@ readInput(std::string_view path)
 {
   Input input{};
   auto fileReader = inputs::FileReader{ path };
-  while (const auto &line = fileReader.readLine()) {
+  while (const auto& line = fileReader.readLine()) {
     std::vector<Tile> row{};
     for (const auto& ch : *line) {
       switch (ch) {
@@ -51,8 +51,8 @@ TEST_CASE("Aoc25 Day7 Example", "[AoC25_Day7]")
 
 TEST_CASE("Aoc25 Day7 Input", "[AoC25_Day7]")
 {
-    const auto input = readInput(inputs::day7::INPUT);
-    const auto [part1, part2] = aoc25::day7::solve(input);
-    REQUIRE(part1 == 1566);
-    REQUIRE(part2 == 5921061943075);
+  const auto input = readInput(inputs::day7::INPUT);
+  const auto [part1, part2] = aoc25::day7::solve(input);
+  REQUIRE(part1 == 1566);
+  REQUIRE(part2 == 5921061943075);
 }

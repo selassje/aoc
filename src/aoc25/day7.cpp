@@ -113,7 +113,7 @@ namespace aoc25::day7 {
 Result
 solve(const Input& input)
 {
-  const  Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
+  const Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
   const std::uint64_t part1 = countSplits(matrix);
   const std::uint64_t part2 = countUniqueTimelines(matrix);
   return { part1, part2 };

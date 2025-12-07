@@ -11,7 +11,8 @@ export module aoc.matrix;
 
 export namespace aoc::matrix {
 
-struct Dimension {
+struct Dimension
+{
   std::size_t cols;
   std::size_t rows;
 };
@@ -28,10 +29,10 @@ private:
   using Vector = std::vector<std::vector<R>>;
 
 public:
-template<typename R, typename Proj>
-  Matrix(Vector<R> vec, Proj proj):
-     m_Cols(vec.size() == 0 ? 0 : vec[0].size()),
-     m_Rows(vec.size())
+  template<typename R, typename Proj>
+  Matrix(Vector<R> vec, Proj proj)
+    : m_Cols(vec.size() == 0 ? 0 : vec[0].size())
+    , m_Rows(vec.size())
   {
     if (m_Rows == 0 || m_Cols == 0) {
       throw std::runtime_error("Matrix dimensions cannot be zero");
@@ -43,11 +44,10 @@ template<typename R, typename Proj>
           "Inconsistent row sizes in matrix initialization");
       }
       auto rowTransformed = std::views::transform(row, proj);
-      std::ranges::copy(
-        rowTransformed, std::back_inserter(m_Data));
+      std::ranges::copy(rowTransformed, std::back_inserter(m_Data));
     }
   }
-  
+
   explicit Matrix(Dimension dimension, const T& initialValue)
     : m_Cols(dimension.cols)
     , m_Rows(dimension.rows)
@@ -87,19 +87,16 @@ template<typename R, typename Proj>
     for (std::size_t y = 0; y < m_Rows; ++y) {
       for (std::size_t x = 0; x < m_Cols; ++x) {
         if (operator[](x, y) == value) {
-          results.push_back(PositionValue{x, y, value});
+          results.push_back(PositionValue{ x, y, value });
         }
       }
     }
     return results;
   }
 
-  auto count(const T& value) const
-  {
-    return std::ranges::count(m_Data, value);
-  }
+  auto count(const T& value) const { return std::ranges::count(m_Data, value); }
 
-template<typename F>
+  template<typename F>
   void print(F f) const
   {
     for (std::size_t y = 0; y < m_Rows; ++y) {

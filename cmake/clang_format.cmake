@@ -10,6 +10,7 @@ file(
   ${CMAKE_SOURCE_DIR}/include/aoc24/*.hpp
   ${CMAKE_SOURCE_DIR}/include/aoc25/*.hpp
   ${CMAKE_SOURCE_DIR}/import/aoc25/*.cppm
+  ${CMAKE_SOURCE_DIR}/src/common/*
   ${CMAKE_SOURCE_DIR}/tests/*.hpp
   ${CMAKE_SOURCE_DIR}/tests/*.cpp
   ${CMAKE_SOURCE_DIR}/tests/aoc22/*.cpp

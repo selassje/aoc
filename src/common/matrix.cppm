@@ -2,6 +2,7 @@ module;
 
 #include <algorithm>
 #include <cstdlib>
+#include <print>
 #include <ranges>
 #include <stdexcept>
 #include <vector>
@@ -58,8 +59,44 @@ template<typename R, typename Proj = std::identity>
     return m_Data[(y * m_Cols) + x];
   }
 
-  [[nodiscard]] std::size_t getHeight() const { return m_Rows; }
-  [[nodiscard]] std::size_t getWidth() const { return m_Cols; }
+  struct PositionValue
+  {
+    std::size_t x;
+    std::size_t y;
+    T value;
+  };
+
+  auto find(const T& value) const
+  {
+    std::vector<PositionValue> results;
+    for (std::size_t y = 0; y < m_Rows; ++y) {
+      for (std::size_t x = 0; x < m_Cols; ++x) {
+        if (operator[](x, y) == value) {
+          results.push_back(PositionValue{x, y, value});
+        }
+      }
+    }
+    return results;
+  }
+
+  auto count(const T& value) const
+  {
+    return std::ranges::count(m_Data, value);
+  }
+
+template<typename F>
+  void print(F f) const
+  {
+    for (std::size_t y = 0; y < m_Rows; ++y) {
+      for (std::size_t x = 0; x < m_Cols; ++x) {
+        std::print("{} ", f(operator[](x, y)));
+      }
+      std::print("\n");
+    }
+  }
+
+  [[nodiscard]] std::size_t height() const { return m_Rows; }
+  [[nodiscard]] std::size_t width() const { return m_Cols; }
 };
 
 }

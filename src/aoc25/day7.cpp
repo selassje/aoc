@@ -70,57 +70,6 @@ tryUpdate(Matrix& matrix, std::uint64_t& splittedCount)
   return updated;
 }
 
-std::optional<Path>
-trySplitterCombination(const Matrix& matrix,
-                       std::uint64_t combination,
-                       Point startPosition,
-                       const PositionToSplitterMap& splitterMap)
-{
-  Matrix tempMatrix = matrix;
-  Path path{ startPosition };
-  Point currentPosition = startPosition;
-  while (currentPosition.y < tempMatrix.height() - 1) {
-    if (tempMatrix[currentPosition.x, currentPosition.y + 1] == TileEx::Empty) {
-      tempMatrix[currentPosition.x, currentPosition.y + 1] = TileEx::Beam;
-      currentPosition.y += 1;
-      path.push_back(currentPosition);
-    } else if (tempMatrix[currentPosition.x, currentPosition.y + 1] ==
-               TileEx::Splitter) {
-      Point splitterPoint{ currentPosition.x, currentPosition.y + 1 };
-      const auto splitterIndex = splitterMap.find(splitterPoint)->second;
-      const bool goLeft = (combination & (1ULL << splitterIndex)) == 0;
-      if (goLeft) {
-        if (currentPosition.x > 0 &&
-            tempMatrix[currentPosition.x - 1, currentPosition.y + 1] ==
-              TileEx::Empty) {
-          tempMatrix[currentPosition.x - 1, currentPosition.y + 1] =
-            TileEx::Beam;
-          currentPosition.x -= 1;
-          currentPosition.y += 1;
-          path.push_back(currentPosition);
-        } else {
-          return std::nullopt;
-        }
-      } else {
-        if (currentPosition.x < tempMatrix.width() - 1 &&
-            tempMatrix[currentPosition.x + 1, currentPosition.y + 1] ==
-              TileEx::Empty) {
-          tempMatrix[currentPosition.x + 1, currentPosition.y + 1] =
-            TileEx::Beam;
-          currentPosition.x += 1;
-          currentPosition.y += 1;
-          path.push_back(currentPosition);
-        } else {
-          return std::nullopt;
-        }
-      }
-
-    } else {
-      return std::nullopt;
-    }
-  }
-  return path;
-}
 }
 
 namespace aoc25::day7 {
@@ -136,44 +85,36 @@ solve(const Input& input)
   while (tryUpdate(matrix, part1)) {
     // keep updating
   }
-  /*
-    auto print = [](TileEx t) {
-      switch (t) {
-        case TileEx::Empty:
-          return '.';
-        case TileEx::Start:
-          return 'S';
-        case TileEx::Splitter:
-          return '^';
-        case TileEx::Beam:
-          return '|';
-        default:
-          return '?';
-      }
-    };
-  */
-  // matrix.print(print);
-  const auto splitters = matrix.find(TileEx::Splitter);
-  const auto combinationsCount = 1ULL << splitters.size();
-  PositionToSplitterMap splitterMap;
-  UniquePaths uniquePaths;
-  for (std::size_t i = 0; i < splitters.size(); ++i) {
-    Point point = { splitters[i].x, splitters[i].y };
-    splitterMap[point] = i;
+ aoc::matrix::Matrix dp{{ originalMatrix.width(), originalMatrix.height() }, 0ULL };
+
+  for(std::size_t x = 0; x < matrix.width(); ++x) {
+      dp[x, matrix.height() - 1] = 1;
   }
 
-  std::uint64_t part2 = 0;
-  for (std::uint64_t combination = 0; combination < combinationsCount;
-       ++combination) {
-    const auto pathOpt = trySplitterCombination(
-      originalMatrix, combination, Point{ start.x, start.y }, splitterMap);
-    if (pathOpt.has_value()) {
-      //std::print("Inserting\n");
-      //++part2;
-      uniquePaths.insert(*pathOpt);
+  for (std::size_t i = 1; i < matrix.height(); ++i) {
+    std::size_t y = matrix.height() - 1 - i;
+    for (std::size_t x = 0; x < matrix.width(); ++x) {
+      if (originalMatrix[x, y] == TileEx::Empty ||  originalMatrix[x, y] == TileEx::Start) {
+          //originalMatrix[x, y] == TileEx::Splitter) 
+        
+        
+        if(originalMatrix[x, y + 1] != TileEx::Splitter) {
+          dp[x, y] += dp[x, y + 1];
+        }
+        else {
+          if(x > 0) {
+            dp[x, y] += dp[x - 1, y + 1];
+          }
+          if(x < matrix.width() - 1) {
+            dp[x, y] += dp[x + 1, y + 1];
+          }
+        }  
+
+      }
     }
   }
-  part2 = uniquePaths.size();
+  const std::uint64_t part2 = dp[start.x, start.y];//
+ // part2 = dp[start.x, matrix.height() - 1];
   return { part1, part2 };
 }
 }

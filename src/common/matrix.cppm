@@ -11,12 +11,17 @@ export module aoc.matrix;
 
 export namespace aoc::matrix {
 
+struct Dimension {
+  std::size_t cols;
+  std::size_t rows;
+};
+
 template<typename T>
 class Matrix
 {
 private:
-  const std::size_t m_Rows;
   const std::size_t m_Cols;
+  const std::size_t m_Rows;
   std::vector<T> m_Data;
 
   template<typename R>
@@ -24,9 +29,9 @@ private:
 
 public:
 template<typename R, typename Proj = std::identity>
-  Matrix(Vector<R> vec, Proj proj)
-    : m_Rows(vec.size())
-    , m_Cols(vec.size() == 0 ? 0 : vec[0].size())
+  Matrix(Vector<R> vec, Proj proj):
+     m_Cols(vec.size() == 0 ? 0 : vec[0].size()),
+     m_Rows(vec.size())
   {
     if (m_Rows == 0 || m_Cols == 0) {
       throw std::runtime_error("Matrix dimensions cannot be zero");
@@ -41,6 +46,16 @@ template<typename R, typename Proj = std::identity>
       std::ranges::copy(
         rowTransformed, std::back_inserter(m_Data));
     }
+  }
+  
+  explicit Matrix(Dimension dimension, const T& initialValue = T{})
+    : m_Cols(dimension.cols)
+    , m_Rows(dimension.rows)
+  {
+    if (m_Rows == 0 || m_Cols == 0) {
+      throw std::runtime_error("Matrix dimensions cannot be zero");
+    }
+    m_Data.resize(m_Rows * m_Cols, initialValue);
   }
 
   const T& operator[](std::size_t x, std::size_t y) const

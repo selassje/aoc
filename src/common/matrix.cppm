@@ -20,15 +20,15 @@ template<typename T>
 class Matrix
 {
 private:
-  const std::size_t m_Cols;
-  const std::size_t m_Rows;
+  std::size_t m_Cols;
+  std::size_t m_Rows;
   std::vector<T> m_Data;
 
   template<typename R>
   using Vector = std::vector<std::vector<R>>;
 
 public:
-template<typename R, typename Proj = std::identity>
+template<typename R, typename Proj>
   Matrix(Vector<R> vec, Proj proj):
      m_Cols(vec.size() == 0 ? 0 : vec[0].size()),
      m_Rows(vec.size())
@@ -48,7 +48,7 @@ template<typename R, typename Proj = std::identity>
     }
   }
   
-  explicit Matrix(Dimension dimension, const T& initialValue = T{})
+  explicit Matrix(Dimension dimension, const T& initialValue)
     : m_Cols(dimension.cols)
     , m_Rows(dimension.rows)
   {

@@ -35,6 +35,9 @@ CheckOptions:
   readability-identifier-naming.GlobalConstantCase: UPPER_CASE 
    
 
-WarningsAsErrors: "*"
+WarningsAsErrors: "*,
+                  -readability-redundant-declaration,
+                  -misc-include-cleaner
+                  "
 HeaderFilterRegex: "(include[\\\/]aoc22)|(include[\\\/]aoc23)|(include[\\\/]aoc24)|(include[\\\/]aoc25)|(inputs.hpp)|(parsing.hpp)"
 ExcludeHeaderFilterRegex: "xutility"

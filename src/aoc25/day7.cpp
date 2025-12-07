@@ -88,7 +88,7 @@ countUniqueTimelines(const Matrix& matrix)
   }
 
   for (std::size_t i = 1; i < matrix.height(); ++i) {
-    std::size_t y = matrix.height() - 1 - i;
+    const std::size_t y = matrix.height() - 1 - i;
     for (std::size_t x = 0; x < matrix.width(); ++x) {
       if (matrix[x, y] == TileEx::Empty || matrix[x, y] == TileEx::Start) {
 
@@ -113,7 +113,7 @@ namespace aoc25::day7 {
 Result
 solve(const Input& input)
 {
-  Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
+  const  Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
   const std::uint64_t part1 = countSplits(matrix);
   const std::uint64_t part2 = countUniqueTimelines(matrix);
   return { part1, part2 };

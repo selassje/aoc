@@ -2,6 +2,7 @@ module;
 
 #include <algorithm>
 #include <cstdlib>
+#include <ranges>
 #include <stdexcept>
 #include <vector>
 
@@ -17,12 +18,14 @@ private:
   const std::size_t m_Cols;
   std::vector<T> m_Data;
 
-  using Vector = std::vector<std::vector<T>>;
+  template<typename R>
+  using Vector = std::vector<std::vector<R>>;
 
 public:
-  Matrix(Vector vec)
+template<typename R, typename Proj = std::identity>
+  Matrix(Vector<R> vec, Proj proj)
     : m_Rows(vec.size())
-    , m_Cols(vec.empty() ? 0 : vec[0].size())
+    , m_Cols(vec.size() == 0 ? 0 : vec[0].size())
   {
     if (m_Rows == 0 || m_Cols == 0) {
       throw std::runtime_error("Matrix dimensions cannot be zero");
@@ -33,7 +36,9 @@ public:
         throw std::runtime_error(
           "Inconsistent row sizes in matrix initialization");
       }
-      std::ranges::copy(row, std::back_inserter(m_Data));
+      auto rowTransformed = std::views::transform(row, proj);
+      std::ranges::copy(
+        rowTransformed, std::back_inserter(m_Data));
     }
   }
 

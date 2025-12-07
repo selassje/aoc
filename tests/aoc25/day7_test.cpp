@@ -1,4 +1,3 @@
-import aoc25.day7;
 
 #include "inputs.hpp"
 #include "parsing.hpp"
@@ -8,10 +7,11 @@ import aoc25.day7;
 #include <string_view>
 #include <vector>
 
+import aoc25.day7;
+
 using aoc25::day7::Tile;
 using enum aoc25::day7::Tile;
 using aoc25::day7::Input;
-
 namespace {
 auto
 readInput(std::string_view path)

@@ -1,5 +1,6 @@
 module;
 #include <cstdint>
+#include <vector>
 
 module aoc25.day7;
 
@@ -12,13 +13,13 @@ enum class TileEx : std::uint8_t {
   Beam,
 };
 
-using Matrix = aoc::matrix::Matrix<aoc25::day7::Tile>;
+using Matrix = aoc::matrix::Matrix<TileEx>;
 
 namespace aoc25::day7 {
 Result
 solve(const Input& input)
 {
-  Matrix matrix(input);
+  Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
 
 
   std::uint64_t part1 = input.size();

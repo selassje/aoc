@@ -1,23 +1,16 @@
 set(INCLUDE ${CMAKE_CURRENT_LIST_DIR}/../include)
-set(MODULES ${CMAKE_CURRENT_LIST_DIR}/../modules)
+set(MODULES ${CMAKE_CURRENT_LIST_DIR}/../import)
 
 function(configure_sources YEAR)
 
-  file(GLOB MODULE_FILES ${MODULES}/aoc${YEAR}/*.cpp)
+  file(GLOB MODULE_FILES ${MODULES}/aoc${YEAR}/*.cppm)
   file(GLOB HEADER_FILES ${INCLUDE}/aoc${YEAR}/*.hpp)
   file(GLOB SOURCE_FILES aoc${YEAR}/*.cpp)
 
   target_sources(
     aoc
     PUBLIC ${HEADER_FILES}
-    PUBLIC FILE_SET
-           cxx_modules
-           TYPE
-           CXX_MODULES
-           BASE_DIRS
-           ${MODULES}
-           FILES
-           ${MODULE_FILES}
+    PUBLIC FILE_SET CXX_MODULES BASE_DIRS ${MODULES} FILES ${MODULE_FILES}
     PRIVATE ${SOURCE_FILES})
 
 endfunction(configure_sources)

@@ -35,8 +35,6 @@ list(APPEND EXCLUDED_TESTS aoc22_day16)
 
 function(configure_tests YEAR)
   configure_test_inputs(${YEAR})
-  set(MODULES ${CMAKE_SOURCE_DIR}/../import)
-  file(GLOB MODULE_FILES ${MODULES}/aoc${YEAR}/*.cppm)
 
   file(GLOB SOURCE_FILES aoc${YEAR}/*.cpp)
   foreach(SRC IN LISTS SOURCE_FILES)
@@ -55,15 +53,7 @@ function(configure_tests YEAR)
     target_sources(
       ${TEST_NAME}
       PRIVATE main.cpp
-      PRIVATE ${SRC}
-      PRIVATE FILE_SET
-              cxx_modules
-              TYPE
-              CXX_MODULES
-              BASE_DIRS
-              ${MODULES}
-              FILES
-              ${MODULE_FILES})
+      PRIVATE ${SRC})
 
     target_include_directories(
       ${TEST_NAME}

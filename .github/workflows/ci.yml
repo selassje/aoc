@@ -82,13 +82,13 @@ jobs:
           Invoke-WebRequest -URI https://aka.ms/vs/stable/vs_buildtools.exe -OutFile vs_buildtools.exe
           $process = Start-Process -FilePath vs_buildtools.exe -ArgumentList "--installPath", "$pwd\VSBuildTools", "--passive", "--wait","--add", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64"  -Wait -PassThru
           Write-Output $process.ExitCode 
-        if: ${{ matrix.cxx == 'cl.exe'}}
+        if: ${{ matrix.os == 'windows-latest'}}
       - name: Setup MSVC 
         uses: TheMrMilchmann/setup-msvc-dev@v2
         with:
           arch: x64
           toolset: ${{env.MVSC_VER}}
-        if: ${{ matrix.cxx == 'cl.exe'}}
+        if: ${{ matrix.os == 'windows-latest'}}
       - name: Configure
         run:  cmake -S . -B build -G Ninja 
               -DCMAKE_BUILD_TYPE=Release 

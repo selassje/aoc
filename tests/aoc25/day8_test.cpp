@@ -31,10 +31,10 @@ readInput(std::string_view path)
 
 TEST_CASE("Aoc25 Day8 Example", "[AoC25_Day8]")
 {
- //const auto input = readInput(inputs::day8::EXAMPLE);
- //const auto [part1, part2] = aoc25::day8::solve(input);
- //REQUIRE(part1 == 40);
- //REQUIRE(part2 == 40);
+ const auto input = readInput(inputs::day8::EXAMPLE);
+ const auto [part1, part2] = aoc25::day8::solve(input);
+ REQUIRE(part1 == 40);
+ REQUIRE(part2 == 25272);
 }
 
 TEST_CASE("Aoc25 Day8 Input", "[AoC25_Day8]")

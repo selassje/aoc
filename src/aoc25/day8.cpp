@@ -79,6 +79,41 @@ buildCircuits(const Pairs& pairs)
   }
   return circuits;
 }
+auto
+buildCircuits2(const Pairs& pairs, std::size_t totalJunctions)
+{
+  Circuits circuits{};
+  std::size_t step = 0;
+  std::size_t part2 = 0;
+  while (circuits.empty() || (circuits.size() != 1 ||
+                              std::begin(circuits)->size() != totalJunctions)) {
+    const auto& [a, b] = pairs[step++];
+    const auto circuitA = findCircuitContaining(circuits, a);
+    const auto circuitB = findCircuitContaining(circuits, b);
+    part2 = a.x * b.x;
+    if (circuitA && !circuitB) {
+      circuitA->get().insert(b);
+    } else if (!circuitA && circuitB) {
+      circuitB->get().insert(a);
+    } else if (!circuitA && !circuitB) {
+      Circuit newCircuit;
+      newCircuit.insert(a);
+      newCircuit.insert(b);
+      circuits.push_back(std::move(newCircuit));
+    } else {
+      if (circuitA != circuitB) {
+        Circuit& targetCircuit = circuitA->get();
+        Circuit& sourceCircuit = circuitB->get();
+        targetCircuit.insert(sourceCircuit.begin(), sourceCircuit.end());
+        circuits.erase(
+          std::remove(circuits.begin(), circuits.end(), sourceCircuit),
+          circuits.end());
+      }
+    }
+  }
+  return part2;
+}
+
 }
 namespace aoc25::day8 {
 
@@ -86,7 +121,7 @@ Result
 solve(const Input& input)
 {
   const auto pairs = getClosestPairs(input);
-  auto circuits = buildCircuits<1000>(pairs);
+  auto circuits = buildCircuits<10>(pairs);
   std::ranges::sort(circuits, [](const Circuit& a, const Circuit& b) {
     return a.size() > b.size();
   });
@@ -97,7 +132,7 @@ solve(const Input& input)
     part1 *= circuits[i].size();
   }
 
-  std::uint64_t part2 = part1;
+  std::uint64_t part2 = buildCircuits2(pairs, input.size());
   return Result{ part1, part2 };
 }
 }

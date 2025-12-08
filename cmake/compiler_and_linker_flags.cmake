@@ -30,7 +30,10 @@ function(setup_compiler_warnings TARGET)
               -Wnull-dereference
               -Wdouble-promotion
               -Wformat=2
-              -Wimplicit-fallthrough)
+              -Wimplicit-fallthrough
+              -Wno-include-angled-in-module-purview
+              -Wno-reserved-module-identifier
+              )
 
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
       target_compile_options(

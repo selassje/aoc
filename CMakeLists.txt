@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30)
 
 set(CMAKE_CXX_STANDARD 26)
-
+set(CMAKE_CXX_EXTENSIONS ON)
 project(AoC LANGUAGES CXX)
 
 option(ENABLE_TESTS "Enable Tests" OFF)

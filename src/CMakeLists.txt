@@ -27,11 +27,11 @@ function(configure_common_sources)
   file(GLOB MODULE_FILES ${COMMON}/*.cppm)
   file(GLOB HEADER_FILES ${COMMON}/*.hpp)
   file(GLOB SOURCE_FILES ${COMMON}/*.cpp)
-  
+
   if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows" AND ${CMAKE_GENERATOR} STREQUAL "Ninja")
    set(VC_TOOLS_INSTALL_DIR "$ENV{VcToolsInstallDir}")
    set(STD_MODULE_DIR ${VC_TOOLS_INSTALL_DIR}/modules)
-   set(STD_MODULE ${STD_MODULE_DIR}/std.ixax)
+   set(STD_MODULE ${STD_MODULE_DIR}/std.ixx)
   endif()
 
   target_sources(
@@ -46,6 +46,7 @@ function(configure_common_sources)
             ${COMMON}
             FILES
             ${MODULE_FILES}
+            ${STD_MODULE}
     PRIVATE ${SOURCE_FILES})
 
 endfunction(configure_common_sources)

@@ -150,6 +150,8 @@ jobs:
               -DENABLE_TESTS=ON 
               -DENABLE_COVERAGE_REPORT=ON
               -DENABLE_SANITIZERS=ON
+              -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
+              -DCMAKE_CXX_MODULE_STD=ON
               -DCMAKE_CXX_FLAGS=-stdlib=libc++
       - name: Build Tests
         run:  cmake --build build

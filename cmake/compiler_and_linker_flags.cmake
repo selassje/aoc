@@ -9,7 +9,8 @@ function(setup_compiler_warnings TARGET)
               /permissive-
               /wd4868
               /wd5045
-              /wd4324)
+              /wd4324
+              /wd4530)
   else()
     target_compile_options(
       ${TARGET}

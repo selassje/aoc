@@ -98,7 +98,7 @@ jobs:
               -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'OFF' || 'OFF' }}
               -DENABLE_COVERAGE_REPORT=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'ON' || 'OFF' }}
               -DCMAKE_EXPERIMENTAL_CXX_IMPORT_STD=d0edc3af-4c50-42ea-a356-e2862fe7a444
-              -DCMAKE_CXX_MODULE_STD=${{ matrix.os == 'cl.exe' && 'OFF' || 'ON' }}
+              -DCMAKE_CXX_MODULE_STD=${{ matrix.os == 'windows-latest' && 'OFF' || 'ON' }}
               -DCMAKE_CXX_FLAGS=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && '-stdlib=libc++' || '' }}
       - name: Build Tests
         run:  cmake --build build --config Release

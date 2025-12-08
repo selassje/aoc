@@ -221,6 +221,12 @@
       "configurePreset": "dev_vs_msvc",
       "targets":["ALL_BUILD", "clang-format-check"],
       "configuration": "Debug" 
+    },
+    {
+      "name": "rel_vs_msvc",
+      "configurePreset": "dev_vs_msvc",
+      "targets":["ALL_BUILD", "clang-format-check"],
+      "configuration": "Release" 
     }
   ],
   "testPresets": [

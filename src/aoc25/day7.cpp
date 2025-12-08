@@ -1,13 +1,7 @@
-module;
-
-#include <cstddef>
-#include <cstdint>
-#include <optional>
-#include <vector>
-
 module aoc25.day7;
 
 import aoc.matrix;
+import std;
 
 enum class TileEx : std::uint8_t
 {

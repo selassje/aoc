@@ -15,7 +15,8 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE":"Debug",
         "ENABLE_TESTS": "ON",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD":"d0edc3af-4c50-42ea-a356-e2862fe7a444"
       }
     },
     {
@@ -27,10 +28,13 @@
     {
       "name": "dev_ninja_clang",
       "inherits" : "dev_ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++"
+      },
       "environment": {
         "CXX": "clang++",
         "CC": "clang"
-      },
+      }, 
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
     },
     {

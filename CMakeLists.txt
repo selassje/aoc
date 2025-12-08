@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.28)
-
-project(AoC LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.30)
+set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
 
 set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_MODULE_STD ON)
+
+project(AoC LANGUAGES CXX)
 
 option(ENABLE_TESTS "Enable Tests" OFF)
 option(ENABLE_FUZZ_TESTS "Enable Fuzzing Tests" OFF)

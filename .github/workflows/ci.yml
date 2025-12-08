@@ -145,6 +145,7 @@ jobs:
               -DENABLE_TESTS=ON 
               -DENABLE_COVERAGE_REPORT=ON
               -DENABLE_SANITIZERS=ON
+              -DCMAKE_CXX_FLAGS=-stdlib=libc++
       - name: Build Tests
         run:  cmake --build build
       - name: Run Tests

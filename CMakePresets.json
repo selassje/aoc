@@ -36,7 +36,48 @@
         "CXX": "clang++",
         "CC": "clang"
       }, 
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
       "binaryDir": "${sourceDir}/builds/dev_ninja_clang"
+    },
+    {
+      "name": "dev_ninja_clang-win",
+      "inherits" : "dev_ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_MODULE_STD": "OFF"
+      },
+      "environment": {
+        "CXX": "clang++",
+        "CC": "clang"
+      }, 
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "binaryDir": "${sourceDir}/builds/dev_ninja_clang-win"
+    },
+    {
+      "name": "dev_ninja_msvc",
+      "inherits" : "dev_ninja",
+      "cacheVariables": {
+        "ENABLE_TESTS": "ON",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_CXX_MODULE_STD": "OFF"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "environment": {
+        "CXX": "cl.exe",
+        "CC": "cl.exe"
+      }, 
+      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
     },
     {
       "name": "rel_ninja_clang",
@@ -145,7 +186,9 @@
       "name": "dev_vs_msvc",
       "generator": "Visual Studio 18 2026",
       "cacheVariables": {
-        "ENABLE_TESTS": "ON"
+        "ENABLE_TESTS": "ON",
+        "CMAKE_CXX_MODULE_STD": "OFF",
+        "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD":"d0edc3af-4c50-42ea-a356-e2862fe7a444"
       },
       "condition": {
        "type": "equals",
@@ -161,20 +204,6 @@
         "ENABLE_MSVC_ANALYSIS":"ON"
       },
       "binaryDir": "${sourceDir}/builds/dev_vs_msvc_analysis"
-    },
-    {
-      "name": "dev_ninja_msvc",
-      "inherits" : "dev_ninja",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "environment": {
-        "CXX": "cl.exe",
-        "CC": "cl.exe"
-      },
-      "binaryDir": "${sourceDir}/builds/dev_ninja_msvc"
     },
     {
       "name": "dev_ninja_msvc_analysis",

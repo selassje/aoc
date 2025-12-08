@@ -47,6 +47,8 @@ jobs:
           sudo apt-get install g++-$GCC_VER
           sudo update-alternatives \
             --install /usr/bin/g++ g++ /usr/bin/g++-$GCC_VER 50
+          sudo mkdir -p /usr/lib/gcc/x86_64-linux-gnu/include/
+          sudo ln -s  /usr/include/c++/ /usr/lib/gcc/x86_64-linux-gnu/include/c++
         if: ${{ matrix.cxx == 'g++'}}
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
@@ -66,6 +68,7 @@ jobs:
             --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER_UBUNTU
+          sudo ln -s  /usr/lib/share /usr/lib/llvm-$LLVM_VER_UBUNTU/share/libc++
           clang-format --version
         if: ${{ matrix.os == env.UBUNTU}}
       - name: Install LLVM Windows

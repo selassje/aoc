@@ -139,7 +139,8 @@ jobs:
             --slave /usr/bin/clang++ clang++ /usr/bin/clang++-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-$LLVM_VER_UBUNTU \
             --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-$LLVM_VER_UBUNTU
-          sudo ln -s /usr/lib/llvm-$LLVM_VER_UBUNTU/share/libc++ /lib/share
+          sudo mkdir -p /lib/share/libc++
+          sudo ln -s /usr/lib/llvm-$LLVM_VER_UBUNTU/share/libc++ /lib/share/libc++
           ls -al /usr/lib/llvm-$LLVM_VER_UBUNTU/share/libc++
           ls -al /lib/share
       - name: Configure

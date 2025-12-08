@@ -96,6 +96,7 @@ jobs:
               -DENABLE_MSVC_ANALYSIS=${{ matrix.cxx == 'cl.exe' && 'ON' || 'OFF' }} 
               -DENABLE_FUZZ_TESTS=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'OFF' || 'OFF' }}
               -DENABLE_COVERAGE_REPORT=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && 'ON' || 'OFF' }}
+              -DCMAKE_CXX_FLAGS=${{ matrix.cxx == 'clang++' && matrix.os == env.UBUNTU && '-stdlib=libc++' || '' }}
       - name: Build Tests
         run:  cmake --build build --config Release
       - name: Run Tests

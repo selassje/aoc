@@ -2,6 +2,10 @@ module aoc25.day8;
 
 import std;
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
 namespace {
 
 using aoc25::day8::Input;
@@ -121,3 +125,6 @@ solve(const Input& input, std::size_t part1Steps)
 }
 
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif

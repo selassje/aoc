@@ -50,7 +50,7 @@ findCircuitContaining(Circuits& circuits, const Junction& junction)
 
 template<bool PART_1>
 auto
-buildCircuits(const Pairs& pairs, std::size_t totalJunctions, std::size_t steps) //NOLINT
+buildCircuits(const Pairs& pairs, std::size_t totalJunctionsOrSteps)
 {
   Circuits circuits{};
   std::size_t step = 0;
@@ -60,10 +60,11 @@ buildCircuits(const Pairs& pairs, std::size_t totalJunctions, std::size_t steps)
     if constexpr (!PART_1) {
       return [&]() {
         const auto size = circuits.size();
-        return size != 1 || std::begin(circuits)->size() != totalJunctions;
+        return size != 1 ||
+               std::begin(circuits)->size() != totalJunctionsOrSteps;
       };
     } else {
-      return [&]() { return step < steps; };
+      return [&]() { return step < totalJunctionsOrSteps; };
     }
   }();
 
@@ -86,9 +87,8 @@ buildCircuits(const Pairs& pairs, std::size_t totalJunctions, std::size_t steps)
         Circuit& targetCircuit = circuitA->get();
         Circuit& sourceCircuit = circuitB->get();
         targetCircuit.insert(sourceCircuit.begin(), sourceCircuit.end());
-        circuits.erase(
-          std::begin(std::ranges::remove(circuits, sourceCircuit)),
-          circuits.end());
+        circuits.erase(std::begin(std::ranges::remove(circuits, sourceCircuit)),
+                       circuits.end());
       }
     }
   }
@@ -106,9 +106,9 @@ solve(const Input& input, std::size_t part1Steps)
 {
   const auto junctions = input.size();
   const auto pairs = getClosestPairs(input);
-  auto circuits = buildCircuits<true>(pairs, junctions, part1Steps);
+  auto circuits = buildCircuits<true>(pairs, part1Steps);
   std::ranges::sort(circuits, [](const Circuit& a, const Circuit& b) {
-    return a.size() > b.size();  //NOLINT
+    return a.size() > b.size(); // NOLINT
   });
 
   std::uint64_t part1 = 1;
@@ -116,7 +116,7 @@ solve(const Input& input, std::size_t part1Steps)
     part1 *= circuits[i].size();
   }
 
-  const std::uint64_t part2 = buildCircuits<false>(pairs, junctions, 0);
+  const std::uint64_t part2 = buildCircuits<false>(pairs, junctions);
   return Result{ part1, part2 };
 }
 

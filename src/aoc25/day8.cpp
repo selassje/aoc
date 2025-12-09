@@ -48,45 +48,26 @@ findCircuitContaining(Circuits& circuits, const Junction& junction)
   return std::nullopt;
 }
 
-template<std::size_t STEPS>
+template<bool PART_1>
 auto
-buildCircuits(const Pairs& pairs)
-{
-  Circuits circuits{};
-  for (std::size_t step = 0; step < STEPS; ++step) {
-    const auto& [a, b] = pairs[step];
-    const auto circuitA = findCircuitContaining(circuits, a);
-    const auto circuitB = findCircuitContaining(circuits, b);
-    if (circuitA && !circuitB) {
-      circuitA->get().insert(b);
-    } else if (!circuitA && circuitB) {
-      circuitB->get().insert(a);
-    } else if (!circuitA && !circuitB) {
-      Circuit newCircuit;
-      newCircuit.insert(a);
-      newCircuit.insert(b);
-      circuits.push_back(std::move(newCircuit));
-    } else {
-      if (circuitA != circuitB) {
-        Circuit& targetCircuit = circuitA->get();
-        Circuit& sourceCircuit = circuitB->get();
-        targetCircuit.insert(sourceCircuit.begin(), sourceCircuit.end());
-        circuits.erase(
-          std::remove(circuits.begin(), circuits.end(), sourceCircuit),
-          circuits.end());
-      }
-    }
-  }
-  return circuits;
-}
-auto
-buildCircuits2(const Pairs& pairs, std::size_t totalJunctions)
+buildCircuits(const Pairs& pairs, std::size_t totalJunctions, std::size_t steps)
 {
   Circuits circuits{};
   std::size_t step = 0;
   std::size_t part2 = 0;
-  while (circuits.empty() || (circuits.size() != 1 ||
-                              std::begin(circuits)->size() != totalJunctions)) {
+
+  auto testCondition = [&]() {
+    if constexpr (!PART_1) {
+      return [&]() {
+        const auto size = circuits.size();
+        return size != 1 || std::begin(circuits)->size() != totalJunctions;
+      };
+    } else {
+      return [&]() { return step < steps; };
+    }
+  }();
+
+  while (testCondition()) {
     const auto& [a, b] = pairs[step++];
     const auto circuitA = findCircuitContaining(circuits, a);
     const auto circuitB = findCircuitContaining(circuits, b);
@@ -111,28 +92,32 @@ buildCircuits2(const Pairs& pairs, std::size_t totalJunctions)
       }
     }
   }
-  return part2;
+  if constexpr (PART_1) {
+    return circuits;
+  } else {
+    return part2;
+  }
 }
-
 }
 namespace aoc25::day8 {
 
 Result
-solve(const Input& input)
+solve(const Input& input, std::size_t part1Steps)
 {
+  const auto junctions = input.size();
   const auto pairs = getClosestPairs(input);
-  auto circuits = buildCircuits<10>(pairs);
+  auto circuits = buildCircuits<true>(pairs, junctions, part1Steps);
   std::ranges::sort(circuits, [](const Circuit& a, const Circuit& b) {
     return a.size() > b.size();
   });
 
   std::uint64_t part1 = 1;
   for (std::size_t i = 0; i < 3; ++i) {
-    std::print("Circuits size: {}\n", circuits[i].size());
     part1 *= circuits[i].size();
   }
 
-  std::uint64_t part2 = buildCircuits2(pairs, input.size());
+  std::uint64_t part2 = buildCircuits<false>(pairs, junctions, 0);
   return Result{ part1, part2 };
 }
+
 }

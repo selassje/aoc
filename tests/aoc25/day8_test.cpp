@@ -10,6 +10,7 @@ import std;
 
 using aoc25::day8::Input;
 using aoc25::day8::Junction;
+using aoc25::day8::Result;
 namespace {
 auto
 readInput(std::string_view path)
@@ -31,16 +32,16 @@ readInput(std::string_view path)
 
 TEST_CASE("Aoc25 Day8 Example", "[AoC25_Day8]")
 {
- const auto input = readInput(inputs::day8::EXAMPLE);
- const auto [part1, part2] = aoc25::day8::solve(input);
- REQUIRE(part1 == 40);
- REQUIRE(part2 == 25272);
+  const auto input = readInput(inputs::day8::EXAMPLE);
+  const auto [part1, part2] = aoc25::day8::solve(input, 10);
+  REQUIRE(part1 == 40);
+  REQUIRE(part2 == 25272);
 }
 
 TEST_CASE("Aoc25 Day8 Input", "[AoC25_Day8]")
 {
-    const auto input = readInput(inputs::day8::INPUT);
-    const auto [part1, part2] = aoc25::day8::solve(input);
-    REQUIRE(part1 == 112230);
-    REQUIRE(part2 == 112230);
+  const auto input = readInput(inputs::day8::INPUT);
+  const auto [part1, part2] = aoc25::day8::solve(input,1000);
+  REQUIRE(part1 == 112230);
+  REQUIRE(part2 == 2573952864);
 }

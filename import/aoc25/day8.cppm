@@ -22,5 +22,5 @@ struct Result
 };
 
 Result
-solve(const Input& input);
+solve(const Input& input, std::size_t part1Steps);
 }

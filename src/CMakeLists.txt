@@ -42,12 +42,21 @@ function(configure_common_sources)
             TYPE
             CXX_MODULES
             BASE_DIRS
-            ${STD_MODULE_DIR}
             ${COMMON}
             FILES
             ${MODULE_FILES}
-            ${STD_MODULE}
     PRIVATE ${SOURCE_FILES})
+  
+    target_sources(
+    aoc
+    PUBLIC  FILE_SET
+            public_modules
+            TYPE
+            CXX_MODULES
+            BASE_DIRS
+            ${STD_MODULE_DIR}
+            FILES
+            ${STD_MODULE})
 
 endfunction(configure_common_sources)
 

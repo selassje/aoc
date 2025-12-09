@@ -8,7 +8,7 @@ using aoc25::day8::Input;
 using aoc25::day8::Junction;
 using Pair = std::pair<Junction, Junction>;
 using Pairs = std::vector<Pair>;
-using Circuit = std::flat_set<Junction>;
+using Circuit = std::set<Junction>;
 using Circuits = std::vector<Circuit>;
 
 double
@@ -82,7 +82,7 @@ buildCircuits(const Pairs& pairs, std::size_t totalJunctions, std::size_t steps)
       newCircuit.insert(b);
       circuits.push_back(std::move(newCircuit));
     } else {
-      if (circuitA != circuitB) {
+      if (&circuitA->get() != &circuitB->get()) {
         Circuit& targetCircuit = circuitA->get();
         Circuit& sourceCircuit = circuitB->get();
         targetCircuit.insert(sourceCircuit.begin(), sourceCircuit.end());

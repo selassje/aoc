@@ -20,7 +20,9 @@ Checks: "*,
          -boost-use-ranges,
          -bugprone-chained-comparison,
          -bugprone-suspicious-stringview-data-usage,
-         -llvm-prefer-static-over-anonymous-namespace
+         -llvm-prefer-static-over-anonymous-namespace,
+         -readability-redundant-declaration,
+         -misc-include-cleaner
          "
 CheckOptions: 
   misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables : true
@@ -35,9 +37,6 @@ CheckOptions:
   readability-identifier-naming.GlobalConstantCase: UPPER_CASE 
    
 
-WarningsAsErrors: "*,
-                  -readability-redundant-declaration,
-                  -misc-include-cleaner
-                  "
+WarningsAsErrors: "*"
 HeaderFilterRegex: "(include[\\\/]aoc22)|(include[\\\/]aoc23)|(include[\\\/]aoc24)|(include[\\\/]aoc25)|(inputs.hpp)|(parsing.hpp)"
 ExcludeHeaderFilterRegex: "xutility"

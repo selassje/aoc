@@ -17,6 +17,12 @@ struct Dimension
   std::size_t rows;
 };
 
+struct Point
+{
+  std::size_t x;
+  std::size_t y;
+};
+
 template<typename T>
 class Matrix
 {
@@ -58,20 +64,19 @@ public:
     m_Data.resize(m_Rows * m_Cols, initialValue);
   }
 
-  const T& operator[](std::size_t x, std::size_t y) const
+  template<class Self>
+  auto&& operator[](this Self&& self, std::size_t x, std::size_t y)
   {
-    if (x >= m_Cols || y >= m_Rows) {
+    if (x >= self.m_Cols || y >= self.m_Rows) {
       throw std::out_of_range("Matrix index out of range");
     }
-    return m_Data[(y * m_Cols) + x];
+    return std::forward<Self>(self).m_Data[(y * self.m_Cols) + x];
   }
-
-  T& operator[](std::size_t x, std::size_t y)
-  {
-    if (x >= m_Cols || y >= m_Rows) {
-      throw std::out_of_range("Matrix index out of range");
-    }
-    return m_Data[(y * m_Cols) + x];
+  
+  template<class Self>
+  auto&& operator[](this Self&& self, Point p)
+  { 
+    return std::forward<Self>(self)[p.x, p.y];
   }
 
   struct PositionValue

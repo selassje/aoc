@@ -3,7 +3,7 @@ module aoc25.day9;
 import aoc.matrix;
 
 using aoc25::day9::Input;
-using aoc25::day9::Point;
+using aoc25::day9::Point; //NOLINT
 using aoc25::day9::Result;
 
 struct PointHash
@@ -12,14 +12,14 @@ struct PointHash
   {
     const auto h1 = static_cast<std::size_t>(p.x);
     const auto h2 = static_cast<std::size_t>(p.y);
-    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2)); //NOLINT
   }
 };
 
 enum class Tile : std::uint8_t
 {
   Empty = 0,
-  Wall =  1
+  Wall = 1
 };
 
 using Points = std::vector<Point>;
@@ -54,17 +54,18 @@ floodFindExteriorPoints(const Grid& grid)
 {
   const auto [nX, nY] = grid.dimension();
   std::queue<Point> toVisit{};
-  Grid visited(grid.dimension(),false);
+  Grid visited(grid.dimension(), false);
   toVisit.push({ 0, 0 });
-
-    if(visited[0,0] ){
-      std::abort();
-    }
 
   while (!toVisit.empty()) {
     const auto current = toVisit.front();
     toVisit.pop();
-    visited[current.x,current.y] = true;
+
+    if (visited[current.x, current.y]) {
+      continue;
+    }
+
+    visited[current.x, current.y] = true;
     const std::vector<Point> neighbors = {
       { current.x + 1, current.y },
       { current.x - 1, current.y },
@@ -75,12 +76,9 @@ floodFindExteriorPoints(const Grid& grid)
       if (neighbor.x >= nX || neighbor.y >= nY) {
         continue;
       }
-      if (grid[neighbor.x,neighbor.y]  || visited[neighbor.x,neighbor.y]) {
+      if (grid[neighbor.x, neighbor.y]) {
         continue;
       }
-    if(visited[neighbor.x,neighbor.y]) {
-      std::abort();
-    }
       toVisit.push(neighbor);
     }
   }
@@ -120,12 +118,12 @@ getCompressedCoordinates(const Input& input, const Rectangle& margin)
 auto
 calculatePrefixSumGrid(const Grid& input)
 {
-  const auto [nX,nY]  = input.dimension();
+  const auto [nX, nY] = input.dimension();
   PrefixSumGrid prefixSum({ nX, nY }, 0ULL);
 
   for (std::size_t y = 0; y < nY; ++y) {
     for (std::size_t x = 0; x < nX; ++x) {
-      const auto value = static_cast<std::size_t>(input[x,y]);
+      const auto value = static_cast<std::size_t>(input[x, y]);
       auto& sum = prefixSum[x, y];
       sum = value;
       if (x > 0) {
@@ -208,7 +206,7 @@ solve(const Input& input)
          ++x) {
       for (auto y = compressedY[wall.start.y]; y <= compressedY[wall.end.y];
            ++y) {
-        grid[x,y] = true;
+        grid[x, y] = true;
       }
     }
   }

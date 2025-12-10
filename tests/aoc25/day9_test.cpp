@@ -8,7 +8,6 @@ import aoc25.day9;
 import std;
 
 using aoc25::day9::Input;
-using aoc25::day9::Point;
 
 namespace {
 auto

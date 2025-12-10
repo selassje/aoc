@@ -8,6 +8,7 @@ struct Point
 {
   std::uint64_t x;
   std::uint64_t y;
+
 };
 
 using Input = std::vector<Point>;

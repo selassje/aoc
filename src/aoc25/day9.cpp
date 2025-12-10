@@ -1,9 +1,17 @@
 module aoc25.day9;
 
-import aoc.matrix;
-
 using aoc25::day9::Input;
 using aoc25::day9::Point;
+using aoc25::day9::Result;
+
+struct PointHash {
+    std::size_t operator()(const Point& p) const noexcept {
+        const auto h1 = static_cast<std::size_t>(p.x);
+        const auto h2 = static_cast<std::size_t>(p.y);
+        return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+    }
+};
+
 
 enum class Tile : std::uint8_t
 {
@@ -11,15 +19,15 @@ enum class Tile : std::uint8_t
   Red,
   Green
 };
-using Matrix = aoc::matrix::Matrix<Tile>;
+
 using Points = std::vector<Point>;
 
-auto
-getArea(const Point& a, const Point& b)
+struct Rectangle
 {
-  return (std::max(a.x, b.x) - std::min(a.x, b.x) + 1) *
-         (std::max(a.y, b.y) - std::min(a.y, b.y) + 1);
-}
+  Point topLeft;
+  Point bottomRight;
+};
+
 struct Wall
 {
   Point start;
@@ -28,121 +36,91 @@ struct Wall
 
 using Walls = std::vector<Wall>;
 
-
+using Grid = std::vector<std::vector<bool>>;
 namespace {
 
-bool
-isOnWall(const Point& p, const Wall& wwall)
-{
-  if (wwall.start.x == wwall.end.x) {
-    // Vertical line
-    if (p.x != wwall.start.x) {
-      return false;
-    }
-    return (p.y >= std::min(wwall.start.y, wwall.end.y) &&
-            p.y <= std::max(wwall.start.y, wwall.end.y));
-  }
-  if (wwall.start.y == wwall.end.y) {
-    // Horizontal line
-    if (p.y != wwall.start.y) {
-      return false;
-    }
-    return (p.x >= std::min(wwall.start.x, wwall.end.x) &&
-            p.x <= std::max(wwall.start.x, wwall.end.x));
-  }
-  return false;
-}
-
-bool
-isOnAnyWall(const Point& p, const Walls& walls)
-{
-  for (const auto& wall : walls) {
-    if (isOnWall(p, wall)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// Points auto
-
-bool
-isInside2(const Point& p, const Walls& walls)
-{
-  if( isOnAnyWall(p, walls)) {
-    return true;
-  }
-  if(p.x == 0) {
-    return false;
-  }
-
-  std::uint64_t lastWallX =  0;
-  std::size_t wallsCrossed = 0;
-  for (std::size_t i = 0; i < p.x; ++i) {
-    const auto x = p.x - i - 1;
-    const auto point = Point{ x, p.y };
-    if (isOnAnyWall(point, walls)) {
-      if(wallsCrossed == 0) {
-        ++wallsCrossed;
-      } else if( lastWallX - 1 != x) {
-        ++wallsCrossed;
-      }
-      lastWallX = x;
-    }
-  }
-  return (wallsCrossed % 2) == 1;
-}
-/*
-bool
-isInside(const Point& p,
-         const Matrix& grid,
-         std::uint64_t minX,
-         std::uint64_t minY)
-{
-  auto access = [&](auto x, auto y) { return grid[x - minX, y - minY]; };
-  bool foundWallLeft = false;
-  for (std::size_t i = 0; i <= p.x; ++i) {
-    const auto x = p.x - i;
-    const auto tile = access(x, p.y);
-    if (tile == Tile::Red || tile == Tile::Green) {
-      foundWallLeft = true;
-      break;
-    }
-  }
-  bool foundWallRight = false;
-  for (std::size_t x = p.x; x < grid.width(); ++x) {
-    const auto tile = access(x, p.y);
-    if (tile == Tile::Red || tile == Tile::Green) {
-      foundWallRight = true;
-      break;
-    }
-  }
-  bool foundWallTop = false;
-  for (std::size_t i = 0; i <= p.y; ++i) {
-    const auto y = p.y - i;
-    const auto tile = access(p.x, y);
-    if (tile == Tile::Red || tile == Tile::Green) {
-      foundWallTop = true;
-      break;
-    }
-  }
-  bool foundWallBottom = false;
-  for (std::size_t y = p.y; y < grid.height(); ++y) {
-    const auto tile = access(p.x, y);
-    if (tile == Tile::Red || tile == Tile::Green) {
-      foundWallBottom = true;
-      break;
-    }
-  }
-  return foundWallLeft && foundWallRight && foundWallTop && foundWallBottom;
-}
-*/
 auto
-buildGrid(const Input& input)
+getArea(const Point& a, const Point& b)
 {
-  std::uint64_t minX = 0;
+  return (std::max(a.x, b.x) - std::min(a.x, b.x) + 1) *
+         (std::max(a.y, b.y) - std::min(a.y, b.y) + 1);
+}
+
+auto
+floodFindExteriorPoints(const Grid &grid)
+{
+  const auto nY = grid.size();
+  const auto nX = grid[0].size();
+  std::queue<Point> toVisit{};
+  std::unordered_set<Point,PointHash> visited{};
+  toVisit.push({0,0});
+  while (!toVisit.empty()) {
+    const auto current = toVisit.front();
+    toVisit.pop();
+    if (visited.contains(current)) {
+      continue;
+    }
+    visited.insert(current);
+
+    const std::vector<Point> neighbors = {
+      { current.x + 1, current.y },
+      { current.x - 1, current.y },
+      { current.x, current.y + 1 },
+      { current.x, current.y - 1 },
+    };
+    for (const auto& neighbor : neighbors) {
+      if (neighbor.x >= nX ||
+          neighbor.y >= nY) {
+        continue;
+      }
+      if (grid[neighbor.y][neighbor.x]) {
+        continue;
+      }
+      toVisit.push(neighbor);
+    }
+  }
+  return visited;
+}
+
+
+
+auto getCompressedCoordinates(const Input& input, const Rectangle &margin)
+{
+  std::set<std::uint64_t> xCoordsSet{};
+  std::set<std::uint64_t> yCoordsSet{};
+  for (const auto& point : input) {
+    xCoordsSet.insert(point.x);
+    yCoordsSet.insert(point.y);
+  }
+  xCoordsSet.insert(margin.topLeft.x - 1);
+  xCoordsSet.insert(margin.bottomRight.x + 1);
+  yCoordsSet.insert(margin.topLeft.y - 1);
+  yCoordsSet.insert(margin.bottomRight.y + 1);
+
+
+  std::map<std::uint64_t, std::size_t> xCoordMap{};
+  std::map<std::uint64_t, std::size_t> yCoordMap{};
+
+  std::size_t index = 0;
+  for (const auto x : xCoordsSet) {
+    xCoordMap[x] = index++;
+  }
+
+  index = 0;
+  for (const auto y : yCoordsSet) {
+    yCoordMap[y] = index++;
+  }
+
+  return std::make_pair(xCoordMap, yCoordMap);
+}
+
+
+auto
+getMaxAreas(const Input& input)
+{
+  std::uint64_t minX = std::numeric_limits<std::uint64_t>::max();
   std::uint64_t maxX = 0;
-  std::uint64_t minY = 0;
+  std::uint64_t minY = std::numeric_limits<std::uint64_t>::max();
   std::uint64_t maxY = 0;
   for (std::size_t i = 0; i < input.size(); ++i) {
     for (std::size_t j = i + 1; j < input.size(); ++j) {
@@ -154,63 +132,75 @@ buildGrid(const Input& input)
       maxY = std::max({ maxY, a.y, b.y });
     }
   }
+  const auto margin = Rectangle{ Point{ minX, minY }, Point{ maxX, maxY } };
 
-  Matrix grid({ maxX - minX + 1, maxY - minY + 1 }, Tile::Empty);
-
-  auto access = [&](Point p) -> Tile& { return grid[p.x - minX, p.y - minY]; };
+  auto [compressedX, compressedY] = getCompressedCoordinates(input, margin);
+  const auto nX = compressedX.size();
+  const auto nY = compressedY.size();
 
   Walls walls{};
   for (std::size_t i = 0; i < input.size(); ++i) {
     const auto& redTilePoint = input[i];
     const auto& nextRedTilePoint = input[(i + 1) % input.size()];
-    access(redTilePoint) = Tile::Red;
-    access(nextRedTilePoint) = Tile::Red;
+    minX = std::min(redTilePoint.x, nextRedTilePoint.x);
+    maxX = std::max(redTilePoint.x, nextRedTilePoint.x);
+    minY = std::min(redTilePoint.y, nextRedTilePoint.y);
+    maxY = std::max(redTilePoint.y, nextRedTilePoint.y);
+    walls.push_back(Wall{ {minX,minY}, {maxX,maxY} });
+  }
+  
+  Grid grid(nY, std::vector<bool>(nX, false));
 
-    const std::uint64_t startX = std::min(redTilePoint.x, nextRedTilePoint.x);
-    const std::uint64_t endX = std::max(redTilePoint.x, nextRedTilePoint.x);
-    const std::uint64_t startY = std::min(redTilePoint.y, nextRedTilePoint.y);
-    const std::uint64_t endY = std::max(redTilePoint.y, nextRedTilePoint.y);
-
-    if (endX - startX == 0) {
-      for (std::uint64_t y = startY; y <= endY; ++y) {
-        if (access({ startX, y }) != Tile::Red) {
-          access({ startX, y }) = Tile::Green;
+  for (auto& wall : walls) {
+    for (auto x = compressedX[wall.start.x]; x <= compressedX[wall.end.x]; ++x) {
+        for (auto y = compressedY[wall.start.y]; y <= compressedY[wall.end.y]; ++y) {
+            grid[y][x] = true;
         }
-      }
-    } else if (endY - startY == 0) {
-      for (std::uint64_t x = startX; x <= endX; ++x) {
-        if (access({ x, startY }) != Tile::Red) {
-          access({ x, startY }) = Tile::Green;
-        }
-      }
     }
-    walls.push_back(Wall{ redTilePoint, nextRedTilePoint });
   }
 
-  std::uint64_t maxArea = 0;
+  const auto exteriorPoints = floodFindExteriorPoints(grid);
+
+  std::print("Exterior points count: {}\n", exteriorPoints.size());	
+
+  auto compress = [&](const Point& p) {
+    return Point{ compressedX[p.x], compressedY[p.y] };
+  };
+
+  std::uint64_t maxAreaPart1 = 0;
+  std::uint64_t maxAreaPart2 = 0;
   for (std::size_t i = 0; i < input.size(); ++i) {
     for (std::size_t j = i + 1; j < input.size(); ++j) {
-      const auto bottomLeft = Point{ std::min(input[i].x, input[j].x),
-                                     std::min(input[i].y, input[j].y) };
-      const auto topRight = Point{ std::max(input[i].x, input[j].x),
-                                   std::max(input[i].y, input[j].y) };
+      const auto compressedI = compress(input[i]);
+      const auto compressedJ = compress(input[j]);
+      const auto topLeft = Point{
+        std::min(compressedI.x, compressedJ.x),
+        std::min(compressedI.y, compressedJ.y)
+      };
+      const auto bottomRight = Point{
+        std::max(compressedI.x, compressedJ.x),
+        std::max(compressedI.y, compressedJ.y)
+      };
 
+      const auto area = getArea(input[i], input[j]);
+      maxAreaPart1 = std::max(area, maxAreaPart1);
       bool isValid = true;
-      for (std::uint64_t x = bottomLeft.x; x <= topRight.x; ++x) {
-        for (std::uint64_t y = bottomLeft.y; y <= topRight.y; ++y) {
-          if (!isInside2(Point{ x, y }, walls)) {
-            isValid = false;
-            break;
+      if (area > maxAreaPart2) {
+        for (std::uint64_t x = topLeft.x ; x <= bottomRight.x; ++x) {
+          for (std::uint64_t y = topLeft.y ; y <= bottomRight.y; ++y) {
+            if (exteriorPoints.contains(Point{ x, y })) {
+              isValid = false;
+              break;
+            }
           }
         }
-      }
-      if (isValid) {
-        maxArea = std::max(getArea(input[i], input[j]), maxArea);
+        if (isValid) {
+          maxAreaPart2 = area;
+        }
       }
     }
   }
-  std::print("Max area rectangle: {}\n", maxArea);
-  return grid;
+  return Result{maxAreaPart1, maxAreaPart2};
 }
 }
 namespace aoc25::day9 {
@@ -218,31 +208,7 @@ namespace aoc25::day9 {
 Result
 solve(const Input& input)
 {
-  std::uint64_t part1 = 0;
-
-  for (std::size_t i = 0; i < input.size(); ++i) {
-    for (std::size_t j = i + 1; j < input.size(); ++j) {
-      part1 = std::max(getArea(input[i], input[j]), part1);
-    }
-  }
-
-  const auto grid = buildGrid(input);
-  /*
-    auto print = [](Tile t) {
-      switch (t) {
-        case Tile::Empty:
-          return '.';
-        case Tile::Red:
-          return '#';
-        case Tile::Green:
-          return 'x';
-      }
-      return '?';
-    };
-  */
-  // grid.print(print);
-  std::uint64_t part2 = part1;
-  return { part1, part2 };
+  return getMaxAreas(input);
 }
 
 }

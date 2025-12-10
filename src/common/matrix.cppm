@@ -1,16 +1,15 @@
-module;
-
-#include <algorithm>
-#include <cstdlib>
-#include <print>
-#include <ranges>
-#include <stdexcept>
-#include <vector>
-
 export module aoc.matrix;
+
+import std;
 
 export namespace aoc::matrix {
 
+template<typename T>
+class Matrix;
+template<typename U>
+concept IsBoolMatrix = std::same_as< Matrix<bool>, std::decay_t<U>>;
+template<typename U>
+concept IsNotBoolMatrix = !IsBoolMatrix<U>;
 struct Dimension
 {
   std::size_t cols;
@@ -64,19 +63,32 @@ public:
     m_Data.resize(m_Rows * m_Cols, initialValue);
   }
 
-  template<class Self>
-  auto&& operator[](this Self&& self, std::size_t x, std::size_t y)
-  {
+  template<IsNotBoolMatrix Self>
+  auto&& operator[](this Self&& self, std::size_t x, std::size_t y){
     if (x >= self.m_Cols || y >= self.m_Rows) {
       throw std::out_of_range("Matrix index out of range");
     }
     return std::forward<Self>(self).m_Data[(y * self.m_Cols) + x];
   }
-  
+
   template<class Self>
   auto&& operator[](this Self&& self, Point p)
-  { 
+  {
     return std::forward<Self>(self)[p.x, p.y];
+  }
+  
+  template<IsBoolMatrix Self>
+  auto operator[](this Self& self, std::size_t x, std::size_t y){
+    if (x >= self.m_Cols || y >= self.m_Rows) {
+      throw std::out_of_range("Matrix index out of range");
+    }
+    return self.m_Data[(y * self.m_Cols) + x];
+  }
+
+  template<IsBoolMatrix Self>
+  auto operator[](this Self& self, Point p)
+  {
+    return self[p.x, p.y];
   }
 
   struct PositionValue
@@ -114,6 +126,7 @@ public:
 
   [[nodiscard]] std::size_t height() const { return m_Rows; }
   [[nodiscard]] std::size_t width() const { return m_Cols; }
+  [[nodiscard]] Dimension dimension() const { return { m_Cols, m_Rows }; }
 };
 
 }

@@ -18,9 +18,8 @@ struct PointHash
 
 enum class Tile : std::uint8_t
 {
-  Empty,
-  Red,
-  Green
+  Empty = 0,
+  Wall =  1
 };
 
 using Points = std::vector<Point>;
@@ -39,7 +38,7 @@ struct Wall
 
 using Walls = std::vector<Wall>;
 
-using Grid = std::vector<std::vector<bool>>;
+using Grid = aoc::matrix::Matrix<bool>;
 using PrefixSumGrid = aoc::matrix::Matrix<std::uint64_t>;
 namespace {
 
@@ -53,19 +52,19 @@ getArea(const Point& a, const Point& b)
 auto
 floodFindExteriorPoints(const Grid& grid)
 {
-  const auto nY = grid.size();
-  const auto nX = grid[0].size();
+  const auto [nX, nY] = grid.dimension();
   std::queue<Point> toVisit{};
-  Grid visited(nY, std::vector<bool>(nX, false));
+  Grid visited(grid.dimension(),false);
   toVisit.push({ 0, 0 });
+
+    if(visited[0,0] ){
+      std::abort();
+    }
 
   while (!toVisit.empty()) {
     const auto current = toVisit.front();
     toVisit.pop();
-    if (visited[current.y][current.x]) {
-      continue;
-    }
-    visited[current.y][current.x] = true;
+    visited[current.x,current.y] = true;
     const std::vector<Point> neighbors = {
       { current.x + 1, current.y },
       { current.x - 1, current.y },
@@ -76,9 +75,12 @@ floodFindExteriorPoints(const Grid& grid)
       if (neighbor.x >= nX || neighbor.y >= nY) {
         continue;
       }
-      if (grid[neighbor.y][neighbor.x]) {
+      if (grid[neighbor.x,neighbor.y]  || visited[neighbor.x,neighbor.y]) {
         continue;
       }
+    if(visited[neighbor.x,neighbor.y]) {
+      std::abort();
+    }
       toVisit.push(neighbor);
     }
   }
@@ -118,13 +120,12 @@ getCompressedCoordinates(const Input& input, const Rectangle& margin)
 auto
 calculatePrefixSumGrid(const Grid& input)
 {
-  const auto nY = input.size();
-  const auto nX = input[0].size();
+  const auto [nX,nY]  = input.dimension();
   PrefixSumGrid prefixSum({ nX, nY }, 0ULL);
 
   for (std::size_t y = 0; y < nY; ++y) {
     for (std::size_t x = 0; x < nX; ++x) {
-      const auto value = input[y][x] ? 1ULL : 0ULL;
+      const auto value = static_cast<std::size_t>(input[x,y]);
       auto& sum = prefixSum[x, y];
       sum = value;
       if (x > 0) {
@@ -200,14 +201,14 @@ solve(const Input& input)
     walls.push_back(Wall{ { minX, minY }, { maxX, maxY } });
   }
 
-  Grid grid(nY, std::vector<bool>(nX, false));
+  Grid grid({ nX, nY }, false);
 
   for (auto& wall : walls) {
     for (auto x = compressedX[wall.start.x]; x <= compressedX[wall.end.x];
          ++x) {
       for (auto y = compressedY[wall.start.y]; y <= compressedY[wall.end.y];
            ++y) {
-        grid[y][x] = true;
+        grid[x,y] = true;
       }
     }
   }

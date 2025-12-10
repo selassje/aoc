@@ -4,14 +4,15 @@ using aoc25::day9::Input;
 using aoc25::day9::Point;
 using aoc25::day9::Result;
 
-struct PointHash {
-    std::size_t operator()(const Point& p) const noexcept {
-        const auto h1 = static_cast<std::size_t>(p.x);
-        const auto h2 = static_cast<std::size_t>(p.y);
-        return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
-    }
+struct PointHash
+{
+  std::size_t operator()(const Point& p) const noexcept
+  {
+    const auto h1 = static_cast<std::size_t>(p.x);
+    const auto h2 = static_cast<std::size_t>(p.y);
+    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+  }
 };
-
 
 enum class Tile : std::uint8_t
 {
@@ -47,21 +48,20 @@ getArea(const Point& a, const Point& b)
 }
 
 auto
-floodFindExteriorPoints(const Grid &grid)
+floodFindExteriorPoints(const Grid& grid)
 {
   const auto nY = grid.size();
   const auto nX = grid[0].size();
   std::queue<Point> toVisit{};
-  std::unordered_set<Point,PointHash> visited{};
-  toVisit.push({0,0});
+  Grid visited(nY, std::vector<bool>(nX, false));
+  toVisit.push({ 0, 0 });
   while (!toVisit.empty()) {
     const auto current = toVisit.front();
     toVisit.pop();
-    if (visited.contains(current)) {
+    if (visited[current.y][current.x]) {
       continue;
     }
-    visited.insert(current);
-
+    visited[current.y][current.x] = true;
     const std::vector<Point> neighbors = {
       { current.x + 1, current.y },
       { current.x - 1, current.y },
@@ -69,8 +69,7 @@ floodFindExteriorPoints(const Grid &grid)
       { current.x, current.y - 1 },
     };
     for (const auto& neighbor : neighbors) {
-      if (neighbor.x >= nX ||
-          neighbor.y >= nY) {
+      if (neighbor.x >= nX || neighbor.y >= nY) {
         continue;
       }
       if (grid[neighbor.y][neighbor.x]) {
@@ -82,9 +81,8 @@ floodFindExteriorPoints(const Grid &grid)
   return visited;
 }
 
-
-
-auto getCompressedCoordinates(const Input& input, const Rectangle &margin)
+auto
+getCompressedCoordinates(const Input& input, const Rectangle& margin)
 {
   std::set<std::uint64_t> xCoordsSet{};
   std::set<std::uint64_t> yCoordsSet{};
@@ -96,7 +94,6 @@ auto getCompressedCoordinates(const Input& input, const Rectangle &margin)
   xCoordsSet.insert(margin.bottomRight.x + 1);
   yCoordsSet.insert(margin.topLeft.y - 1);
   yCoordsSet.insert(margin.bottomRight.y + 1);
-
 
   std::map<std::uint64_t, std::size_t> xCoordMap{};
   std::map<std::uint64_t, std::size_t> yCoordMap{};
@@ -113,7 +110,6 @@ auto getCompressedCoordinates(const Input& input, const Rectangle &margin)
 
   return std::make_pair(xCoordMap, yCoordMap);
 }
-
 
 auto
 getMaxAreas(const Input& input)
@@ -146,23 +142,22 @@ getMaxAreas(const Input& input)
     maxX = std::max(redTilePoint.x, nextRedTilePoint.x);
     minY = std::min(redTilePoint.y, nextRedTilePoint.y);
     maxY = std::max(redTilePoint.y, nextRedTilePoint.y);
-    walls.push_back(Wall{ {minX,minY}, {maxX,maxY} });
+    walls.push_back(Wall{ { minX, minY }, { maxX, maxY } });
   }
-  
+
   Grid grid(nY, std::vector<bool>(nX, false));
 
   for (auto& wall : walls) {
-    for (auto x = compressedX[wall.start.x]; x <= compressedX[wall.end.x]; ++x) {
-        for (auto y = compressedY[wall.start.y]; y <= compressedY[wall.end.y]; ++y) {
-            grid[y][x] = true;
-        }
+    for (auto x = compressedX[wall.start.x]; x <= compressedX[wall.end.x];
+         ++x) {
+      for (auto y = compressedY[wall.start.y]; y <= compressedY[wall.end.y];
+           ++y) {
+        grid[y][x] = true;
+      }
     }
   }
 
   const auto exteriorPoints = floodFindExteriorPoints(grid);
-
-  std::print("Exterior points count: {}\n", exteriorPoints.size());	
-
   auto compress = [&](const Point& p) {
     return Point{ compressedX[p.x], compressedY[p.y] };
   };
@@ -173,22 +168,18 @@ getMaxAreas(const Input& input)
     for (std::size_t j = i + 1; j < input.size(); ++j) {
       const auto compressedI = compress(input[i]);
       const auto compressedJ = compress(input[j]);
-      const auto topLeft = Point{
-        std::min(compressedI.x, compressedJ.x),
-        std::min(compressedI.y, compressedJ.y)
-      };
-      const auto bottomRight = Point{
-        std::max(compressedI.x, compressedJ.x),
-        std::max(compressedI.y, compressedJ.y)
-      };
+      const auto topLeft = Point{ std::min(compressedI.x, compressedJ.x),
+                                  std::min(compressedI.y, compressedJ.y) };
+      const auto bottomRight = Point{ std::max(compressedI.x, compressedJ.x),
+                                      std::max(compressedI.y, compressedJ.y) };
 
       const auto area = getArea(input[i], input[j]);
       maxAreaPart1 = std::max(area, maxAreaPart1);
       bool isValid = true;
       if (area > maxAreaPart2) {
-        for (std::uint64_t x = topLeft.x ; x <= bottomRight.x; ++x) {
-          for (std::uint64_t y = topLeft.y ; y <= bottomRight.y; ++y) {
-            if (exteriorPoints.contains(Point{ x, y })) {
+        for (std::uint64_t x = topLeft.x; x <= bottomRight.x; ++x) {
+          for (std::uint64_t y = topLeft.y; y <= bottomRight.y; ++y) {
+            if (exteriorPoints[y][x]) {
               isValid = false;
               break;
             }
@@ -200,7 +191,7 @@ getMaxAreas(const Input& input)
       }
     }
   }
-  return Result{maxAreaPart1, maxAreaPart2};
+  return Result{ maxAreaPart1, maxAreaPart2 };
 }
 }
 namespace aoc25::day9 {

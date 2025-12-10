@@ -3,7 +3,7 @@ module aoc25.day9;
 import aoc.matrix;
 
 using aoc25::day9::Input;
-using aoc25::day9::Point; //NOLINT
+using aoc25::day9::Point;
 using aoc25::day9::Result;
 
 struct PointHash
@@ -12,7 +12,7 @@ struct PointHash
   {
     const auto h1 = static_cast<std::size_t>(p.x);
     const auto h2 = static_cast<std::size_t>(p.y);
-    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2)); //NOLINT
+    return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2)); // NOLINT
   }
 };
 

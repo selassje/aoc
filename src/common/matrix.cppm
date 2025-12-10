@@ -4,12 +4,6 @@ import std;
 
 export namespace aoc::matrix {
 
-template<typename T>
-class Matrix;
-template<typename U>
-concept IsBoolMatrix = std::same_as< Matrix<bool>, std::decay_t<U>>;
-template<typename U>
-concept IsNotBoolMatrix = !IsBoolMatrix<U>;
 struct Dimension
 {
   std::size_t cols;
@@ -63,8 +57,9 @@ public:
     m_Data.resize(m_Rows * m_Cols, initialValue);
   }
 
-  template<IsNotBoolMatrix Self>
-  auto&& operator[](this Self&& self, std::size_t x, std::size_t y){
+  template<class Self>
+  auto&& operator[](this Self&& self, std::size_t x, std::size_t y)
+  {
     if (x >= self.m_Cols || y >= self.m_Rows) {
       throw std::out_of_range("Matrix index out of range");
     }
@@ -76,16 +71,19 @@ public:
   {
     return std::forward<Self>(self)[p.x, p.y];
   }
-  
-  template<IsBoolMatrix Self>
-  auto operator[](this Self& self, std::size_t x, std::size_t y){
+
+  template<class Self>
+    requires std::same_as<T, bool>
+  auto operator[](this Self& self, std::size_t x, std::size_t y)
+  {
     if (x >= self.m_Cols || y >= self.m_Rows) {
       throw std::out_of_range("Matrix index out of range");
     }
     return self.m_Data[(y * self.m_Cols) + x];
   }
 
-  template<IsBoolMatrix Self>
+  template<class Self>
+    requires std::same_as<T, bool>
   auto operator[](this Self& self, Point p)
   {
     return self[p.x, p.y];

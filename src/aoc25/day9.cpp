@@ -38,6 +38,7 @@ struct Wall
 using Walls = std::vector<Wall>;
 
 using Grid = std::vector<std::vector<bool>>;
+using PrefixSumGrid = std::vector<std::vector<std::uint64_t>>;
 namespace {
 
 auto
@@ -112,6 +113,53 @@ getCompressedCoordinates(const Input& input, const Rectangle& margin)
 }
 
 auto
+calculatePrefixSumGrid(const Grid& input)
+{
+  const auto nY = input.size();
+  const auto nX = input[0].size();
+  PrefixSumGrid prefixSum(nY, std::vector<std::uint64_t>(nX, 0));
+
+  for (std::size_t y = 0; y < nY; ++y) {
+    for (std::size_t x = 0; x < nX; ++x) {
+      const auto value = input[y][x] ? 1ULL : 0ULL;
+      auto& sum = prefixSum[y][x];
+      sum = value;
+      if (x > 0) {
+        sum += prefixSum[y][x - 1];
+      }
+      if (y > 0) {
+        sum += prefixSum[y - 1][x];
+      }
+      if (x > 0 && y > 0) {
+        sum -= prefixSum[y - 1][x - 1];
+      }
+    }
+  }
+  return prefixSum;
+}
+
+auto
+getRectangleSum(const Rectangle& rectangle, const PrefixSumGrid& prefixSum)
+{
+  const auto topLeftX = rectangle.topLeft.x;
+  const auto topLeftY = rectangle.topLeft.y;
+  const auto bottomRightX = rectangle.bottomRight.x;
+  const auto bottomRightY = rectangle.bottomRight.y;
+
+  std::uint64_t sum = prefixSum[bottomRightY][bottomRightX];
+  if (topLeftX > 0) {
+    sum -= prefixSum[bottomRightY][topLeftX - 1];
+  }
+  if (topLeftY > 0) {
+    sum -= prefixSum[topLeftY - 1][bottomRightX];
+  }
+  if (topLeftX > 0 && topLeftY > 0) {
+    sum += prefixSum[topLeftY - 1][topLeftX - 1];
+  }
+  return sum;
+}
+
+auto
 getMaxAreas(const Input& input)
 {
   std::uint64_t minX = std::numeric_limits<std::uint64_t>::max();
@@ -158,6 +206,7 @@ getMaxAreas(const Input& input)
   }
 
   const auto exteriorPoints = floodFindExteriorPoints(grid);
+  const auto prefixSumGrid = calculatePrefixSumGrid(exteriorPoints);
   auto compress = [&](const Point& p) {
     return Point{ compressedX[p.x], compressedY[p.y] };
   };
@@ -173,21 +222,12 @@ getMaxAreas(const Input& input)
       const auto bottomRight = Point{ std::max(compressedI.x, compressedJ.x),
                                       std::max(compressedI.y, compressedJ.y) };
 
+      const auto rectangleSum =
+        getRectangleSum(Rectangle{ topLeft, bottomRight }, prefixSumGrid);
       const auto area = getArea(input[i], input[j]);
       maxAreaPart1 = std::max(area, maxAreaPart1);
-      bool isValid = true;
-      if (area > maxAreaPart2) {
-        for (std::uint64_t x = topLeft.x; x <= bottomRight.x; ++x) {
-          for (std::uint64_t y = topLeft.y; y <= bottomRight.y; ++y) {
-            if (exteriorPoints[y][x]) {
-              isValid = false;
-              break;
-            }
-          }
-        }
-        if (isValid) {
-          maxAreaPart2 = area;
-        }
+      if (area > maxAreaPart2 && rectangleSum == 0) {
+        maxAreaPart2 = area;
       }
     }
   }

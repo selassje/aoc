@@ -1,5 +1,7 @@
 module aoc25.day9;
 
+import aoc.matrix;
+
 using aoc25::day9::Input;
 using aoc25::day9::Point;
 using aoc25::day9::Result;
@@ -38,7 +40,7 @@ struct Wall
 using Walls = std::vector<Wall>;
 
 using Grid = std::vector<std::vector<bool>>;
-using PrefixSumGrid = std::vector<std::vector<std::uint64_t>>;
+using PrefixSumGrid = aoc::matrix::Matrix<std::uint64_t>;
 namespace {
 
 auto
@@ -56,6 +58,7 @@ floodFindExteriorPoints(const Grid& grid)
   std::queue<Point> toVisit{};
   Grid visited(nY, std::vector<bool>(nX, false));
   toVisit.push({ 0, 0 });
+
   while (!toVisit.empty()) {
     const auto current = toVisit.front();
     toVisit.pop();
@@ -117,21 +120,21 @@ calculatePrefixSumGrid(const Grid& input)
 {
   const auto nY = input.size();
   const auto nX = input[0].size();
-  PrefixSumGrid prefixSum(nY, std::vector<std::uint64_t>(nX, 0));
+  PrefixSumGrid prefixSum({ nX, nY }, 0ULL);
 
   for (std::size_t y = 0; y < nY; ++y) {
     for (std::size_t x = 0; x < nX; ++x) {
       const auto value = input[y][x] ? 1ULL : 0ULL;
-      auto& sum = prefixSum[y][x];
+      auto& sum = prefixSum[x, y];
       sum = value;
       if (x > 0) {
-        sum += prefixSum[y][x - 1];
+        sum += prefixSum[x - 1, y];
       }
       if (y > 0) {
-        sum += prefixSum[y - 1][x];
+        sum += prefixSum[x, y - 1];
       }
       if (x > 0 && y > 0) {
-        sum -= prefixSum[y - 1][x - 1];
+        sum -= prefixSum[x - 1, y - 1];
       }
     }
   }
@@ -146,15 +149,15 @@ getRectangleSum(const Rectangle& rectangle, const PrefixSumGrid& prefixSum)
   const auto bottomRightX = rectangle.bottomRight.x;
   const auto bottomRightY = rectangle.bottomRight.y;
 
-  std::uint64_t sum = prefixSum[bottomRightY][bottomRightX];
+  std::uint64_t sum = prefixSum[bottomRightX,bottomRightY];
   if (topLeftX > 0) {
-    sum -= prefixSum[bottomRightY][topLeftX - 1];
+    sum -= prefixSum[bottomRightX,topLeftY - 1];
   }
   if (topLeftY > 0) {
-    sum -= prefixSum[topLeftY - 1][bottomRightX];
+    sum -= prefixSum[topLeftX - 1,bottomRightY];
   }
   if (topLeftX > 0 && topLeftY > 0) {
-    sum += prefixSum[topLeftY - 1][topLeftX - 1];
+    sum += prefixSum[topLeftX - 1,topLeftY - 1];
   }
   return sum;
 }

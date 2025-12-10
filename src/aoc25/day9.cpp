@@ -149,21 +149,25 @@ getRectangleSum(const Rectangle& rectangle, const PrefixSumGrid& prefixSum)
   const auto bottomRightX = rectangle.bottomRight.x;
   const auto bottomRightY = rectangle.bottomRight.y;
 
-  std::uint64_t sum = prefixSum[bottomRightX,bottomRightY];
+  std::uint64_t sum = prefixSum[bottomRightX, bottomRightY];
   if (topLeftX > 0) {
-    sum -= prefixSum[bottomRightX,topLeftY - 1];
+    sum -= prefixSum[bottomRightX, topLeftY - 1];
   }
   if (topLeftY > 0) {
-    sum -= prefixSum[topLeftX - 1,bottomRightY];
+    sum -= prefixSum[topLeftX - 1, bottomRightY];
   }
   if (topLeftX > 0 && topLeftY > 0) {
-    sum += prefixSum[topLeftX - 1,topLeftY - 1];
+    sum += prefixSum[topLeftX - 1, topLeftY - 1];
   }
   return sum;
 }
 
-auto
-getMaxAreas(const Input& input)
+}
+
+namespace aoc25::day9 {
+
+Result
+solve(const Input& input)
 {
   std::uint64_t minX = std::numeric_limits<std::uint64_t>::max();
   std::uint64_t maxX = 0;
@@ -234,15 +238,7 @@ getMaxAreas(const Input& input)
       }
     }
   }
-  return Result{ maxAreaPart1, maxAreaPart2 };
-}
-}
-namespace aoc25::day9 {
-
-Result
-solve(const Input& input)
-{
-  return getMaxAreas(input);
+  return { maxAreaPart1, maxAreaPart2 };
 }
 
 }

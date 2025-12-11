@@ -1,13 +1,14 @@
 module aoc25.day10;
 
 import std;
+import aoc.matrix;
 
 namespace {
 
 using namespace aoc25::day10;
 
 std::uint64_t
-countMinimumPresses(const Machine& machine)
+countMinimumPressesForLights(const Machine& machine)
 {
   const std::uint64_t statesCount = 1ULL << machine.lights.size();
   const std::uint64_t startState = 0;
@@ -61,6 +62,31 @@ countMinimumPresses(const Machine& machine)
   }
   return distances[targetState];
 }
+std::uint64_t
+countMinimumPressesForJoltages(const Machine& machine)
+{
+  using Matrix = aoc::matrix::Matrix<std::uint64_t>;
+  const auto n = machine.joltages.size();
+  const auto m = machine.wirings.size();
+  Matrix A{ { m, n }, 0 };
+  Matrix B{ { 1, n }, 0 };
+
+  for (std::size_t i = 0; i < n; ++i) {
+    B[0, i] = machine.joltages[i];
+  }
+
+  for (std::size_t i = 0; i < machine.wirings.size(); ++i) {
+    const auto& wiring = machine.wirings[i];
+    for (const auto& button : wiring) {
+      A[i, button] = 1;
+    }
+  }
+
+  B.print(std::identity{});
+  A.print(std::identity{});
+
+  return 0;
+}
 }
 
 namespace aoc25::day10 {
@@ -71,9 +97,9 @@ solve(const Input& input)
   std::uint64_t part1 = 0;
   std::uint64_t part2 = 0;
   for (const auto& machine : input) {
-    part1 += countMinimumPresses(machine);
+    part1 += countMinimumPressesForLights(machine);
+    part2 += countMinimumPressesForJoltages(machine);
   }
-  part2 = part1;
   return { part1, part2 };
 }
 }

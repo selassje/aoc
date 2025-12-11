@@ -68,23 +68,20 @@ countMinimumPressesForJoltages(const Machine& machine)
   using Matrix = aoc::matrix::Matrix<std::uint64_t>;
   const auto n = machine.joltages.size();
   const auto m = machine.wirings.size();
-  Matrix A{ { m, n }, 0 };
-  Matrix B{ { 1, n }, 0 };
+  Matrix augmentedMatrix{ { m + 1, n }, 0 };
 
   for (std::size_t i = 0; i < n; ++i) {
-    B[0, i] = machine.joltages[i];
+    augmentedMatrix[m, i] = machine.joltages[i];
   }
 
   for (std::size_t i = 0; i < machine.wirings.size(); ++i) {
     const auto& wiring = machine.wirings[i];
     for (const auto& button : wiring) {
-      A[i, button] = 1;
+      augmentedMatrix[i, button] = 1;
     }
   }
-
-  B.print(std::identity{});
-  A.print(std::identity{});
-
+  augmentedMatrix.print(std::identity{});
+  std::println();
   return 0;
 }
 }

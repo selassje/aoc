@@ -1,3 +1,4 @@
+
 module aoc25.day10;
 
 import std;
@@ -66,7 +67,7 @@ countMinimumPressesForLights(const Machine& machine)
 struct Equation
 {
   std::vector<std::int32_t> coefficients;
-  std::int32_t constant;
+  std::int32_t constant = 0;
 
   auto operator()(const std::vector<std::int32_t>& variableValues) const
   {
@@ -119,6 +120,24 @@ struct Equation
     coefficients[variableIndex] = 0;
     return *this;
   }
+
+  void print() const {
+    bool first = true;
+    for (std::size_t i = 0; i < coefficients.size(); ++i) {
+      if (i > 0 && coefficients[i] != 0 && !first) {
+        std::print("+ ");
+        first = false;
+      }
+      if(coefficients[i] != 0) {
+        std::print("{}*X{} ", coefficients[i], i);
+      }
+    }
+    if(constant != 0) {
+      std::print("+ {}",constant);
+    }
+    std::println();
+  }
+
 };
 
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
@@ -210,6 +229,7 @@ gaussianElimination(Matrix& augmentedMatrix)
         equation.coefficients[col] = -coefficient;
       }
     }
+    equation.constant = augmentedMatrix[colCount - 1, row];
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {
       const auto varIndex = dependentVariables[prevRow];
@@ -250,7 +270,45 @@ countMinimumPressesForJoltages(const Machine& machine)
   augmentedMatrix.print(std::identity{});
   std::println();
   std::println("Free variables {}", freeVariables);
-  return 0;
+  std::println("Equations:");	
+  for(std::size_t i = 0; i < equations.size(); ++i) {
+    std::print("X{} = ", i);
+    equations[i].print();
+  }
+
+  static constexpr auto maxFreeVariableSearchRange = 10;
+  const auto searchRange = static_cast<std::uint64_t>(std::pow(maxFreeVariableSearchRange, freeVariables.size()));
+
+  std::uint64_t minPresses = std::numeric_limits<std::uint64_t>::max();
+  std::vector<std::int32_t> variableValues(machine.wirings.size(), 0);
+
+  for(std::uint64_t freeVarCombination = 0; freeVarCombination < searchRange; ++freeVarCombination) {
+    std::uint64_t remainder = freeVarCombination;
+    for(std::size_t i = 0; i < freeVariables.size(); ++i) {
+      variableValues[freeVariables[i]] = static_cast<std::int32_t>(remainder % maxFreeVariableSearchRange);
+      remainder /= maxFreeVariableSearchRange;
+    }
+    std::uint64_t totalPresses = 0;
+    bool validSolution = true;
+    for(std::size_t i = 0; i < equations.size(); ++i) {
+      const auto value = equations[i](variableValues);
+      if(value < 0) {
+        validSolution = false;
+        break;
+      }
+      totalPresses += static_cast<std::uint64_t>(value);
+    }
+    totalPresses += std::accumulate(
+      variableValues.begin(), variableValues.end(), 0ULL,
+      [](std::uint64_t sum, std::int32_t val) {
+        return sum + static_cast<std::uint64_t>(val);
+      });
+    if(validSolution) {
+      minPresses = std::min(totalPresses, minPresses);
+    }
+  }
+
+  return minPresses;
 }
 }
 

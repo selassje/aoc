@@ -76,6 +76,31 @@ struct Equation
     }
     return result;
   }
+  friend Equation operator*(std::int32_t scalar, const Equation& equation)
+  {
+    Equation result{};
+    result.constant = scalar * equation.constant;
+    result.coefficients.resize(equation.coefficients.size());
+    for (std::size_t i = 0; i < equation.coefficients.size(); ++i) {
+      result.coefficients[i] = scalar * equation.coefficients[i];
+    }
+    return result;
+  }
+
+  friend Equation operator+(const Equation& lhs, const Equation& rhs)
+  {
+    Equation result{};
+    result.constant = lhs.constant + rhs.constant;
+    const auto size = std::max(lhs.coefficients.size(), rhs.coefficients.size());
+    result.coefficients.resize(size, 0);
+    for (std::size_t i = 0; i < size; ++i) {
+      std::int32_t lhsCoeff = (i < lhs.coefficients.size()) ? lhs.coefficients[i] : 0;
+      std::int32_t rhsCoeff = (i < rhs.coefficients.size()) ? rhs.coefficients[i] : 0;
+      result.coefficients[i] = lhsCoeff + rhsCoeff;
+    }
+    return result;
+  }
+
 };
 
 using Matrix = aoc::matrix::Matrix<std::int32_t>;

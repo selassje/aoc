@@ -159,6 +159,14 @@ gaussianElimination(Matrix& augmentedMatrix)
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
     const auto targetVar = dependentVariables[row];
 
+    for(std::size_t col = 0 ; col < colCount - 1; ++col) {
+      if (col != targetVar && augmentedMatrix[col, row] != 0) {
+        const auto coefficient = -augmentedMatrix[col, row];
+        equations[targetVar].coefficients.resize(colCount - 1, 0);
+        equations[targetVar].coefficients[col] = coefficient;
+      }
+    }
+
     Equation equation{};
 
     equations[targetVar] = equation;

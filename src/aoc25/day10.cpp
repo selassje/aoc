@@ -91,16 +91,34 @@ struct Equation
   {
     Equation result{};
     result.constant = lhs.constant + rhs.constant;
-    const auto size = std::max(lhs.coefficients.size(), rhs.coefficients.size());
+    const auto size =
+      std::max(lhs.coefficients.size(), rhs.coefficients.size());
     result.coefficients.resize(size, 0);
     for (std::size_t i = 0; i < size; ++i) {
-      std::int32_t lhsCoeff = (i < lhs.coefficients.size()) ? lhs.coefficients[i] : 0;
-      std::int32_t rhsCoeff = (i < rhs.coefficients.size()) ? rhs.coefficients[i] : 0;
+      std::int32_t lhsCoeff =
+        (i < lhs.coefficients.size()) ? lhs.coefficients[i] : 0;
+      std::int32_t rhsCoeff =
+        (i < rhs.coefficients.size()) ? rhs.coefficients[i] : 0;
       result.coefficients[i] = lhsCoeff + rhsCoeff;
     }
     return result;
   }
 
+  Equation& substitute(std::size_t variableIndex, const Equation& substitution)
+  {
+    const auto coeff = coefficients[variableIndex];
+    constant += coeff * substitution.constant;
+    for (std::size_t i = 0; i < substitution.coefficients.size(); ++i) {
+      if (i != variableIndex) {
+        if (i >= coefficients.size()) {
+          coefficients.resize(i + 1, 0);
+        }
+        coefficients[i] += coeff * substitution.coefficients[i];
+      }
+    }
+    coefficients[variableIndex] = 0;
+    return *this;
+  }
 };
 
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
@@ -131,7 +149,7 @@ gaussianElimination(Matrix& augmentedMatrix)
 {
   const auto rowCount = augmentedMatrix.height();
   const auto colCount = augmentedMatrix.width();
-  for (std::size_t pivotColumn = 0; pivotColumn < colCount ; ++pivotColumn) {
+  for (std::size_t pivotColumn = 0; pivotColumn < colCount; ++pivotColumn) {
     std::size_t pivotRow = pivotColumn;
     while (pivotRow < rowCount && augmentedMatrix[pivotColumn, pivotRow] == 0) {
       ++pivotRow;
@@ -150,7 +168,7 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
   }
-  std::map<std::size_t,std::size_t> dependentVariables{};
+  std::map<std::size_t, std::size_t> dependentVariables{};
   for (std::size_t row = 0; row < rowCount; ++row) {
     bool allZero = true;
     for (std::size_t c = 0; c < colCount - 1; ++c) {
@@ -164,7 +182,8 @@ gaussianElimination(Matrix& augmentedMatrix)
       throw std::runtime_error("No solution exists");
     }
   }
-  auto containsValue = [](const std::map<std::size_t,std::size_t>& map, std::size_t value) {
+  auto containsValue = [](const std::map<std::size_t, std::size_t>& map,
+                          std::size_t value) {
     for (const auto& [key, val] : map) {
       if (val == value) {
         return true;
@@ -183,17 +202,22 @@ gaussianElimination(Matrix& augmentedMatrix)
 
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
     const auto targetVar = dependentVariables[row];
-
-    for(std::size_t col = 0 ; col < colCount - 1; ++col) {
+    Equation equation{};
+    for (std::size_t col = 0; col < colCount - 1; ++col) {
+      equation.coefficients.resize(colCount - 1, 0);
       if (col != targetVar && augmentedMatrix[col, row] != 0) {
-        const auto coefficient = -augmentedMatrix[col, row];
-        equations[targetVar].coefficients.resize(colCount - 1, 0);
-        equations[targetVar].coefficients[col] = coefficient;
+        const auto coefficient = augmentedMatrix[col, row];
+        equation.coefficients[col] = -coefficient;
       }
     }
-
-    Equation equation{};
-
+    std::size_t prevRow = row + 1;
+    while (prevRow < rowCount) {
+      const auto varIndex = dependentVariables[prevRow];
+      if (equation.coefficients[varIndex] != 0) {
+        equation.substitute(varIndex, equations[varIndex]);
+      }
+      ++prevRow;
+    }
     equations[targetVar] = equation;
   }
 

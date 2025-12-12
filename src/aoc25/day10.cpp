@@ -106,7 +106,7 @@ gaussianElimination(Matrix& augmentedMatrix)
 {
   const auto rowCount = augmentedMatrix.height();
   const auto colCount = augmentedMatrix.width();
-  for (std::size_t pivotColumn = 0; pivotColumn < colCount; ++pivotColumn) {
+  for (std::size_t pivotColumn = 0; pivotColumn < colCount ; ++pivotColumn) {
     std::size_t pivotRow = pivotColumn;
     while (pivotRow < rowCount && augmentedMatrix[pivotColumn, pivotRow] == 0) {
       ++pivotRow;
@@ -125,13 +125,13 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
   }
-  std::vector<std::size_t> dependentVariables{};
+  std::map<std::size_t,std::size_t> dependentVariables{};
   for (std::size_t row = 0; row < rowCount; ++row) {
     bool allZero = true;
     for (std::size_t c = 0; c < colCount - 1; ++c) {
       if (augmentedMatrix[c, row] != 0) {
         allZero = false;
-        dependentVariables.push_back(c);
+        dependentVariables[row] = c;
         break;
       }
     }
@@ -139,9 +139,17 @@ gaussianElimination(Matrix& augmentedMatrix)
       throw std::runtime_error("No solution exists");
     }
   }
+  auto containsValue = [](const std::map<std::size_t,std::size_t>& map, std::size_t value) {
+    for (const auto& [key, val] : map) {
+      if (val == value) {
+        return true;
+      }
+    }
+    return false;
+  };
   std::vector<std::size_t> freeVariables{};
   for (std::size_t i = 0; i < colCount - 1; ++i) {
-    if (dependentVariables.end() == std::ranges::find(dependentVariables, i)) {
+    if (!containsValue(dependentVariables, i)) {
       freeVariables.push_back(i);
     }
   }

@@ -183,15 +183,13 @@ gaussianElimination(Matrix& augmentedMatrix)
     if (pivotRow == rowCount) {
       continue;
     }
-    if (pivotRow != pivotColumn) {
-      swapRows(augmentedMatrix, pivotColumn, pivotRow);
-    }
-    std::size_t currentPivotRow = pivotRow;
+    std::size_t currentPivotRow = pivotColumn; // row where we want pivot
+    if (pivotRow != currentPivotRow) swapRows(augmentedMatrix, currentPivotRow, pivotRow);
 
     for (std::size_t r = currentPivotRow + 1; r < rowCount; ++r) {
       if (augmentedMatrix[pivotColumn, r] != 0) {
         const auto multiple = augmentedMatrix[pivotColumn, r] /
-                              augmentedMatrix[pivotColumn, pivotColumn];
+                              augmentedMatrix[pivotColumn, currentPivotRow];
         substractRow(augmentedMatrix, r, currentPivotRow, multiple);
       }
     }
@@ -239,6 +237,7 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
     equation.constant = augmentedMatrix[colCount - 1, row];
+    equation  =  augmentedMatrix[targetVar,row] * equation;
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {

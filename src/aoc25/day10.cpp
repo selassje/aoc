@@ -62,16 +62,64 @@ countMinimumPressesForLights(const Machine& machine)
   }
   return distances[targetState];
 }
+using Matrix = aoc::matrix::Matrix<std::int32_t>;
+
+void
+substractRow(Matrix& matrix,
+             std::size_t targetRow,
+             std::size_t sourceRow,
+             std::int32_t multiple)
+{
+  const auto colCount = matrix.width();
+  for (std::size_t k = 0; k < colCount; ++k) {
+    matrix[k, targetRow] -= multiple * matrix[k, sourceRow];
+  }
+}
+
+void
+swapRows(Matrix& matrix, std::size_t row1, std::size_t row2)
+{
+  const auto colCount = matrix.width();
+  for (std::size_t k = 0; k < colCount; ++k) {
+    std::swap(matrix[k, row1], matrix[k, row2]);
+  }
+}
+
+void
+gaussianElimination(Matrix& augmentedMatrix)
+{
+  const auto rowCount = augmentedMatrix.height();
+  const auto colCount = augmentedMatrix.width();
+  for (std::size_t pivotColumn = 0; pivotColumn < colCount; ++pivotColumn) {
+    std::size_t pivotRow = pivotColumn;
+    while (pivotRow < rowCount && augmentedMatrix[pivotColumn, pivotRow] == 0) {
+      ++pivotRow;
+    }
+    if (pivotRow == rowCount) {
+      continue;
+    }
+    if (pivotRow != pivotColumn) {
+      swapRows(augmentedMatrix, pivotColumn, pivotRow);
+    }
+    for (std::size_t r = pivotColumn + 1; r < rowCount; ++r) {
+      if (augmentedMatrix[pivotColumn, r] != 0) {
+        const auto multiple = augmentedMatrix[pivotColumn, r] /
+                              augmentedMatrix[pivotColumn, pivotColumn];
+        substractRow(augmentedMatrix, r, pivotColumn, multiple);
+      }
+    }
+  }
+}
+
 std::uint64_t
 countMinimumPressesForJoltages(const Machine& machine)
 {
-  using Matrix = aoc::matrix::Matrix<std::uint64_t>;
   const auto n = machine.joltages.size();
   const auto m = machine.wirings.size();
   Matrix augmentedMatrix{ { m + 1, n }, 0 };
 
   for (std::size_t i = 0; i < n; ++i) {
-    augmentedMatrix[m, i] = machine.joltages[i];
+    augmentedMatrix[m, i] = static_cast<std::int32_t>(machine.joltages[i]);
   }
 
   for (std::size_t i = 0; i < machine.wirings.size(); ++i) {
@@ -80,6 +128,12 @@ countMinimumPressesForJoltages(const Machine& machine)
       augmentedMatrix[i, button] = 1;
     }
   }
+  
+  std::println("Augmented Matrix before elimination:");
+  augmentedMatrix.print(std::identity{});
+  
+  gaussianElimination(augmentedMatrix);
+  std::println("Augmented Matrix after elimination:");
   augmentedMatrix.print(std::identity{});
   std::println();
   return 0;

@@ -62,6 +62,22 @@ countMinimumPressesForLights(const Machine& machine)
   }
   return distances[targetState];
 }
+
+struct Equation
+{
+  std::vector<std::int32_t> coefficients;
+  std::int32_t constant;
+
+  auto operator()(const std::vector<std::int32_t>& variableValues) const
+  {
+    std::int32_t result = constant;
+    for (std::size_t i = 0; i < coefficients.size(); ++i) {
+      result += coefficients[i] * variableValues[i];
+    }
+    return result;
+  }
+};
+
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
 
 void
@@ -85,7 +101,7 @@ swapRows(Matrix& matrix, std::size_t row1, std::size_t row2)
   }
 }
 
-void
+auto
 gaussianElimination(Matrix& augmentedMatrix)
 {
   const auto rowCount = augmentedMatrix.height();
@@ -109,6 +125,29 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
   }
+  std::vector<std::size_t> dependentVariables{};
+  for (std::size_t row = 0; row < rowCount; ++row) {
+    bool allZero = true;
+    for (std::size_t c = 0; c < colCount - 1; ++c) {
+      if (augmentedMatrix[c, row] != 0) {
+        allZero = false;
+        dependentVariables.push_back(c);
+        break;
+      }
+    }
+    if (allZero && augmentedMatrix[colCount - 1, row] != 0) {
+      throw std::runtime_error("No solution exists");
+    }
+  }
+  std::vector<std::size_t> freeVariables{};
+  for (std::size_t i = 0; i < colCount - 1; ++i) {
+    if (dependentVariables.end() == std::ranges::find(dependentVariables, i)) {
+      freeVariables.push_back(i);
+    }
+  }
+  std::vector<Equation> equations{};
+
+  return std::tuple{equations,freeVariables};
 }
 
 std::uint64_t
@@ -128,14 +167,15 @@ countMinimumPressesForJoltages(const Machine& machine)
       augmentedMatrix[i, button] = 1;
     }
   }
-  
+
   std::println("Augmented Matrix before elimination:");
   augmentedMatrix.print(std::identity{});
-  
-  gaussianElimination(augmentedMatrix);
+
+  const auto& [equations,freeVariables] = gaussianElimination(augmentedMatrix);
   std::println("Augmented Matrix after elimination:");
   augmentedMatrix.print(std::identity{});
   std::println();
+  std::println("Free variables {}", freeVariables);	
   return 0;
 }
 }

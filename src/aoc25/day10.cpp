@@ -175,20 +175,24 @@ gaussianElimination(Matrix& augmentedMatrix)
   const auto colCount = augmentedMatrix.width();
   for (std::size_t pivotColumn = 0; pivotColumn < colCount - 1; ++pivotColumn) {
     std::size_t pivotRow = pivotColumn;
-    while (pivotRow < rowCount && augmentedMatrix[pivotColumn, pivotRow] == 0) {
-      ++pivotRow;
+    std::size_t row = pivotRow;
+    while (row < rowCount && augmentedMatrix[pivotColumn, row] == 0) {
+      ++row;
     }
+    pivotRow = row;
     if (pivotRow == rowCount) {
       continue;
     }
     if (pivotRow != pivotColumn) {
       swapRows(augmentedMatrix, pivotColumn, pivotRow);
     }
-    for (std::size_t r = pivotColumn + 1; r < rowCount; ++r) {
+    std::size_t currentPivotRow = pivotRow;
+
+    for (std::size_t r = currentPivotRow + 1; r < rowCount; ++r) {
       if (augmentedMatrix[pivotColumn, r] != 0) {
         const auto multiple = augmentedMatrix[pivotColumn, r] /
                               augmentedMatrix[pivotColumn, pivotColumn];
-        substractRow(augmentedMatrix, r, pivotColumn, multiple);
+        substractRow(augmentedMatrix, r, currentPivotRow, multiple);
       }
     }
   }
@@ -275,7 +279,7 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Augmented Matrix after elimination:");
   augmentedMatrix.print(std::identity{});
   std::println();
-  //std::println("Free variables {}", freeVariables);
+  // std::println("Free variables {}", freeVariables);
   std::println("Equations:");
   for (std::size_t i = 0; i < equations.size(); ++i) {
     std::print("X{} = ", i);

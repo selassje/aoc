@@ -146,8 +146,17 @@ gaussianElimination(Matrix& augmentedMatrix)
     }
   }
   std::vector<Equation> equations{};
+  equations.resize(colCount - 1);
 
-  return std::tuple{equations,freeVariables};
+  for (std::size_t row = rowCount - 1; row < rowCount; --row) {
+    const auto targetVar = dependentVariables[row];
+
+    Equation equation{};
+
+    equations[targetVar] = equation;
+  }
+
+  return std::tuple{ equations, freeVariables };
 }
 
 std::uint64_t
@@ -171,11 +180,11 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Augmented Matrix before elimination:");
   augmentedMatrix.print(std::identity{});
 
-  const auto& [equations,freeVariables] = gaussianElimination(augmentedMatrix);
+  const auto& [equations, freeVariables] = gaussianElimination(augmentedMatrix);
   std::println("Augmented Matrix after elimination:");
   augmentedMatrix.print(std::identity{});
   std::println();
-  std::println("Free variables {}", freeVariables);	
+  std::println("Free variables {}", freeVariables);
   return 0;
 }
 }

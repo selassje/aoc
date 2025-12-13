@@ -76,7 +76,7 @@ struct Equation
     for (std::size_t i = 0; i < coefficients.size(); ++i) {
       result += coefficients[i] * variableValues[i];
     }
-    return static_cast<std::int32_t> (std::round(result));
+    return static_cast<std::int32_t>(std::round(result));
   }
   friend Equation operator*(double scalar, const Equation& equation)
   {
@@ -168,7 +168,8 @@ gaussianElimination(Matrix& augmentedMatrix)
       continue;
     }
     std::size_t currentPivotRow = pivotColumn; // row where we want pivot
-    if (pivotRow != currentPivotRow) swapRows(augmentedMatrix, currentPivotRow, pivotRow);
+    if (pivotRow != currentPivotRow)
+      swapRows(augmentedMatrix, currentPivotRow, pivotRow);
 
     for (std::size_t r = currentPivotRow + 1; r < rowCount; ++r) {
       if (augmentedMatrix[pivotColumn, r] != 0) {
@@ -221,10 +222,12 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
     equation.constant = augmentedMatrix[colCount - 1, row];
-    const double coeff  =  augmentedMatrix[targetVar,row];
+    const double coeff = augmentedMatrix[targetVar, row];
     if (coeff < 0) {
-      equation = -1*equation;
+      // equation = -1*equation;
     }
+    const double coeffInv = 1. / augmentedMatrix[targetVar, row];
+    equation = coeffInv * equation;
     equation.parity = static_cast<std::uint32_t>(std::round(std::abs(coeff)));
 
     auto orgEq = equation;
@@ -270,22 +273,25 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Free variables {}", freeVariables);
   std::println("Equations:");
   for (std::size_t i = 0; i < equations.size(); ++i) {
-    if(equations[i].parity != 1) {
-      std::print("{}",equations[i].parity);
+    if (equations[i].parity != 1) {
+      std::print("{}", equations[i].parity);
     }
     std::print("X{} = ", i);
     equations[i].print();
   }
 
-  static constexpr auto maxFreeVariableSearchRange = 40;
+  // const auto freeVariableSize = freeVariables.size();
+  static constexpr auto maxFreeVariableSearchRange = 50;
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
   std::uint64_t minPresses = std::numeric_limits<std::uint64_t>::max();
   std::vector<std::int32_t> variableValues(machine.wirings.size(), 0);
+  std::vector<std::int32_t> minVariableValues(machine.wirings.size(), 0);
 
   for (std::uint64_t freeVarCombination = 0; freeVarCombination < searchRange;
        ++freeVarCombination) {
+    // variableValues.clear();
     std::uint64_t remainder = freeVarCombination;
     for (std::size_t i = 0; i < freeVariables.size(); ++i) {
       variableValues[freeVariables[i]] =
@@ -300,22 +306,28 @@ countMinimumPressesForJoltages(const Machine& machine)
         validSolution = false;
         break;
       }
-      totalPresses += static_cast<std::uint64_t>(value);
+      if (std::ranges::find(freeVariables,i) == freeVariables.end()) {
+        variableValues[i] = value;
+      }
+      // totalPresses += static_cast<std::uint64_t>(value);
     }
-    totalPresses +=
-      std::accumulate(variableValues.begin(),
-                      variableValues.end(),
-                      0ULL,
-                      [](std::uint64_t sum, std::int32_t val) {
-                        return sum + static_cast<std::uint64_t>(val);
-                      });
     if (validSolution) {
+      totalPresses +=
+        std::accumulate(variableValues.begin(),
+                        variableValues.end(),
+                        0ULL,
+                        [](std::uint64_t sum, std::int32_t val) {
+                          return sum + static_cast<std::uint64_t>(val);
+                        });
+      if (totalPresses < minPresses) {
+        minVariableValues = variableValues;
+      }
       minPresses = std::min(totalPresses, minPresses);
     }
   }
-  std::println("Min presses {}",  minPresses);
-  if(minPresses == std::numeric_limits<std::uint64_t>::max())
-  {
+  std::println("Min presses {}", minPresses);
+  std::println("Solution {}", minVariableValues);
+  if (minPresses == std::numeric_limits<std::uint64_t>::max()) {
     std::abort();
   }
 
@@ -333,10 +345,10 @@ solve(const Input& input)
   std::size_t i = 0;
   for (const auto& machine : input) {
     part1 += countMinimumPressesForLights(machine);
-    std::println("Solving machine {}",i++);
+    std::println("Solving machine {}", i++);
     part2 += countMinimumPressesForJoltages(machine);
-    if( i == 10) {
-     // std::abort();
+    if (i == 10) {
+      // std::abort();
     }
   }
   return { part1, part2 };

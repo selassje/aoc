@@ -223,13 +223,17 @@ gaussianElimination(Matrix& augmentedMatrix)
     }
     equation.constant = augmentedMatrix[colCount - 1, row];
     const double coeff = augmentedMatrix[targetVar, row];
-    if (coeff < 0) {
-     // equation = -1*equation;
+    if (false) {
+      if (coeff  <  0)  {
+      equation = -1* equation;
+      }
+      equation.parity =
+        static_cast<std::uint32_t>(std::round(std::abs(coeff)));
+    } else {
+      const double coeffInv = 1. / coeff;
+      equation = coeffInv * equation;
+      equation.parity = 1;
     }
-    const double coeffInv = 1. / coeff;
-    equation = coeffInv * equation;
-   // equation.parity =
-   // static_cast<std::uint32_t>(std::round(std::abs(coeffInv)));
 
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
@@ -282,14 +286,14 @@ countMinimumPressesForJoltages(const Machine& machine)
   }
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = 40;
+  std::uint64_t maxFreeVariableSearchRange = 25;
   if (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 40;
+    maxFreeVariableSearchRange = 10;
   }
   if (freeVariableSize <= 3) {
-    maxFreeVariableSearchRange = 1000;
+    maxFreeVariableSearchRange = 180;
   }
-  std::println("MaxSearch space per variable {}",maxFreeVariableSearchRange);
+  std::println("MaxSearch space per variable {}", maxFreeVariableSearchRange);
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -305,6 +309,13 @@ countMinimumPressesForJoltages(const Machine& machine)
       variableValues[freeVariables[i]] =
         static_cast<std::int32_t>(remainder % maxFreeVariableSearchRange);
       remainder /= maxFreeVariableSearchRange;
+      const auto parity = equations[freeVariables[i]].parity;
+      if (parity == 0) {
+        std::println("Parity 0");
+        std::abort();
+      }
+      // variableValues[freeVariables[i]] *=
+      //   static_cast<std::int32_t>(equations[freeVariables[i]].parity);
     }
     std::uint64_t totalPresses = 0;
     bool validSolution = true;
@@ -316,8 +327,17 @@ countMinimumPressesForJoltages(const Machine& machine)
       }
       if (std::ranges::find(freeVariables, i) == freeVariables.end()) {
         variableValues[i] = value;
+        const auto parity = static_cast<std::int32_t>(equations[i].parity);
+        if (parity == 2) {
+          std::println("Parity 0");
+          // std::abort();
+        }
+        if (variableValues[i] % parity != 0) {
+          validSolution = false;
+        }
+
+        variableValues[i] /= static_cast<std::int32_t>(parity);
       }
-      // totalPresses += static_cast<std::uint64_t>(value);
     }
     if (validSolution) {
       totalPresses +=
@@ -336,8 +356,8 @@ countMinimumPressesForJoltages(const Machine& machine)
 
   std::println("Min presses {}", minPresses);
   std::println("Solution {}", minVariableValues);
-  for(std::size_t i = 0 ; i <  minVariableValues.size();++i){
-    if(std::ranges::find(freeVariables,i) == freeVariables.end()) {
+  for (std::size_t i = 0; i < minVariableValues.size(); ++i) {
+    if (std::ranges::find(freeVariables, i) == freeVariables.end()) {
       minVariableValues[i] = 0;
     }
   }
@@ -365,10 +385,9 @@ solve(const Input& input)
     const auto minPressPart2 = countMinimumPressesForJoltages(machine);
     if (minPressPart2 == std::numeric_limits<std::uint64_t>::max()) {
       ++infCount;
-      std::println("Could not find solutions");
-      std::abort();
-    }
-    else {
+      std::println("Could not find solutions for {}",i);
+     // std::abort();
+    } else {
       part2 += minPressPart2;
     }
 
@@ -376,7 +395,7 @@ solve(const Input& input)
       // std::abort();
     }
   }
-  std::println("Wrong solutions {}",infCount);
+  std::println("Wrong solutions {}", infCount);
   return { part1, part2 };
 }
 }

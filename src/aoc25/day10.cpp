@@ -182,9 +182,21 @@ gaussianElimination(Matrix& augmentedMatrix)
           const auto multiple2 = augmentedMatrix[pivotColumn, currentPivotRow] /
                               augmentedMatrix[pivotColumn, r];
 
+          const  auto rmd = augmentedMatrix[pivotColumn, currentPivotRow] % augmentedMatrix[pivotColumn, r];
+
+          std::println("Before snd swapping  {} {} mult2 {} rmd {}",currentPivotRow,r,multiple2,rmd);
+          augmentedMatrix.print(std::identity{});
+          if(rmd != 0) {
+           // std::abort();
+          }
+
 
           substractRow(augmentedMatrix, currentPivotRow, r, multiple2);
+
+
           swapRows(augmentedMatrix, r,currentPivotRow);
+          r = currentPivotRow + 1;
+          continue;
 
         }
       
@@ -192,6 +204,8 @@ gaussianElimination(Matrix& augmentedMatrix)
           std::println("Still non  zero in {} {} pivot = {} mult = {} sourceRow = {} srcPiv = {}",pivotColumn,r,pivotValue,multiple,currentPivotRow,
           augmentedMatrix[pivotColumn,currentPivotRow]);
           augmentedMatrix.print(std::identity{});
+          r  =  currentPivotRow + 1;
+          continue;
           std::abort();
         }
 
@@ -307,10 +321,13 @@ countMinimumPressesForJoltages(const Machine& machine)
   const auto freeVariableSize = freeVariables.size();
   std::uint64_t maxFreeVariableSearchRange = 25;
   if (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 10;
+    maxFreeVariableSearchRange = 20;
   }
-  if (freeVariableSize <= 3) {
-    maxFreeVariableSearchRange = 180;
+  if (freeVariableSize < 3) {
+    maxFreeVariableSearchRange = 300;
+  }
+  if (freeVariableSize == 3) {
+    maxFreeVariableSearchRange = 300;
   }
   if (freeVariableSize == 5) {
     maxFreeVariableSearchRange = 60;
@@ -418,8 +435,8 @@ solve(const Input& input)
     }
     ++i;
   }
-  part2 += 311;
-  part2 += 188;
+  //part2 += 311;
+ // part2 += 188;
   std::println("Wrong solutions {}", infCount);
   return { part1, part2 };
 }

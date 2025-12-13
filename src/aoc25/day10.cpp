@@ -66,18 +66,19 @@ countMinimumPressesForLights(const Machine& machine)
 
 struct Equation
 {
-  std::vector<std::int32_t> coefficients;
-  std::int32_t constant = 0;
+  std::vector<double> coefficients;
+  double constant = 0;
+  std::uint32_t parity = 1;
 
   auto operator()(const std::vector<std::int32_t>& variableValues) const
   {
-    std::int32_t result = constant;
+    double result = constant;
     for (std::size_t i = 0; i < coefficients.size(); ++i) {
       result += coefficients[i] * variableValues[i];
     }
-    return result;
+    return static_cast<std::int32_t> (std::round(result));
   }
-  friend Equation operator*(std::int32_t scalar, const Equation& equation)
+  friend Equation operator*(double scalar, const Equation& equation)
   {
     Equation result{};
     result.constant = scalar * equation.constant;
@@ -220,7 +221,12 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
     equation.constant = augmentedMatrix[colCount - 1, row];
-    equation  =  augmentedMatrix[targetVar,row] * equation;
+    const double coeff  =  augmentedMatrix[targetVar,row];
+    if (coeff < 0) {
+      equation = -1*equation;
+    }
+    equation.parity = static_cast<std::uint32_t>(std::round(std::abs(coeff)));
+
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {
@@ -264,11 +270,14 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Free variables {}", freeVariables);
   std::println("Equations:");
   for (std::size_t i = 0; i < equations.size(); ++i) {
+    if(equations[i].parity != 1) {
+      std::print("{}",equations[i].parity);
+    }
     std::print("X{} = ", i);
     equations[i].print();
   }
 
-  static constexpr auto maxFreeVariableSearchRange = 50;
+  static constexpr auto maxFreeVariableSearchRange = 40;
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -326,6 +335,9 @@ solve(const Input& input)
     part1 += countMinimumPressesForLights(machine);
     std::println("Solving machine {}",i++);
     part2 += countMinimumPressesForJoltages(machine);
+    if( i == 10) {
+     // std::abort();
+    }
   }
   return { part1, part2 };
 }

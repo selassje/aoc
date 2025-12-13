@@ -151,16 +151,18 @@ swapRows(Matrix& matrix, std::size_t row1, std::size_t row2)
     std::swap(matrix[k, row1], matrix[k, row2]);
   }
 }
-
+//
 auto
-gaussianElimination(Matrix& augmentedMatrix)
+gaussianElimination(const Matrix& augmentedMatrix)
 {
-  const auto rowCount = augmentedMatrix.height();
-  const auto colCount = augmentedMatrix.width();
+  Matrix refMatrix = augmentedMatrix;  
+
+  const auto rowCount = refMatrix.height();
+  const auto colCount = refMatrix.width();
   for (std::size_t pivotColumn = 0; pivotColumn < colCount - 1; ++pivotColumn) {
     std::size_t pivotRow = pivotColumn;
     std::size_t row = pivotRow;
-    while (row < rowCount && augmentedMatrix[pivotColumn, row] == 0) {
+    while (row < rowCount && refMatrix[pivotColumn, row] == 0) {
       ++row;
     }
     pivotRow = row;
@@ -169,41 +171,37 @@ gaussianElimination(Matrix& augmentedMatrix)
     }
     std::size_t currentPivotRow = pivotColumn; // row where we want pivot
     if (pivotRow != currentPivotRow)
-      swapRows(augmentedMatrix, currentPivotRow, pivotRow);
+      swapRows(refMatrix, currentPivotRow, pivotRow);
 
     for (std::size_t r = currentPivotRow + 1; r < rowCount; ++r) {
-      if (augmentedMatrix[pivotColumn, r] != 0) {
-        const auto multiple = augmentedMatrix[pivotColumn, r] /
-                              augmentedMatrix[pivotColumn, currentPivotRow];
-        const auto  pivotValue =  augmentedMatrix[pivotColumn,r];
+      if (refMatrix[pivotColumn, r] != 0) {
+        const auto multiple = refMatrix[pivotColumn, r] /
+                              refMatrix[pivotColumn, currentPivotRow];
+        const auto  pivotValue =  refMatrix[pivotColumn,r];
         if(multiple != 0) {
-          substractRow(augmentedMatrix, r, currentPivotRow, multiple);
+          substractRow(refMatrix, r, currentPivotRow, multiple);
         }else {
-          const auto multiple2 = augmentedMatrix[pivotColumn, currentPivotRow] /
-                              augmentedMatrix[pivotColumn, r];
+          const auto multiple2 = refMatrix[pivotColumn, currentPivotRow] /
+                              refMatrix[pivotColumn, r];
 
-          const  auto rmd = augmentedMatrix[pivotColumn, currentPivotRow] % augmentedMatrix[pivotColumn, r];
+          const  auto rmd = refMatrix[pivotColumn, currentPivotRow] % refMatrix[pivotColumn, r];
 
           std::println("Before snd swapping  {} {} mult2 {} rmd {}",currentPivotRow,r,multiple2,rmd);
-          augmentedMatrix.print(std::identity{});
+          refMatrix.print(std::identity{});
           if(rmd != 0) {
            // std::abort();
           }
-
-
-          substractRow(augmentedMatrix, currentPivotRow, r, multiple2);
-
-
-          swapRows(augmentedMatrix, r,currentPivotRow);
+          substractRow(refMatrix, currentPivotRow, r, multiple2);
+          swapRows(refMatrix, r,currentPivotRow);
           r = currentPivotRow + 1;
           continue;
 
         }
       
-        if(augmentedMatrix[pivotColumn,r]  !=  0 ){
+        if(refMatrix[pivotColumn,r]  !=  0 ){
           std::println("Still non  zero in {} {} pivot = {} mult = {} sourceRow = {} srcPiv = {}",pivotColumn,r,pivotValue,multiple,currentPivotRow,
-          augmentedMatrix[pivotColumn,currentPivotRow]);
-          augmentedMatrix.print(std::identity{});
+          refMatrix[pivotColumn,currentPivotRow]);
+          refMatrix.print(std::identity{});
           r  =  currentPivotRow + 1;
           continue;
           std::abort();
@@ -212,17 +210,23 @@ gaussianElimination(Matrix& augmentedMatrix)
       }
     }
   }
+  return refMatrix;
+}
+
+auto getEquationsAndFreeVariables(const Matrix &refMatrix) {
+  const auto rowCount = refMatrix.height();
+  const auto colCount = refMatrix.width();
   std::map<std::size_t, std::size_t> dependentVariables{};
   for (std::size_t row = 0; row < rowCount; ++row) {
     bool allZero = true;
     for (std::size_t c = 0; c < colCount - 1; ++c) {
-      if (augmentedMatrix[c, row] != 0) {
+      if (refMatrix[c, row] != 0) {
         allZero = false;
         dependentVariables[row] = c;
         break;
       }
     }
-    if (allZero && augmentedMatrix[colCount - 1, row] != 0) {
+    if (allZero && refMatrix[colCount - 1, row] != 0) {
       throw std::runtime_error("No solution exists");
     }
   }
@@ -249,13 +253,13 @@ gaussianElimination(Matrix& augmentedMatrix)
     Equation equation{};
     for (std::size_t col = 0; col < colCount - 1; ++col) {
       equation.coefficients.resize(colCount - 1, 0);
-      if (col != targetVar && augmentedMatrix[col, row] != 0) {
-        const auto coefficient = augmentedMatrix[col, row];
+      if (col != targetVar && refMatrix[col, row] != 0) {
+        const auto coefficient = refMatrix[col, row];
         equation.coefficients[col] = -coefficient;
       }
     }
-    equation.constant = augmentedMatrix[colCount - 1, row];
-    const double coeff = augmentedMatrix[targetVar, row];
+    equation.constant = refMatrix[colCount - 1, row];
+    const double coeff = refMatrix[targetVar, row];
     if (false) {
       if (coeff  <  0)  {
       equation = -1* equation;
@@ -304,9 +308,11 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Augmented Matrix before elimination:");
   augmentedMatrix.print(std::identity{});
 
-  const auto& [equations, freeVariables] = gaussianElimination(augmentedMatrix);
+  const auto  refMatrix = gaussianElimination(augmentedMatrix);
+
+  const auto& [equations, freeVariables] = getEquationsAndFreeVariables(refMatrix);
   std::println("Augmented Matrix after elimination:");
-  augmentedMatrix.print(std::identity{});
+  refMatrix.print(std::identity{});
   std::println();
   std::println("Free variables {}", freeVariables);
   std::println("Equations:");

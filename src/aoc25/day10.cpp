@@ -88,23 +88,6 @@ struct Equation
     return result;
   }
 
-  friend Equation operator+(const Equation& lhs, const Equation& rhs)
-  {
-    Equation result{};
-    result.constant = lhs.constant + rhs.constant;
-    const auto size =
-      std::max(lhs.coefficients.size(), rhs.coefficients.size());
-    result.coefficients.resize(size, 0);
-    for (std::size_t i = 0; i < size; ++i) {
-      std::int32_t lhsCoeff =
-        (i < lhs.coefficients.size()) ? lhs.coefficients[i] : 0;
-      std::int32_t rhsCoeff =
-        (i < rhs.coefficients.size()) ? rhs.coefficients[i] : 0;
-      result.coefficients[i] = lhsCoeff + rhsCoeff;
-    }
-    return result;
-  }
-
   Equation& substitute(std::size_t variableIndex, const Equation& substitution)
   {
     const auto coeff = coefficients[variableIndex];
@@ -278,14 +261,14 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Augmented Matrix after elimination:");
   augmentedMatrix.print(std::identity{});
   std::println();
-  // std::println("Free variables {}", freeVariables);
+  std::println("Free variables {}", freeVariables);
   std::println("Equations:");
   for (std::size_t i = 0; i < equations.size(); ++i) {
     std::print("X{} = ", i);
     equations[i].print();
   }
 
-  static constexpr auto maxFreeVariableSearchRange = 10;
+  static constexpr auto maxFreeVariableSearchRange = 50;
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -321,6 +304,11 @@ countMinimumPressesForJoltages(const Machine& machine)
       minPresses = std::min(totalPresses, minPresses);
     }
   }
+  std::println("Min presses {}",  minPresses);
+  if(minPresses == std::numeric_limits<std::uint64_t>::max())
+  {
+    std::abort();
+  }
 
   return minPresses;
 }
@@ -333,8 +321,10 @@ solve(const Input& input)
 {
   std::uint64_t part1 = 0;
   std::uint64_t part2 = 0;
+  std::size_t i = 0;
   for (const auto& machine : input) {
     part1 += countMinimumPressesForLights(machine);
+    std::println("Solving machine {}",i++);
     part2 += countMinimumPressesForJoltages(machine);
   }
   return { part1, part2 };

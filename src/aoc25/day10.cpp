@@ -228,7 +228,7 @@ gaussianElimination(Matrix& augmentedMatrix)
     }
     const double coeffInv = 1. / augmentedMatrix[targetVar, row];
     equation = coeffInv * equation;
-    equation.parity = static_cast<std::uint32_t>(std::round(std::abs(coeff)));
+    //equation.parity = static_cast<std::uint32_t>(std::round(std::abs(coeffInv)));
 
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
@@ -280,8 +280,14 @@ countMinimumPressesForJoltages(const Machine& machine)
     equations[i].print();
   }
 
-  // const auto freeVariableSize = freeVariables.size();
-  static constexpr auto maxFreeVariableSearchRange = 50;
+  const auto freeVariableSize = freeVariables.size();
+  std::uint64_t maxFreeVariableSearchRange = 30;
+  if  (freeVariableSize >= 6) {
+    maxFreeVariableSearchRange = 20;
+  }
+  if  (freeVariableSize <= 3) {
+    maxFreeVariableSearchRange = 100;
+  }
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 

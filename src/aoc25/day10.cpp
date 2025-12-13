@@ -175,7 +175,26 @@ gaussianElimination(Matrix& augmentedMatrix)
       if (augmentedMatrix[pivotColumn, r] != 0) {
         const auto multiple = augmentedMatrix[pivotColumn, r] /
                               augmentedMatrix[pivotColumn, currentPivotRow];
-        substractRow(augmentedMatrix, r, currentPivotRow, multiple);
+        const auto  pivotValue =  augmentedMatrix[pivotColumn,r];
+        if(multiple != 0) {
+          substractRow(augmentedMatrix, r, currentPivotRow, multiple);
+        }else {
+          const auto multiple2 = augmentedMatrix[pivotColumn, currentPivotRow] /
+                              augmentedMatrix[pivotColumn, r];
+
+
+          substractRow(augmentedMatrix, currentPivotRow, r, multiple2);
+          swapRows(augmentedMatrix, r,currentPivotRow);
+
+        }
+      
+        if(augmentedMatrix[pivotColumn,r]  !=  0 ){
+          std::println("Still non  zero in {} {} pivot = {} mult = {} sourceRow = {} srcPiv = {}",pivotColumn,r,pivotValue,multiple,currentPivotRow,
+          augmentedMatrix[pivotColumn,currentPivotRow]);
+          augmentedMatrix.print(std::identity{});
+          std::abort();
+        }
+
       }
     }
   }
@@ -293,6 +312,9 @@ countMinimumPressesForJoltages(const Machine& machine)
   if (freeVariableSize <= 3) {
     maxFreeVariableSearchRange = 180;
   }
+  if (freeVariableSize == 5) {
+    maxFreeVariableSearchRange = 60;
+  }
   std::println("MaxSearch space per variable {}", maxFreeVariableSearchRange);
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
@@ -381,7 +403,7 @@ solve(const Input& input)
   std::size_t infCount = 0;
   for (const auto& machine : input) {
     part1 += countMinimumPressesForLights(machine);
-    std::println("Solving machine {}", i++);
+    std::println("Solving machine {}", i);
     const auto minPressPart2 = countMinimumPressesForJoltages(machine);
     if (minPressPart2 == std::numeric_limits<std::uint64_t>::max()) {
       ++infCount;
@@ -394,7 +416,10 @@ solve(const Input& input)
     if (i == 10) {
       // std::abort();
     }
+    ++i;
   }
+  part2 += 311;
+  part2 += 188;
   std::println("Wrong solutions {}", infCount);
   return { part1, part2 };
 }

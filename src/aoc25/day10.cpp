@@ -224,11 +224,12 @@ gaussianElimination(Matrix& augmentedMatrix)
     equation.constant = augmentedMatrix[colCount - 1, row];
     const double coeff = augmentedMatrix[targetVar, row];
     if (coeff < 0) {
-      // equation = -1*equation;
+     // equation = -1*equation;
     }
-    const double coeffInv = 1. / augmentedMatrix[targetVar, row];
+    const double coeffInv = 1. / coeff;
     equation = coeffInv * equation;
-    //equation.parity = static_cast<std::uint32_t>(std::round(std::abs(coeffInv)));
+   // equation.parity =
+   // static_cast<std::uint32_t>(std::round(std::abs(coeffInv)));
 
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
@@ -281,13 +282,14 @@ countMinimumPressesForJoltages(const Machine& machine)
   }
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = 30;
-  if  (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 20;
+  std::uint64_t maxFreeVariableSearchRange = 40;
+  if (freeVariableSize >= 6) {
+    maxFreeVariableSearchRange = 40;
   }
-  if  (freeVariableSize <= 3) {
-    maxFreeVariableSearchRange = 100;
+  if (freeVariableSize <= 3) {
+    maxFreeVariableSearchRange = 1000;
   }
+  std::println("MaxSearch space per variable {}",maxFreeVariableSearchRange);
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -312,7 +314,7 @@ countMinimumPressesForJoltages(const Machine& machine)
         validSolution = false;
         break;
       }
-      if (std::ranges::find(freeVariables,i) == freeVariables.end()) {
+      if (std::ranges::find(freeVariables, i) == freeVariables.end()) {
         variableValues[i] = value;
       }
       // totalPresses += static_cast<std::uint64_t>(value);
@@ -331,10 +333,17 @@ countMinimumPressesForJoltages(const Machine& machine)
       minPresses = std::min(totalPresses, minPresses);
     }
   }
+
   std::println("Min presses {}", minPresses);
   std::println("Solution {}", minVariableValues);
+  for(std::size_t i = 0 ; i <  minVariableValues.size();++i){
+    if(std::ranges::find(freeVariables,i) == freeVariables.end()) {
+      minVariableValues[i] = 0;
+    }
+  }
+  std::println("Free variables for solution {}", minVariableValues);
   if (minPresses == std::numeric_limits<std::uint64_t>::max()) {
-    std::abort();
+    //  std::abort();
   }
 
   return minPresses;
@@ -349,14 +358,25 @@ solve(const Input& input)
   std::uint64_t part1 = 0;
   std::uint64_t part2 = 0;
   std::size_t i = 0;
+  std::size_t infCount = 0;
   for (const auto& machine : input) {
     part1 += countMinimumPressesForLights(machine);
     std::println("Solving machine {}", i++);
-    part2 += countMinimumPressesForJoltages(machine);
+    const auto minPressPart2 = countMinimumPressesForJoltages(machine);
+    if (minPressPart2 == std::numeric_limits<std::uint64_t>::max()) {
+      ++infCount;
+      std::println("Could not find solutions");
+      std::abort();
+    }
+    else {
+      part2 += minPressPart2;
+    }
+
     if (i == 10) {
       // std::abort();
     }
   }
+  std::println("Wrong solutions {}",infCount);
   return { part1, part2 };
 }
 }

@@ -33,6 +33,7 @@ function(setup_compiler_warnings TARGET)
               -Wimplicit-fallthrough
               -Wno-include-angled-in-module-purview
               -Wno-reserved-module-identifier
+              -Wno-unknown-pragmas
               )
 
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")

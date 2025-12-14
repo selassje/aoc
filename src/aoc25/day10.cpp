@@ -201,7 +201,7 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
     const auto targetVar = dependentVariables[row];
     Equation equation{};
     for (std::size_t col = 0; col < colCount - 1; ++col) {
-      equation.coefficients.resize(colCount - 1, { 0, 1 });
+      equation.coefficients.resize(colCount - 1, {});
       if (col != targetVar && refMatrix[col, row].nom != 0) {
         const auto coefficient = refMatrix[col, row];
         equation.coefficients[col] = -coefficient;
@@ -279,7 +279,6 @@ countMinimumPressesForJoltages(const Machine& machine)
         static_cast<std::int32_t>(remainder % maxFreeVariableSearchRange);
       remainder /= maxFreeVariableSearchRange;
     }
-    std::uint64_t totalPresses = 0;
     bool validSolution = true;
     for (std::size_t i = 0; i < equations.size(); ++i) {
       const auto value = equations[i](variableValues);
@@ -296,13 +295,10 @@ countMinimumPressesForJoltages(const Machine& machine)
       }
     }
     if (validSolution) {
-      totalPresses +=
-        std::accumulate(variableValues.begin(),
-                        variableValues.end(),
-                        0ULL,
-                        [](std::uint64_t sum, std::int32_t val) {
-                          return sum + static_cast<std::uint64_t>(val);
-                        });
+      std::uint64_t totalPresses = std::ranges::fold_left(
+        variableValues, 0ULL, [](std::uint64_t sum, std::int32_t val) {
+          return sum + static_cast<std::uint64_t>(val);
+        });
       minPresses = std::min(totalPresses, minPresses);
     }
   }

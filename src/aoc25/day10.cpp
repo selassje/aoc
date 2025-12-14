@@ -6,6 +6,96 @@ import aoc.matrix;
 
 namespace {
 
+struct Rational
+{
+  std::int32_t nom{ 0 };
+  std::int32_t denom{ 1 };
+
+  template<typename T>
+  explicit Rational(const T& t)
+    : nom(static_cast<std::int32_t>(t))
+  {
+  }
+
+  Rational()
+    : nom(0)
+    , denom(1) {};
+
+  Rational(std::int32_t nom_, std::int32_t denom_)
+    : nom(nom_)
+    , denom(denom_)
+  {
+  }
+
+  explicit operator double() const
+  {
+    return static_cast<double>(nom) / static_cast<double>(denom);
+  }
+
+  friend Rational operator*(const Rational& lhs, const Rational& rhs)
+  {
+    return Rational{ lhs.nom * rhs.nom, lhs.denom * rhs.denom };
+  }
+
+  friend Rational operator-(const Rational& lhs, const Rational& rhs)
+  {
+    const auto newDenom = lhs.denom * rhs.denom;
+    const auto newNom = (lhs.nom * rhs.denom) - (lhs.denom * rhs.nom);
+    return { newNom, newDenom };
+  }
+
+  friend Rational operator+(const Rational& lhs, const Rational& rhs)
+  {
+    const auto newDenom = lhs.denom * rhs.denom;
+    const auto newNom = (lhs.nom * rhs.denom) + (lhs.denom * rhs.nom);
+    return { newNom, newDenom };
+  }
+
+  friend Rational operator/(const Rational& lhs, const Rational& rhs)
+  {
+    return lhs * Rational{ rhs.denom, rhs.nom };
+  }
+
+  Rational& operator+=(const Rational& rhs)
+  {
+    auto result = rhs + *this;
+    std::swap(*this, result);
+    return *this;
+  }
+
+  Rational& operator-=(const Rational& rhs)
+  {
+    auto result = *this - rhs;
+    std::swap(*this, result);
+    return *this;
+  }
+  Rational operator-() const { return { -nom, denom }; }
+
+  [[nodiscard]] bool isInteger() const { return nom % denom == 0; }
+
+  void reduce()
+  {
+    if ((nom < 0 && denom < 0) || (nom >= 0 && denom < 0)) {
+      nom = -nom;
+      denom = -denom;
+    }
+    const auto gcd = std::gcd(nom, denom);
+    nom /= gcd;
+    denom /= gcd;
+  }
+  // auto operator<=>(const Rational&) const = default;
+};
+
+const auto printRational = [](const Rational r) {
+  auto tmp = r;
+  tmp.reduce();
+  if ((tmp.nom == 0 && tmp.denom != 0) || tmp.denom == 1) {
+    return std::format("{: }", tmp.nom);
+  }
+  return std::format("({: }/{: })", tmp.nom, tmp.denom);
+};
+const Rational Zero = Rational{ 0, 1 };
+
 using namespace aoc25::day10;
 
 std::uint64_t
@@ -66,23 +156,28 @@ countMinimumPressesForLights(const Machine& machine)
 
 struct Equation
 {
-  std::vector<double> coefficients;
-  double constant = 0;
-  std::uint32_t parity = 1;
+  std::vector<Rational> coefficients;
+  Rational constant = { 0, 1 };
 
   auto operator()(const std::vector<std::int32_t>& variableValues) const
   {
-    double result = constant;
+    Rational result = constant;
+    Rational resultCpy = constant;
     for (std::size_t i = 0; i < coefficients.size(); ++i) {
-      result += coefficients[i] * variableValues[i];
+      result += coefficients[i] * static_cast<Rational>(variableValues[i]);
+      result.reduce();
     }
-    return static_cast<std::int32_t>(std::round(result));
+    if (result.denom == 0) {
+      std::abort();
+    }
+
+    return result;
   }
-  friend Equation operator*(double scalar, const Equation& equation)
+  friend Equation operator*(Rational scalar, const Equation& equation)
   {
     Equation result{};
     result.constant = scalar * equation.constant;
-    result.coefficients.resize(equation.coefficients.size());
+    result.coefficients.resize(equation.coefficients.size(), { 0, 1 });
     for (std::size_t i = 0; i < equation.coefficients.size(); ++i) {
       result.coefficients[i] = scalar * equation.coefficients[i];
     }
@@ -91,17 +186,24 @@ struct Equation
 
   Equation& substitute(std::size_t variableIndex, const Equation& substitution)
   {
+    const auto  constCpy = constant;
     const auto coeff = coefficients[variableIndex];
-    constant += coeff * substitution.constant;
+    const auto  mult =  coeff * substitution.constant;
+    constant += mult;
+    if  (constant.denom == 0) {
+      std::abort();
+    }
+    constant.reduce();
     for (std::size_t i = 0; i < substitution.coefficients.size(); ++i) {
       if (i != variableIndex) {
         if (i >= coefficients.size()) {
-          coefficients.resize(i + 1, 0);
+          coefficients.resize(i + 1, { 0, 1 });
         }
         coefficients[i] += coeff * substitution.coefficients[i];
+        coefficients[i].reduce();
       }
     }
-    coefficients[variableIndex] = 0;
+    coefficients[variableIndex] = { 0, 1 };
     return *this;
   }
 
@@ -109,20 +211,20 @@ struct Equation
   {
     bool first = true;
     for (std::size_t i = 0; i < coefficients.size(); ++i) {
-      if (i > 0 && coefficients[i] != 0 && !first) {
+      if (i > 0 && coefficients[i].nom != 0 && !first) {
         std::print("+ ");
         first = false;
       }
-      if (coefficients[i] != 0) {
-        std::print("{}*X{} ", coefficients[i], i);
+      if (coefficients[i].nom != 0) {
+        std::print("{}*X{} ", printRational(coefficients[i]), i);
         first = false;
       }
     }
-    if (constant != 0) {
+    if (constant.nom != 0) {
       if (!first) {
-        std::print("+ {}", constant);
+        std::print("+ {}", printRational(constant));
       } else {
-        std::print("{}", constant);
+        std::print("{}", printRational(constant));
       }
     }
     std::println();
@@ -130,21 +232,24 @@ struct Equation
 };
 
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
+using RefMatrix = aoc::matrix::Matrix<Rational>;
+constexpr double EPS = 1e-30;
+
+const auto isZero = [](double v) { return std::abs(v) < EPS; };
 
 void
-substractRow(Matrix& matrix,
+substractRow(RefMatrix& matrix,
              std::size_t targetRow,
              std::size_t sourceRow,
-             std::int32_t multiple)
+             Rational factor)
 {
   const auto colCount = matrix.width();
   for (std::size_t k = 0; k < colCount; ++k) {
-    matrix[k, targetRow] -= multiple * matrix[k, sourceRow];
+    matrix[k, targetRow] -= factor * matrix[k, sourceRow];
   }
 }
-
 void
-swapRows(Matrix& matrix, std::size_t row1, std::size_t row2)
+swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
 {
   const auto colCount = matrix.width();
   for (std::size_t k = 0; k < colCount; ++k) {
@@ -155,79 +260,73 @@ swapRows(Matrix& matrix, std::size_t row1, std::size_t row2)
 auto
 gaussianElimination(const Matrix& augmentedMatrix)
 {
-  Matrix refMatrix = augmentedMatrix;  
 
-  const auto rowCount = refMatrix.height();
-  const auto colCount = refMatrix.width();
-  for (std::size_t pivotColumn = 0; pivotColumn < colCount - 1; ++pivotColumn) {
-    std::size_t pivotRow = pivotColumn;
-    std::size_t row = pivotRow;
-    while (row < rowCount && refMatrix[pivotColumn, row] == 0) {
-      ++row;
-    }
-    pivotRow = row;
-    if (pivotRow == rowCount) {
-      continue;
-    }
-    std::size_t currentPivotRow = pivotColumn; // row where we want pivot
-    if (pivotRow != currentPivotRow)
-      swapRows(refMatrix, currentPivotRow, pivotRow);
+  const std::size_t rowCount = augmentedMatrix.height();
+  const std::size_t colCount = augmentedMatrix.width();
 
-    for (std::size_t r = currentPivotRow + 1; r < rowCount; ++r) {
-      if (refMatrix[pivotColumn, r] != 0) {
-        const auto multiple = refMatrix[pivotColumn, r] /
-                              refMatrix[pivotColumn, currentPivotRow];
-        const auto  pivotValue =  refMatrix[pivotColumn,r];
-        if(multiple != 0) {
-          substractRow(refMatrix, r, currentPivotRow, multiple);
-        }else {
-          const auto multiple2 = refMatrix[pivotColumn, currentPivotRow] /
-                              refMatrix[pivotColumn, r];
-
-          const  auto rmd = refMatrix[pivotColumn, currentPivotRow] % refMatrix[pivotColumn, r];
-
-          std::println("Before snd swapping  {} {} mult2 {} rmd {}",currentPivotRow,r,multiple2,rmd);
-          refMatrix.print(std::identity{});
-          if(rmd != 0) {
-           // std::abort();
-          }
-          substractRow(refMatrix, currentPivotRow, r, multiple2);
-          swapRows(refMatrix, r,currentPivotRow);
-          r = currentPivotRow + 1;
-          continue;
-
-        }
-      
-        if(refMatrix[pivotColumn,r]  !=  0 ){
-          std::println("Still non  zero in {} {} pivot = {} mult = {} sourceRow = {} srcPiv = {}",pivotColumn,r,pivotValue,multiple,currentPivotRow,
-          refMatrix[pivotColumn,currentPivotRow]);
-          refMatrix.print(std::identity{});
-          r  =  currentPivotRow + 1;
-          continue;
-          std::abort();
-        }
-
-      }
+  RefMatrix refMatrix{ { colCount, rowCount }, Zero };
+  for (std::size_t x = 0; x < colCount; ++x) {
+    for (std::size_t y = 0; y < rowCount; ++y) {
+      refMatrix[x, y] = static_cast<Rational>(augmentedMatrix[x, y]);
     }
   }
+
+  std::size_t pivotRow = 0;
+
+  for (std::size_t pivotCol = 0; pivotCol < colCount - 1 && pivotRow < rowCount;
+       ++pivotCol) {
+    // 1. Find a pivot row in this column
+    std::size_t row = pivotRow;
+    while (row < rowCount && refMatrix[pivotCol, row].nom == 0)
+      ++row;
+
+    if (row == rowCount)
+      continue; // no pivot in this column
+
+    // 2. Move pivot row into position
+    if (row != pivotRow)
+      swapRows(refMatrix, row, pivotRow);
+
+    const auto pivot = refMatrix[pivotCol, pivotRow];
+
+    // 3. Eliminate entries below the pivot
+    for (std::size_t r = pivotRow + 1; r < rowCount; ++r) {
+      if (refMatrix[pivotCol, r].nom == 0)
+        continue;
+
+      const auto factor = refMatrix[pivotCol, r] / pivot;
+      // substractRow(refMatrix, r, pivotRow, factor);
+
+      for (std::size_t c = 0; c < colCount; ++c) {
+        refMatrix[c, r] -= factor * refMatrix[c, pivotRow];
+        refMatrix[c, r].reduce();
+      }
+    }
+
+    ++pivotRow;
+  }
+
   return refMatrix;
 }
 
-auto getEquationsAndFreeVariables(const Matrix &refMatrix) {
+auto
+getEquationsAndFreeVariables(const RefMatrix& refMatrix)
+{
   const auto rowCount = refMatrix.height();
   const auto colCount = refMatrix.width();
   std::map<std::size_t, std::size_t> dependentVariables{};
   for (std::size_t row = 0; row < rowCount; ++row) {
     bool allZero = true;
     for (std::size_t c = 0; c < colCount - 1; ++c) {
-      if (refMatrix[c, row] != 0) {
+      if (refMatrix[c, row].nom != 0) {
         allZero = false;
         dependentVariables[row] = c;
         break;
       }
     }
-    if (allZero && refMatrix[colCount - 1, row] != 0) {
-      throw std::runtime_error("No solution exists");
+    if (allZero && refMatrix[colCount - 1, row].nom != 0) {
+
+      //  throw std::runtime_error("No solution exists");
     }
   }
   auto containsValue = [](const std::map<std::size_t, std::size_t>& map,
@@ -246,42 +345,46 @@ auto getEquationsAndFreeVariables(const Matrix &refMatrix) {
     }
   }
   std::vector<Equation> equations{};
-  equations.resize(colCount - 1);
+  equations.resize(colCount - 1, {});
 
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
     const auto targetVar = dependentVariables[row];
     Equation equation{};
     for (std::size_t col = 0; col < colCount - 1; ++col) {
-      equation.coefficients.resize(colCount - 1, 0);
-      if (col != targetVar && refMatrix[col, row] != 0) {
+      equation.coefficients.resize(colCount - 1, { 0, 1 });
+      if (col != targetVar && refMatrix[col, row].nom != 0) {
         const auto coefficient = refMatrix[col, row];
         equation.coefficients[col] = -coefficient;
       }
     }
     equation.constant = refMatrix[colCount - 1, row];
-    const double coeff = refMatrix[targetVar, row];
+    if (equation.constant.denom == 0) {
+      std::abort();
+    }
+    const auto coeff = refMatrix[targetVar, row];
     if (false) {
-      if (coeff  <  0)  {
-      equation = -1* equation;
-      }
-      equation.parity =
-        static_cast<std::uint32_t>(std::round(std::abs(coeff)));
     } else {
-      const double coeffInv = 1. / coeff;
-      equation = coeffInv * equation;
-      equation.parity = 1;
+      if (coeff.nom != 0) {
+        const auto coeffInv = static_cast<Rational>(1) / coeff;
+        equation = coeffInv * equation;
+      }
     }
 
     auto orgEq = equation;
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {
-      const auto varIndex = dependentVariables[prevRow];
-      if (equation.coefficients[varIndex] != 0) {
-        equation.substitute(varIndex, equations[varIndex]);
+      if (dependentVariables.contains(prevRow)) {
+        const auto varIndex = dependentVariables[prevRow];
+        if (equation.coefficients[varIndex].nom != 0) {
+          equation.substitute(varIndex, equations[varIndex]);
+        }
       }
       ++prevRow;
     }
     equations[targetVar] = equation;
+    if (equation.constant.denom == 0) {
+      std::abort();
+    }
   }
 
   return std::tuple{ equations, freeVariables };
@@ -308,29 +411,28 @@ countMinimumPressesForJoltages(const Machine& machine)
   std::println("Augmented Matrix before elimination:");
   augmentedMatrix.print(std::identity{});
 
-  const auto  refMatrix = gaussianElimination(augmentedMatrix);
-
-  const auto& [equations, freeVariables] = getEquationsAndFreeVariables(refMatrix);
+  const auto refMatrix = gaussianElimination(augmentedMatrix);
   std::println("Augmented Matrix after elimination:");
-  refMatrix.print(std::identity{});
+
+  refMatrix.print(printRational);
+
+  const auto& [equations, freeVariables] =
+    getEquationsAndFreeVariables(refMatrix);
   std::println();
   std::println("Free variables {}", freeVariables);
   std::println("Equations:");
   for (std::size_t i = 0; i < equations.size(); ++i) {
-    if (equations[i].parity != 1) {
-      std::print("{}", equations[i].parity);
-    }
     std::print("X{} = ", i);
     equations[i].print();
   }
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = 25;
+  std::uint64_t maxFreeVariableSearchRange = 40;
   if (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 20;
+    maxFreeVariableSearchRange = 40;
   }
   if (freeVariableSize < 3) {
-    maxFreeVariableSearchRange = 300;
+    maxFreeVariableSearchRange = 400;
   }
   if (freeVariableSize == 3) {
     maxFreeVariableSearchRange = 300;
@@ -354,34 +456,21 @@ countMinimumPressesForJoltages(const Machine& machine)
       variableValues[freeVariables[i]] =
         static_cast<std::int32_t>(remainder % maxFreeVariableSearchRange);
       remainder /= maxFreeVariableSearchRange;
-      const auto parity = equations[freeVariables[i]].parity;
-      if (parity == 0) {
-        std::println("Parity 0");
-        std::abort();
-      }
-      // variableValues[freeVariables[i]] *=
-      //   static_cast<std::int32_t>(equations[freeVariables[i]].parity);
     }
     std::uint64_t totalPresses = 0;
     bool validSolution = true;
     for (std::size_t i = 0; i < equations.size(); ++i) {
       const auto value = equations[i](variableValues);
-      if (value < 0) {
+      if (value.nom * value.denom < 0) {
         validSolution = false;
         break;
       }
       if (std::ranges::find(freeVariables, i) == freeVariables.end()) {
-        variableValues[i] = value;
-        const auto parity = static_cast<std::int32_t>(equations[i].parity);
-        if (parity == 2) {
-          std::println("Parity 0");
-          // std::abort();
-        }
-        if (variableValues[i] % parity != 0) {
+        if (!value.isInteger()) {
           validSolution = false;
+          break;
         }
-
-        variableValues[i] /= static_cast<std::int32_t>(parity);
+        variableValues[i] = value.nom / value.denom;
       }
     }
     if (validSolution) {
@@ -430,8 +519,8 @@ solve(const Input& input)
     const auto minPressPart2 = countMinimumPressesForJoltages(machine);
     if (minPressPart2 == std::numeric_limits<std::uint64_t>::max()) {
       ++infCount;
-      std::println("Could not find solutions for {}",i);
-     // std::abort();
+      std::println("Could not find solutions for {}", i);
+      // std::abort();
     } else {
       part2 += minPressPart2;
     }
@@ -441,8 +530,8 @@ solve(const Input& input)
     }
     ++i;
   }
-  //part2 += 311;
- // part2 += 188;
+  // part2 += 311;
+  // part2 += 76;
   std::println("Wrong solutions {}", infCount);
   return { part1, part2 };
 }

@@ -417,7 +417,7 @@ countMinimumPressesForJoltages(const Machine& machine)
     maxFreeVariableSearchRange = 300;
   }
   if (freeVariableSize == 5) {
-    maxFreeVariableSearchRange = 60;
+    maxFreeVariableSearchRange = 30;
   }
   std::println("MaxSearch space per variable {}", maxFreeVariableSearchRange);
   const auto searchRange = static_cast<std::uint64_t>(

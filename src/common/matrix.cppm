@@ -2,6 +2,10 @@ export module aoc.matrix;
 
 import std;
 
+namespace aoc::graph {
+template<typename V, typename E>
+class Graph;
+}
 export namespace aoc::matrix {
 
 struct Dimension
@@ -26,6 +30,10 @@ private:
 
   template<typename R>
   using Vector = std::vector<std::vector<R>>;
+  
+  template<typename R, typename E>
+  friend class aoc::graph::Graph;
+  Matrix() = default;
 
 public:
   template<typename R, typename Proj>

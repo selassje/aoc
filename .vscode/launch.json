@@ -28,35 +28,21 @@
     },
     {
       "name": "LLDB",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${command:cmake.launchTargetPath}",
       "args": [],
-      "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
-      "environment": [
-        {
-          "name": "PATH",
-          "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
-        }
-      ],
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "miDebuggerPath": "lldb-mi"
     },
     {
       "name": "LLDB TEST EXPLORER",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${cmake.testProgram}",
       "args": [
         "${cmake.testArgs}"
       ],
-      "cwd": "${cmake.testWorkingDirectory}",
-      "stopAtEntry": false,
-      "externalConsole": false,
-      "MIMode": "lldb",
-      "miDebuggerPath": "lldb-mi",
+      "cwd": "${cmake.testWorkingDirectory}"
     },
     {
       "name": "GDB TEST EXPLORER",

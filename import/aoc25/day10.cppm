@@ -4,20 +4,19 @@ import std;
 
 export namespace aoc25::day10 {
 
-enum class Light: std::uint8_t
+enum class Light : std::uint8_t
 {
   Off = 0,
   On = 1,
 };
 
-using Lights =  std::vector<Light>;
+using Lights = std::vector<Light>;
 
 using ButtonWiring = std::vector<std::uint64_t>;
 
 using ButtonWirings = std::vector<ButtonWiring>;
 
 using Joltages = std::vector<std::uint64_t>;
-
 
 struct Machine
 {

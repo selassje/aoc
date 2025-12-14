@@ -187,7 +187,7 @@ struct Equation
   {
     const auto coeff = coefficients[variableIndex];
     constant += coeff * substitution.constant;
-    if  (constant.denom == 0) {
+    if (constant.denom == 0) {
       std::abort();
     }
     constant.reduce();
@@ -231,19 +231,6 @@ struct Equation
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
 using RefMatrix = aoc::matrix::Matrix<Rational>;
 
-/*
-void
-substractRow(RefMatrix& matrix,
-             std::size_t targetRow,
-             std::size_t sourceRow,
-             Rational factor)
-{
-  const auto colCount = matrix.width();
-  for (std::size_t k = 0; k < colCount; ++k) {
-    matrix[k, targetRow] -= factor * matrix[k, sourceRow];
-  }
-}
-*/
 void
 swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
 {
@@ -252,11 +239,10 @@ swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
     std::swap(matrix[k, row1], matrix[k, row2]);
   }
 }
-//
+
 auto
 gaussianElimination(const Matrix& augmentedMatrix)
 {
-
   const std::size_t rowCount = augmentedMatrix.height();
   const std::size_t colCount = augmentedMatrix.width();
 
@@ -268,40 +254,34 @@ gaussianElimination(const Matrix& augmentedMatrix)
   }
 
   std::size_t pivotRow = 0;
-
   for (std::size_t pivotCol = 0; pivotCol < colCount - 1 && pivotRow < rowCount;
        ++pivotCol) {
-    // 1. Find a pivot row in this column
     std::size_t row = pivotRow;
-    while (row < rowCount && refMatrix[pivotCol, row].nom == 0)
+    while (row < rowCount && refMatrix[pivotCol, row].nom == 0) {
       ++row;
+    }
 
-    if (row == rowCount)
-      continue; // no pivot in this column
+    if (row == rowCount) {
+      continue;
+    }
 
-    // 2. Move pivot row into position
-    if (row != pivotRow)
+    if (row != pivotRow) {
       swapRows(refMatrix, row, pivotRow);
+    }
 
     const auto pivot = refMatrix[pivotCol, pivotRow];
-
-    // 3. Eliminate entries below the pivot
     for (std::size_t r = pivotRow + 1; r < rowCount; ++r) {
-      if (refMatrix[pivotCol, r].nom == 0)
+      if (refMatrix[pivotCol, r].nom == 0) {
         continue;
-
+      }
       const auto factor = refMatrix[pivotCol, r] / pivot;
-      // substractRow(refMatrix, r, pivotRow, factor);
-
       for (std::size_t c = 0; c < colCount; ++c) {
         refMatrix[c, r] -= factor * refMatrix[c, pivotRow];
         refMatrix[c, r].reduce();
       }
     }
-
     ++pivotRow;
   }
-
   return refMatrix;
 }
 
@@ -349,10 +329,10 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
     }
     equation.constant = refMatrix[colCount - 1, row];
     const auto coeff = refMatrix[targetVar, row];
-      if (coeff.nom != 0) {
-        const auto coeffInv = static_cast<Rational>(1) / coeff;
-        equation = coeffInv * equation;
-      }
+    if (coeff.nom != 0) {
+      const auto coeffInv = static_cast<Rational>(1) / coeff;
+      equation = coeffInv * equation;
+    }
 
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {
@@ -490,28 +470,10 @@ solve(const Input& input)
 {
   std::uint64_t part1 = 0;
   std::uint64_t part2 = 0;
-  std::size_t i = 0;
-  std::size_t infCount = 0;
   for (const auto& machine : input) {
     part1 += countMinimumPressesForLights(machine);
-    std::println("Solving machine {}", i);
-    const auto minPressPart2 = countMinimumPressesForJoltages(machine);
-    if (minPressPart2 == std::numeric_limits<std::uint64_t>::max()) {
-      ++infCount;
-      std::println("Could not find solutions for {}", i);
-      // std::abort();
-    } else {
-      part2 += minPressPart2;
-    }
-
-    if (i == 10) {
-      // std::abort();
-    }
-    ++i;
+    part2 += countMinimumPressesForJoltages(machine);
   }
-  // part2 += 311;
-  // part2 += 76;
-  std::println("Wrong solutions {}", infCount);
   return { part1, part2 };
 }
 }

@@ -162,7 +162,6 @@ struct Equation
   auto operator()(const std::vector<std::int32_t>& variableValues) const
   {
     Rational result = constant;
-    Rational resultCpy = constant;
     for (std::size_t i = 0; i < coefficients.size(); ++i) {
       result += coefficients[i] * static_cast<Rational>(variableValues[i]);
       result.reduce();
@@ -186,10 +185,8 @@ struct Equation
 
   Equation& substitute(std::size_t variableIndex, const Equation& substitution)
   {
-    const auto  constCpy = constant;
     const auto coeff = coefficients[variableIndex];
-    const auto  mult =  coeff * substitution.constant;
-    constant += mult;
+    constant += coeff * substitution.constant;
     if  (constant.denom == 0) {
       std::abort();
     }
@@ -233,10 +230,8 @@ struct Equation
 
 using Matrix = aoc::matrix::Matrix<std::int32_t>;
 using RefMatrix = aoc::matrix::Matrix<Rational>;
-constexpr double EPS = 1e-30;
 
-const auto isZero = [](double v) { return std::abs(v) < EPS; };
-
+/*
 void
 substractRow(RefMatrix& matrix,
              std::size_t targetRow,
@@ -248,6 +243,7 @@ substractRow(RefMatrix& matrix,
     matrix[k, targetRow] -= factor * matrix[k, sourceRow];
   }
 }
+*/
 void
 swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
 {

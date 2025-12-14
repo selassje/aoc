@@ -312,17 +312,11 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
   const auto colCount = refMatrix.width();
   std::map<std::size_t, std::size_t> dependentVariables{};
   for (std::size_t row = 0; row < rowCount; ++row) {
-    bool allZero = true;
     for (std::size_t c = 0; c < colCount - 1; ++c) {
       if (refMatrix[c, row].nom != 0) {
-        allZero = false;
         dependentVariables[row] = c;
         break;
       }
-    }
-    if (allZero && refMatrix[colCount - 1, row].nom != 0) {
-
-      //  throw std::runtime_error("No solution exists");
     }
   }
   auto containsValue = [](const std::map<std::size_t, std::size_t>& map,
@@ -354,19 +348,12 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
       }
     }
     equation.constant = refMatrix[colCount - 1, row];
-    if (equation.constant.denom == 0) {
-      std::abort();
-    }
     const auto coeff = refMatrix[targetVar, row];
-    if (false) {
-    } else {
       if (coeff.nom != 0) {
         const auto coeffInv = static_cast<Rational>(1) / coeff;
         equation = coeffInv * equation;
       }
-    }
 
-    auto orgEq = equation;
     std::size_t prevRow = row + 1;
     while (prevRow < rowCount) {
       if (dependentVariables.contains(prevRow)) {
@@ -378,11 +365,7 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
       ++prevRow;
     }
     equations[targetVar] = equation;
-    if (equation.constant.denom == 0) {
-      std::abort();
-    }
   }
-
   return std::tuple{ equations, freeVariables };
 }
 

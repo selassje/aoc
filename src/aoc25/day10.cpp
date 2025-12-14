@@ -188,8 +188,9 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
     }
   }
   std::vector<Equation> equations(colCount - 1);
-
+#pragma warning(disable : 6293)
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
+#pragma warning(default : 6293)
     const auto targetVar = dependentVariables[row];
     Equation equation{};
     for (std::size_t col = 0; col < colCount - 1; ++col) {

@@ -12,7 +12,7 @@ struct Rational
 
   template<typename T>
   explicit Rational(const T& t)
-    :  nom(static_cast<std::int32_t>(t))
+    : nom(static_cast<std::int32_t>(t))
   {
   }
 

@@ -9,7 +9,7 @@ using Matrix = aoc::matrix::Matrix<std::int32_t>;
 using RefMatrix = aoc::matrix::Matrix<Rational>;
 namespace {
 
-using namespace aoc25::day10;
+using namespace aoc25::day10; // NOLINT
 
 std::uint64_t
 countMinimumPressesForLights(const Machine& machine)
@@ -46,14 +46,11 @@ countMinimumPressesForLights(const Machine& machine)
   while (!queue.empty()) {
     const std::uint64_t currentState = *queue.begin();
     queue.erase(queue.begin());
-    for (std::size_t buttonIndex = 0; buttonIndex < machine.wirings.size();
-         ++buttonIndex) {
-      const auto& wiring = machine.wirings[buttonIndex];
+    for (const auto& wiring : machine.wirings) {
       std::uint64_t nextState = currentState;
-      for (std::size_t lightIndex = 0; lightIndex < wiring.size();
-           ++lightIndex) {
+      for (auto lightIndex : wiring) {
         nextState =
-          toggleLight(nextState, static_cast<std::size_t>(wiring[lightIndex]));
+          toggleLight(nextState, static_cast<std::size_t>(lightIndex));
       }
 
       const std::uint64_t altDistance = distances[currentState] + 1;
@@ -181,12 +178,8 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
   }
   auto containsValue = [](const std::map<std::size_t, std::size_t>& map,
                           std::size_t value) {
-    for (const auto& [key, val] : map) {
-      if (val == value) {
-        return true;
-      }
-    }
-    return false;
+    return std::ranges::any_of(
+      map, [&](const auto& pair) { return pair.second == value; });
   };
   std::vector<std::size_t> freeVariables{};
   for (std::size_t i = 0; i < colCount - 1; ++i) {
@@ -195,7 +188,6 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
     }
   }
   std::vector<Equation> equations(colCount - 1);
-
 
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
     const auto targetVar = dependentVariables[row];
@@ -252,8 +244,9 @@ countMinimumPressesForJoltages(const Machine& machine)
     getEquationsAndFreeVariables(refMatrix);
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = freeVariableSize <= 3 ? 200 : 20;  
-  
+  const std::uint64_t maxFreeVariableSearchRange =
+    freeVariableSize <= 3 ? 200 : 20;
+
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -284,7 +277,7 @@ countMinimumPressesForJoltages(const Machine& machine)
       }
     }
     if (validSolution) {
-      std::uint64_t totalPresses = std::ranges::fold_left(
+      const auto totalPresses = std::ranges::fold_left(
         variableValues, 0ULL, [](std::uint64_t sum, std::int32_t val) {
           return sum + static_cast<std::uint64_t>(val);
         });

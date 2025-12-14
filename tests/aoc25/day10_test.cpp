@@ -24,18 +24,18 @@ readInput(std::string_view path)
   auto fileReader = inputs::FileReader{ path };
   while (auto line = fileReader.readLine()) {
 
-    std::regex regex(
+    const std::regex regex(
       R"(^\s*\[([^\]]*)\]\s*((?:\([^)]*\)\s*)+)\{([^}]*)\}\s*$)");
     std::smatch match;
 
     std::regex_match(*line, match, regex);
 
-    std::string lightsStr = match[1];
-    std::string buttonsStr = match[2];
+    const std::string lightsStr = match[1];
+    const std::string buttonsStr = match[2];
     std::string joltagesStr = match[3];
 
     Lights lights;
-    for (char c : lightsStr) {
+    for (const char c : lightsStr) {
       if (c == '#') {
         lights.push_back(Light::On);
       } else {
@@ -44,19 +44,19 @@ readInput(std::string_view path)
     }
     ButtonWirings wirings{};
 
-    std::regex buttonsRe(R"(\(([^)]*)\))");
+    const std::regex buttonsRe(R"(\(([^)]*)\))");
     auto begin =
       std::sregex_iterator(buttonsStr.begin(), buttonsStr.end(), buttonsRe);
     auto end = std::sregex_iterator();
 
     for (auto it = begin; it != end; ++it) {
       std::string content = (*it)[1];
-      std::replace(content.begin(), content.end(), ',', ' ');
+      std::ranges::replace(content, ',', ' ');
       const auto wiring = inputs::parseStringDynamic<std::uint64_t>(content);
       wirings.push_back(wiring);
     }
 
-    std::replace(joltagesStr.begin(), joltagesStr.end(), ',', ' ');
+    std::ranges::replace(joltagesStr, ',', ' ');
     const auto joltages =
       inputs::parseStringDynamic<std::uint64_t>(joltagesStr);
     input.push_back(Machine{ lights, wirings, joltages });

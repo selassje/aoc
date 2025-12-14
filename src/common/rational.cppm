@@ -16,11 +16,9 @@ struct Rational
   {
   }
 
-  Rational()
-    : nom(0)
-    , denom(1) {};
+  Rational() = default;
 
-  Rational(std::int32_t nom_, std::int32_t denom_)
+  Rational(std::int32_t nom_, std::int32_t denom_) // NOLINT
     : nom(nom_)
     , denom(denom_)
   {

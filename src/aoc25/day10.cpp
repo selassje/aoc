@@ -406,15 +406,15 @@ countMinimumPressesForJoltages(const Machine& machine)
   }
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = 40;
+  std::uint64_t maxFreeVariableSearchRange = 30;
   if (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 40;
+    maxFreeVariableSearchRange = 30;
   }
   if (freeVariableSize < 3) {
-    maxFreeVariableSearchRange = 300;
+    maxFreeVariableSearchRange = 200;
   }
   if (freeVariableSize == 3) {
-    maxFreeVariableSearchRange = 300;
+    maxFreeVariableSearchRange = 200;
   }
   if (freeVariableSize == 5) {
     maxFreeVariableSearchRange = 30;

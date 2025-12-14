@@ -1,100 +1,13 @@
-
 module aoc25.day10;
 
 import std;
 import aoc.matrix;
+import aoc.rational;
 
+using Rational = aoc::rational::Rational;
+using Matrix = aoc::matrix::Matrix<std::int32_t>;
+using RefMatrix = aoc::matrix::Matrix<Rational>;
 namespace {
-
-struct Rational
-{
-  std::int32_t nom{ 0 };
-  std::int32_t denom{ 1 };
-
-  template<typename T>
-  explicit Rational(const T& t)
-    : nom(static_cast<std::int32_t>(t))
-  {
-  }
-
-  Rational()
-    : nom(0)
-    , denom(1) {};
-
-  Rational(std::int32_t nom_, std::int32_t denom_)
-    : nom(nom_)
-    , denom(denom_)
-  {
-  }
-
-  explicit operator double() const
-  {
-    return static_cast<double>(nom) / static_cast<double>(denom);
-  }
-
-  friend Rational operator*(const Rational& lhs, const Rational& rhs)
-  {
-    return Rational{ lhs.nom * rhs.nom, lhs.denom * rhs.denom };
-  }
-
-  friend Rational operator-(const Rational& lhs, const Rational& rhs)
-  {
-    const auto newDenom = lhs.denom * rhs.denom;
-    const auto newNom = (lhs.nom * rhs.denom) - (lhs.denom * rhs.nom);
-    return { newNom, newDenom };
-  }
-
-  friend Rational operator+(const Rational& lhs, const Rational& rhs)
-  {
-    const auto newDenom = lhs.denom * rhs.denom;
-    const auto newNom = (lhs.nom * rhs.denom) + (lhs.denom * rhs.nom);
-    return { newNom, newDenom };
-  }
-
-  friend Rational operator/(const Rational& lhs, const Rational& rhs)
-  {
-    return lhs * Rational{ rhs.denom, rhs.nom };
-  }
-
-  Rational& operator+=(const Rational& rhs)
-  {
-    auto result = rhs + *this;
-    std::swap(*this, result);
-    return *this;
-  }
-
-  Rational& operator-=(const Rational& rhs)
-  {
-    auto result = *this - rhs;
-    std::swap(*this, result);
-    return *this;
-  }
-  Rational operator-() const { return { -nom, denom }; }
-
-  [[nodiscard]] bool isInteger() const { return nom % denom == 0; }
-
-  void reduce()
-  {
-    if ((nom < 0 && denom < 0) || (nom >= 0 && denom < 0)) {
-      nom = -nom;
-      denom = -denom;
-    }
-    const auto gcd = std::gcd(nom, denom);
-    nom /= gcd;
-    denom /= gcd;
-  }
-  // auto operator<=>(const Rational&) const = default;
-};
-
-const auto printRational = [](const Rational r) {
-  auto tmp = r;
-  tmp.reduce();
-  if ((tmp.nom == 0 && tmp.denom != 0) || tmp.denom == 1) {
-    return std::format("{: }", tmp.nom);
-  }
-  return std::format("({: }/{: })", tmp.nom, tmp.denom);
-};
-const Rational Zero = Rational{ 0, 1 };
 
 using namespace aoc25::day10;
 
@@ -166,10 +79,6 @@ struct Equation
       result += coefficients[i] * static_cast<Rational>(variableValues[i]);
       result.reduce();
     }
-    if (result.denom == 0) {
-      std::abort();
-    }
-
     return result;
   }
   friend Equation operator*(Rational scalar, const Equation& equation)
@@ -187,9 +96,6 @@ struct Equation
   {
     const auto coeff = coefficients[variableIndex];
     constant += coeff * substitution.constant;
-    if (constant.denom == 0) {
-      std::abort();
-    }
     constant.reduce();
     for (std::size_t i = 0; i < substitution.coefficients.size(); ++i) {
       if (i != variableIndex) {
@@ -203,33 +109,7 @@ struct Equation
     coefficients[variableIndex] = { 0, 1 };
     return *this;
   }
-
-  void print() const
-  {
-    bool first = true;
-    for (std::size_t i = 0; i < coefficients.size(); ++i) {
-      if (i > 0 && coefficients[i].nom != 0 && !first) {
-        std::print("+ ");
-        first = false;
-      }
-      if (coefficients[i].nom != 0) {
-        std::print("{}*X{} ", printRational(coefficients[i]), i);
-        first = false;
-      }
-    }
-    if (constant.nom != 0) {
-      if (!first) {
-        std::print("+ {}", printRational(constant));
-      } else {
-        std::print("{}", printRational(constant));
-      }
-    }
-    std::println();
-  }
 };
-
-using Matrix = aoc::matrix::Matrix<std::int32_t>;
-using RefMatrix = aoc::matrix::Matrix<Rational>;
 
 void
 swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
@@ -246,7 +126,7 @@ gaussianElimination(const Matrix& augmentedMatrix)
   const std::size_t rowCount = augmentedMatrix.height();
   const std::size_t colCount = augmentedMatrix.width();
 
-  RefMatrix refMatrix{ { colCount, rowCount }, Zero };
+  RefMatrix refMatrix{ { colCount, rowCount }, {} };
   for (std::size_t x = 0; x < colCount; ++x) {
     for (std::size_t y = 0; y < rowCount; ++y) {
       refMatrix[x, y] = static_cast<Rational>(augmentedMatrix[x, y]);
@@ -366,7 +246,6 @@ countMinimumPressesForJoltages(const Machine& machine)
       augmentedMatrix[i, button] = 1;
     }
   }
-
 
   const auto refMatrix = gaussianElimination(augmentedMatrix);
   const auto& [equations, freeVariables] =

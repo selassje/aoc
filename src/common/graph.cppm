@@ -1,9 +1,6 @@
 export module aoc.graph;
 
-import aoc.matrix;
 import std;
-
-using aoc::matrix::Matrix;
 
 template<typename R, typename V>
 concept RangeOf =
@@ -11,12 +8,50 @@ concept RangeOf =
 
 export namespace aoc::graph {
 
-template<typename V, typename E>
-
+template<typename V, typename W>
 class Graph
 {
-  Matrix<std::optional<E>> m_Edges{};
+  struct Edge
+  {
+    std::size_t dstIndex;
+    W weight;
+
+    auto operator<(const Edge& other) const
+    {
+      return dstIndex < other.dstIndex;
+    }
+  };
+
+  using Edges = std::set<Edge>;
+
+  std::map<std::size_t, Edges> m_Edges{};
   std::map<V, std::size_t> m_VertexMap;
+
+  class Inserter
+  {
+    Graph* m_Graph;
+    std::size_t m_SrcIndex;
+    std::size_t m_DstIndex;
+
+    friend class Graph;
+
+    Inserter(Graph* graph, std::size_t srcIndex, std::size_t dstIndex)
+      : m_Graph(graph)
+      , m_SrcIndex(srcIndex)
+      , m_DstIndex(dstIndex)
+    {
+    }
+
+  public:
+    void operator=(const std::optional<W>& value)
+    {
+      if (!value) {
+        m_Graph->m_Edges[m_SrcIndex].erase({m_DstIndex,W{}});
+        return;
+      }
+      m_Graph->m_Edges[m_SrcIndex].insert({m_DstIndex, *value });
+    }
+  };
 
 public:
   template<typename R>
@@ -27,23 +62,21 @@ public:
     for (const auto& vertex : range) {
       m_VertexMap[vertex] = index++;
     }
-    m_Edges = Matrix<std::optional<E>>{ { index, index }, {} };
   }
 
-  auto& operator[](const V& dst, const V& src)
+  auto operator[](const V& dst, const V& src)
   {
-    return m_Edges[m_VertexMap.at(dst),m_VertexMap.at(src)];
+    return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
   }
 
   auto findAllPathsCount(const V& src, const V& dst) const
   {
-    std::size_t  count = 0;
-    const auto srcIndex = m_VertexMap.at(src);       
+    std::size_t count = 0;
+    const auto srcIndex = m_VertexMap.at(src);
     const auto dstIndex = m_VertexMap.at(dst);
     std::vector<std::size_t> toBeVisited{ srcIndex };
     return count;
   }
-
 };
 
 }

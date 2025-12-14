@@ -367,23 +367,10 @@ countMinimumPressesForJoltages(const Machine& machine)
     }
   }
 
-  std::println("Augmented Matrix before elimination:");
-  augmentedMatrix.print(std::identity{});
 
   const auto refMatrix = gaussianElimination(augmentedMatrix);
-  std::println("Augmented Matrix after elimination:");
-
-  refMatrix.print(printRational);
-
   const auto& [equations, freeVariables] =
     getEquationsAndFreeVariables(refMatrix);
-  std::println();
-  std::println("Free variables {}", freeVariables);
-  std::println("Equations:");
-  for (std::size_t i = 0; i < equations.size(); ++i) {
-    std::print("X{} = ", i);
-    equations[i].print();
-  }
 
   const auto freeVariableSize = freeVariables.size();
   std::uint64_t maxFreeVariableSearchRange = 30;
@@ -399,17 +386,14 @@ countMinimumPressesForJoltages(const Machine& machine)
   if (freeVariableSize == 5) {
     maxFreeVariableSearchRange = 30;
   }
-  std::println("MaxSearch space per variable {}", maxFreeVariableSearchRange);
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
   std::uint64_t minPresses = std::numeric_limits<std::uint64_t>::max();
   std::vector<std::int32_t> variableValues(machine.wirings.size(), 0);
-  std::vector<std::int32_t> minVariableValues(machine.wirings.size(), 0);
 
   for (std::uint64_t freeVarCombination = 0; freeVarCombination < searchRange;
        ++freeVarCombination) {
-    // variableValues.clear();
     std::uint64_t remainder = freeVarCombination;
     for (std::size_t i = 0; i < freeVariables.size(); ++i) {
       variableValues[freeVariables[i]] =
@@ -440,25 +424,9 @@ countMinimumPressesForJoltages(const Machine& machine)
                         [](std::uint64_t sum, std::int32_t val) {
                           return sum + static_cast<std::uint64_t>(val);
                         });
-      if (totalPresses < minPresses) {
-        minVariableValues = variableValues;
-      }
       minPresses = std::min(totalPresses, minPresses);
     }
   }
-
-  std::println("Min presses {}", minPresses);
-  std::println("Solution {}", minVariableValues);
-  for (std::size_t i = 0; i < minVariableValues.size(); ++i) {
-    if (std::ranges::find(freeVariables, i) == freeVariables.end()) {
-      minVariableValues[i] = 0;
-    }
-  }
-  std::println("Free variables for solution {}", minVariableValues);
-  if (minPresses == std::numeric_limits<std::uint64_t>::max()) {
-    //  std::abort();
-  }
-
   return minPresses;
 }
 }

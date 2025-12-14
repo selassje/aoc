@@ -194,8 +194,8 @@ getEquationsAndFreeVariables(const RefMatrix& refMatrix)
       freeVariables.push_back(i);
     }
   }
-  std::vector<Equation> equations{};
-  equations.resize(colCount - 1, {});
+  std::vector<Equation> equations(colCount - 1);
+
 
   for (std::size_t row = rowCount - 1; row < rowCount; --row) {
     const auto targetVar = dependentVariables[row];
@@ -252,19 +252,8 @@ countMinimumPressesForJoltages(const Machine& machine)
     getEquationsAndFreeVariables(refMatrix);
 
   const auto freeVariableSize = freeVariables.size();
-  std::uint64_t maxFreeVariableSearchRange = 30;
-  if (freeVariableSize >= 6) {
-    maxFreeVariableSearchRange = 30;
-  }
-  if (freeVariableSize < 3) {
-    maxFreeVariableSearchRange = 200;
-  }
-  if (freeVariableSize == 3) {
-    maxFreeVariableSearchRange = 200;
-  }
-  if (freeVariableSize == 5) {
-    maxFreeVariableSearchRange = 30;
-  }
+  std::uint64_t maxFreeVariableSearchRange = freeVariableSize <= 3 ? 200 : 20;  
+  
   const auto searchRange = static_cast<std::uint64_t>(
     std::pow(maxFreeVariableSearchRange, freeVariables.size()));
 
@@ -274,8 +263,8 @@ countMinimumPressesForJoltages(const Machine& machine)
   for (std::uint64_t freeVarCombination = 0; freeVarCombination < searchRange;
        ++freeVarCombination) {
     std::uint64_t remainder = freeVarCombination;
-    for (std::size_t i = 0; i < freeVariables.size(); ++i) {
-      variableValues[freeVariables[i]] =
+    for (auto i : freeVariables) {
+      variableValues[i] =
         static_cast<std::int32_t>(remainder % maxFreeVariableSearchRange);
       remainder /= maxFreeVariableSearchRange;
     }

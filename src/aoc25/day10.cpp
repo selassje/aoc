@@ -411,7 +411,7 @@ countMinimumPressesForJoltages(const Machine& machine)
     maxFreeVariableSearchRange = 40;
   }
   if (freeVariableSize < 3) {
-    maxFreeVariableSearchRange = 400;
+    maxFreeVariableSearchRange = 300;
   }
   if (freeVariableSize == 3) {
     maxFreeVariableSearchRange = 300;

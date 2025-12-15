@@ -1,3 +1,5 @@
+module;
+#include <cassert>
 export module aoc.graph;
 
 import std;
@@ -51,6 +53,10 @@ private:
         m_Graph->m_Edges[m_SrcIndex].erase({ m_DstIndex, W{} });
         return;
       }
+      if (!m_Graph->m_Edges.contains(m_DstIndex)) {
+        m_Graph->m_Edges[m_DstIndex] = {};
+      }
+
       m_Graph->m_Edges[m_SrcIndex].insert({ m_DstIndex, *value });
     }
   };
@@ -70,6 +76,7 @@ public:
   {
     return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
   }
+
 private:
   auto findAllPathsImpl(std::size_t srcIndex, std::size_t dstIndex) const
   {
@@ -83,12 +90,54 @@ private:
     return count;
   }
 
+bool hasCycleImpl(std::size_t v, std::vector<std::uint8_t>& color) const
+{
+    color[v] = 1; // GRAY
+
+    auto it = m_Edges.find(v);
+    if (it != m_Edges.end()) {
+        for (const auto& edge : it->second) {
+            std::size_t dst = edge.dstIndex;
+            if (color[dst] == 1)
+                return true; // back edge
+            if (color[dst] == 0 && hasCycleImpl(dst, color))
+                return true;
+        }
+    }
+
+    color[v] = 2; // BLACK
+    return false;
+}
+
 public:
+  bool hasCycle() const
+{
+    std::vector<std::uint8_t> color(m_VertexMap.size(), 0); // 0 = WHITE
+
+    for (const auto& [vertex, index] : m_VertexMap) {
+        if (color[index] == 0 && hasCycleImpl(index, color))
+            return true;
+    }
+
+    return false;
+}
+
+
   auto findAllPathsCount(const V& src, const V& dst) const
   {
     const auto srcIndex = m_VertexMap.at(src);
     const auto dstIndex = m_VertexMap.at(dst);
     return findAllPathsImpl(srcIndex, dstIndex);
+  }
+  void print()
+  {
+    for (const auto& [vertex, index] : m_VertexMap) {
+      std::cout << vertex << " -> ";
+      for (const auto& edge : m_Edges.at(index)) {
+        std::cout << edge.dstIndex << " ";
+      }
+      std::cout << "\n";
+    }
   }
 };
 

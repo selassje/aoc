@@ -37,6 +37,24 @@ private:
     }
     return count;
   }
+  std::uint64_t findAllPathsCountAvodingImpl(std::size_t srcIndex,
+                                             std::size_t dstIndex,
+                                             std::size_t avoidIndex) const
+  {
+    if (srcIndex == dstIndex) {
+      return 1;
+    }
+    if (srcIndex == avoidIndex) {
+      return 0;
+    }
+
+    std::uint64_t count = 0;
+    for (const auto& edge : m_Edges[srcIndex]) {
+      count +=
+        findAllPathsCountAvodingImpl(edge.dstIndex, dstIndex, avoidIndex);
+    }
+    return count;
+  }
 
 public:
   auto findAllPathsCountIncluding(const std::string& src,
@@ -49,6 +67,13 @@ public:
     }
     return findAllPathsCountIncludingImpl(
       m_VertexMap.at(src), m_VertexMap.at(dst), includeIndexes);
+  }
+  auto findAllPathsCountAvoiding(const std::string& src,
+                                 const std::string& dst,
+                                 const std::string& avoid) const
+  {
+    return findAllPathsCountAvodingImpl(
+      m_VertexMap.at(src), m_VertexMap.at(dst), m_VertexMap.at(avoid));
   }
 };
 }
@@ -71,6 +96,12 @@ solve(const Input& input)
     }
   }
 
+  if(graph.hasCycle()) {
+    throw std::runtime_error("Graph has cycle");
+  }
+
+  graph.print();
+
   auto verticesContain = [&vertices](const auto& names) {
     return std::ranges::all_of(
       names, [&vertices](const auto& name) { return vertices.contains(name); });
@@ -82,7 +113,17 @@ solve(const Input& input)
   }
   std::uint64_t part2 = 0;
   if (verticesContain(std::array{ "svr", "out", "dac", "fft" })) {
-    part2 = graph.findAllPathsCountIncluding("svr", "out", { "dac", "fft" });
+    // part2 = graph.findAllPathsCountIncluding("svr", "out", { "dac", "fft" });
+   // return 0;
+    /*
+    part2 = graph.findAllPathsCountAvoiding("svr", "dac", "fft") +
+            graph.findAllPathsCount("dac", "fft") +
+            graph.findAllPathsCountAvoiding("fft", "out", "dac");
+    part2 += graph.findAllPathsCountAvoiding("svr", "fft", "dac") +
+             graph.findAllPathsCount("fft", "dac") +
+             graph.findAllPathsCountAvoiding("dac", "out", "fft");
+  */
+     //part2 = graph.findAllPathsCount("svr"	, "out"	);
   }
   return { part1, part2 };
 }

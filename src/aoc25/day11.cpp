@@ -17,9 +17,24 @@ private:
   std::uint64_t findAllPathsCountIncludingImpl(
     std::size_t srcIndex,
     std::size_t dstIndex,
-    std::vector<std::size_t> includes) const
+    const std::vector<std::size_t>& includes) const
   {
+    if (srcIndex == dstIndex && includes.empty()) {
+      return 1;
+    }
+    if (srcIndex == dstIndex && !includes.empty()) {
+      return 0;
+    }
+
+    auto newIncludes = includes;
+    newIncludes.erase(std::begin(std::ranges::remove(newIncludes, srcIndex)),
+                      newIncludes.end());
+
     std::uint64_t count = 0;
+    for (const auto& edge : m_Edges[srcIndex]) {
+      count +=
+        findAllPathsCountIncludingImpl(edge.dstIndex, dstIndex, newIncludes);
+    }
     return count;
   }
 

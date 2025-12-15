@@ -70,7 +70,7 @@ public:
   {
     return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
   }
-
+private:
   auto findAllPathsImpl(std::size_t srcIndex, std::size_t dstIndex) const
   {
     if (srcIndex == dstIndex) {
@@ -83,26 +83,11 @@ public:
     return count;
   }
 
+public:
   auto findAllPathsCount(const V& src, const V& dst) const
   {
     const auto srcIndex = m_VertexMap.at(src);
     const auto dstIndex = m_VertexMap.at(dst);
-    /**
-     std::map<std::size_t, std::size_t> counts{};
-     std::deque<std::size_t> toBeVisited{ srcIndex };
-     counts[srcIndex] = 1;
-     while (!toBeVisited.empty()) {
-       const auto current = toBeVisited.back();
-       toBeVisited.pop_back();
-       for (const auto& edge : m_Edges[current]) {
-         counts[edge.dstIndex] += counts[current];
-         toBeVisited.push_back(edge.dstIndex);
-       }
-     }
-     return counts[dstIndex];
-     */
-
-    //    if ( )
     return findAllPathsImpl(srcIndex, dstIndex);
   }
 };

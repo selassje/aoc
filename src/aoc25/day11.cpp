@@ -16,35 +16,6 @@ public:
   }
 
 private:
-  std::uint64_t findAllPathsCountIncludingImpl(
-    std::size_t srcIndex,
-    std::size_t dstIndex,
-    const std::vector<std::size_t>& includes,
-    Memo& memo) const
-  {
-    if (srcIndex == dstIndex && includes.empty()) {
-      return 1;
-    }
-    if (srcIndex == dstIndex && !includes.empty()) {
-      return 0;
-    }
-
-    if (memo[srcIndex]) {
-      return *memo[srcIndex];
-    }
-
-    auto newIncludes = includes;
-    newIncludes.erase(std::begin(std::ranges::remove(newIncludes, srcIndex)),
-                      newIncludes.end());
-
-    std::uint64_t count = 0;
-    for (const auto& edge : m_Edges[srcIndex]) {
-      count += findAllPathsCountIncludingImpl(
-        edge.dstIndex, dstIndex, newIncludes, memo);
-    }
-    memo[srcIndex] = count;
-    return count;
-  }
   std::uint64_t findAllPathsCountAvodingImpl(std::size_t srcIndex,
                                              std::size_t dstIndex,
                                              std::size_t avoidIndex,
@@ -62,34 +33,22 @@ private:
     }
 
     std::uint64_t count = 0;
-    for (const auto& edge : m_Edges[srcIndex]) {
+    for (const auto& edge : mEdges[srcIndex]) {
       count +=
-        findAllPathsCountAvodingImpl(edge.dstIndex, dstIndex, avoidIndex,memo);
+        findAllPathsCountAvodingImpl(edge.dstIndex, dstIndex, avoidIndex, memo);
     }
     memo[srcIndex] = count;
     return count;
   }
 
 public:
-  auto findAllPathsCountIncluding(const std::string& src,
-                                  const std::string& dst,
-                                  const std::vector<std::string>& include) const
-  {
-    std::vector<std::size_t> includeIndexes(include.size());
-    for (const auto& name : include) {
-      includeIndexes.push_back(m_VertexMap.at(name));
-    }
-    Memo memo(m_VertexMap.size());
-    return findAllPathsCountIncludingImpl(
-      m_VertexMap.at(src), m_VertexMap.at(dst), includeIndexes, memo);
-  }
   auto findAllPathsCountAvoiding(const std::string& src,
                                  const std::string& dst,
                                  const std::string& avoid) const
   {
-    Memo memo(m_VertexMap.size());
+    Memo memo(mVertexMap.size());
     return findAllPathsCountAvodingImpl(
-      m_VertexMap.at(src), m_VertexMap.at(dst), m_VertexMap.at(avoid), memo);
+      mVertexMap.at(src), mVertexMap.at(dst), mVertexMap.at(avoid), memo);
   }
 };
 }
@@ -112,12 +71,6 @@ solve(const Input& input)
     }
   }
 
-  if (graph.hasCycle()) {
-    throw std::runtime_error("Graph has cycle");
-  }
-
-  // graph.print();
-
   auto verticesContain = [&vertices](const auto& names) {
     return std::ranges::all_of(
       names, [&vertices](const auto& name) { return vertices.contains(name); });
@@ -129,18 +82,13 @@ solve(const Input& input)
   }
   std::uint64_t part2 = 0;
   if (verticesContain(std::array{ "svr", "out", "dac", "fft" })) {
-    part2 = graph.findAllPathsCountIncluding("svr", "out", { "dac", "fft" });
-    
-    std::uint64_t count2 = 0;
-    
-    count2 = graph.findAllPathsCountAvoiding("svr", "dac", "fft") *
+
+    part2 = graph.findAllPathsCountAvoiding("svr", "dac", "fft") *
             graph.findAllPathsCount("dac", "fft") *
             graph.findAllPathsCountAvoiding("fft", "out", "dac");
-    count2 += graph.findAllPathsCountAvoiding("svr", "fft", "dac") *
+    part2 += graph.findAllPathsCountAvoiding("svr", "fft", "dac") *
              graph.findAllPathsCount("fft", "dac") *
              graph.findAllPathsCountAvoiding("dac", "out", "fft");
-  
-    part2 = count2;
   }
   return { part1, part2 };
 }

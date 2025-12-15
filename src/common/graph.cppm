@@ -2,7 +2,9 @@ module;
 #include <cassert>
 export module aoc.graph;
 
+
 import std;
+using Memo = std::vector<std::optional<std::uint64_t>>;
 
 template<typename R, typename V>
 concept RangeOf =
@@ -78,15 +80,21 @@ public:
   }
 
 private:
-  auto findAllPathsImpl(std::size_t srcIndex, std::size_t dstIndex) const
+  auto findAllPathsImpl(std::size_t srcIndex, std::size_t dstIndex, Memo& memo) const
   {
     if (srcIndex == dstIndex) {
+    //  std::println("Found dst {}",dstIndex);
       return std::uint64_t{ 1 };
     }
+    if (memo[srcIndex]) {
+      return *memo[srcIndex];
+    }
+
     std::uint64_t count = 0;
     for (const auto& edge : m_Edges[srcIndex]) {
-      count += findAllPathsImpl(edge.dstIndex, dstIndex);
+      count += findAllPathsImpl(edge.dstIndex, dstIndex,memo);
     }
+    memo[srcIndex]  = count;
     return count;
   }
 
@@ -98,8 +106,10 @@ bool hasCycleImpl(std::size_t v, std::vector<std::uint8_t>& color) const
     if (it != m_Edges.end()) {
         for (const auto& edge : it->second) {
             std::size_t dst = edge.dstIndex;
-            if (color[dst] == 1)
+            if (color[dst] == 1) {
+                std::println("Found cycle at {}",dst);
                 return true; // back edge
+            }
             if (color[dst] == 0 && hasCycleImpl(dst, color))
                 return true;
         }
@@ -127,7 +137,8 @@ public:
   {
     const auto srcIndex = m_VertexMap.at(src);
     const auto dstIndex = m_VertexMap.at(dst);
-    return findAllPathsImpl(srcIndex, dstIndex);
+    Memo memo(m_VertexMap.size());
+    return findAllPathsImpl(srcIndex, dstIndex, memo);
   }
   void print()
   {

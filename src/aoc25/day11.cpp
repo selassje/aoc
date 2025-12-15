@@ -3,10 +3,23 @@ module aoc25.day11;
 import std;
 import aoc.graph;
 
-using Graph = aoc::graph::Graph<std::string, std::uint64_t>;
-
 namespace {
 
+class Graph : public aoc::graph::Graph<std::string, std::uint64_t>
+{
+public:
+  explicit Graph(const std::set<std::string>& vertices)
+    : aoc::graph::Graph<std::string, std::uint64_t>(vertices)
+  {
+  }
+  auto findAllPathsCountIncluding(const std::string& src,
+                                  const std::string& dst,
+                                  const std::vector<std::string>& include) const
+  {
+    std::uint64_t count = 0;
+    return count;
+  }
+};
 }
 
 namespace aoc25::day11 {
@@ -28,18 +41,17 @@ solve(const Input& input)
   }
 
   auto verticesContain = [&vertices](const auto& names) {
-    return std::ranges::all_of (names, [&vertices](const auto& name) {
-      return vertices.contains(name);
-    });
-  }; 
+    return std::ranges::all_of(
+      names, [&vertices](const auto& name) { return vertices.contains(name); });
+  };
 
-  std::size_t part1 =  0; 
-  if(verticesContain(std::array{"you", "out"})) {
+  std::uint64_t part1 = 0;
+  if (verticesContain(std::array{ "you", "out" })) {
     part1 = graph.findAllPathsCount("you", "out");
   }
-  std::size_t part2 = 0;
-  if(verticesContain(std::array{"svr", "out","dac", "fft"})) {
-    part2 = 4;
+  std::uint64_t part2 = 0;
+  if (verticesContain(std::array{ "svr", "out", "dac", "fft" })) {
+    part2 = graph.findAllPathsCountIncluding("svr", "out", { "dac", "fft" });
   }
   return { part1, part2 };
 }

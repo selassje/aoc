@@ -12,12 +12,28 @@ public:
     : aoc::graph::Graph<std::string, std::uint64_t>(vertices)
   {
   }
+
+private:
+  std::uint64_t findAllPathsCountIncludingImpl(
+    std::size_t srcIndex,
+    std::size_t dstIndex,
+    std::vector<std::size_t> includes) const
+  {
+    std::uint64_t count = 0;
+    return count;
+  }
+
+public:
   auto findAllPathsCountIncluding(const std::string& src,
                                   const std::string& dst,
                                   const std::vector<std::string>& include) const
   {
-    std::uint64_t count = 0;
-    return count;
+    std::vector<std::size_t> includeIndexes(include.size());
+    for (const auto& name : include) {
+      includeIndexes.push_back(m_VertexMap.at(name));
+    }
+    return findAllPathsCountIncludingImpl(
+      m_VertexMap.at(src), m_VertexMap.at(dst), includeIndexes);
   }
 };
 }

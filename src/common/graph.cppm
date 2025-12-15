@@ -24,9 +24,11 @@ class Graph
 
   using Edges = std::set<Edge>;
 
+protected:
   mutable std::map<std::size_t, Edges> m_Edges{};
   std::map<V, std::size_t> m_VertexMap;
 
+private:
   class Inserter
   {
     Graph* m_Graph;

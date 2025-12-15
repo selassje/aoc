@@ -27,9 +27,20 @@ solve(const Input& input)
     }
   }
 
-  std::size_t part1 = graph.findAllPathsCount("you", "out");
-  std::size_t part2 = part1;
+  auto verticesContain = [&vertices](const auto& names) {
+    return std::ranges::all_of (names, [&vertices](const auto& name) {
+      return vertices.contains(name);
+    });
+  }; 
 
+  std::size_t part1 =  0; 
+  if(verticesContain(std::array{"you", "out"})) {
+    part1 = graph.findAllPathsCount("you", "out");
+  }
+  std::size_t part2 = 0;
+  if(verticesContain(std::array{"svr", "out","dac", "fft"})) {
+    part2 = 4;
+  }
   return { part1, part2 };
 }
 }

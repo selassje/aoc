@@ -5,11 +5,11 @@ import std;
 
 export namespace aoc25::day11 {
 
-struct Connection {
+struct Connection
+{
   std::string input;
   std::vector<std::string> outputs;
 };
-
 
 using Input = std::vector<Connection>;
 

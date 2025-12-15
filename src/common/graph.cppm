@@ -25,9 +25,13 @@ class Graph
 
   using Edges = std::set<Edge>;
 
+  mutable std::map<std::size_t, Edges> m_Edges{};
+  std::map<V, std::size_t> m_VertexMap;
+
 protected:
-  mutable std::map<std::size_t, Edges> mEdges{};
-  std::map<V, std::size_t> mVertexMap;
+  auto& getEdges() const { return m_Edges; }
+
+  auto& getVertexMap() const { return m_VertexMap; }
 
 private:
   class Inserter
@@ -49,10 +53,10 @@ private:
     void operator=(const std::optional<W>& value)
     {
       if (!value) {
-        m_Graph->mEdges[m_SrcIndex].erase({ m_DstIndex, W{} });
+        m_Graph->m_Edges[m_SrcIndex].erase({ m_DstIndex, W{} });
         return;
       }
-      m_Graph->mEdges[m_SrcIndex].insert({ m_DstIndex, *value });
+      m_Graph->m_Edges[m_SrcIndex].insert({ m_DstIndex, *value });
     }
   };
 
@@ -63,13 +67,13 @@ public:
   {
     std::size_t index = 0;
     for (const auto& vertex : range) {
-      mVertexMap[vertex] = index++;
+      m_VertexMap[vertex] = index++;
     }
   }
 
   auto operator[](const V& dst, const V& src)
   {
-    return Inserter{ this, mVertexMap.at(src), mVertexMap.at(dst) };
+    return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
   }
 
 private:
@@ -84,7 +88,7 @@ private:
       return *memo[srcIndex];
     }
     std::uint64_t count = 0;
-    for (const auto& edge : mEdges[srcIndex]) {
+    for (const auto& edge : m_Edges[srcIndex]) {
       count += findAllPathsImpl(edge.dstIndex, dstIndex, memo);
     }
     memo[srcIndex] = count;
@@ -92,12 +96,11 @@ private:
   }
 
 public:
-
   auto findAllPathsCount(const V& src, const V& dst) const
   {
-    const auto srcIndex = mVertexMap.at(src);
-    const auto dstIndex = mVertexMap.at(dst);
-    Memo memo(mVertexMap.size());
+    const auto srcIndex = m_VertexMap.at(src);
+    const auto dstIndex = m_VertexMap.at(dst);
+    Memo memo(m_VertexMap.size());
     return findAllPathsImpl(srcIndex, dstIndex, memo);
   }
 };

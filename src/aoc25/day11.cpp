@@ -33,7 +33,7 @@ private:
     }
 
     std::uint64_t count = 0;
-    for (const auto& edge : mEdges[srcIndex]) {
+    for (const auto& edge : getEdges()[srcIndex]) {
       count +=
         findAllPathsCountAvodingImpl(edge.dstIndex, dstIndex, avoidIndex, memo);
     }
@@ -46,9 +46,10 @@ public:
                                  const std::string& dst,
                                  const std::string& avoid) const
   {
-    Memo memo(mVertexMap.size());
+    const auto& vertexMap = getVertexMap();
+    Memo memo(vertexMap.size());
     return findAllPathsCountAvodingImpl(
-      mVertexMap.at(src), mVertexMap.at(dst), mVertexMap.at(avoid), memo);
+      vertexMap.at(src), vertexMap.at(dst), vertexMap.at(avoid), memo);
   }
 };
 }

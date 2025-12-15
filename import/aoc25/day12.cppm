@@ -22,7 +22,7 @@ struct Region
 {
   std::uint64_t width;
   std::uint64_t height;
-  std::uint64_t shapesCount;
+  std::vector<std::uint64_t> shapesCount;
 };
 
 using Regions = std::vector<Region>;

@@ -24,7 +24,7 @@ class Graph
 
   using Edges = std::set<Edge>;
 
-  std::map<std::size_t, Edges> m_Edges{};
+  mutable std::map<std::size_t, Edges> m_Edges{};
   std::map<V, std::size_t> m_VertexMap;
 
   class Inserter
@@ -46,10 +46,10 @@ class Graph
     void operator=(const std::optional<W>& value)
     {
       if (!value) {
-        m_Graph->m_Edges[m_SrcIndex].erase({m_DstIndex,W{}});
+        m_Graph->m_Edges[m_SrcIndex].erase({ m_DstIndex, W{} });
         return;
       }
-      m_Graph->m_Edges[m_SrcIndex].insert({m_DstIndex, *value });
+      m_Graph->m_Edges[m_SrcIndex].insert({ m_DstIndex, *value });
     }
   };
 
@@ -69,13 +69,39 @@ public:
     return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
   }
 
+  auto findAllPathsImpl(std::size_t srcIndex, std::size_t dstIndex) const
+  {
+    if (srcIndex == dstIndex) {
+      return std::uint64_t{ 1 };
+    }
+    std::uint64_t count = 0;
+    for (const auto& edge : m_Edges[srcIndex]) {
+      count += findAllPathsImpl(edge.dstIndex, dstIndex);
+    }
+    return count;
+  }
+
   auto findAllPathsCount(const V& src, const V& dst) const
   {
-    std::size_t count = 0;
     const auto srcIndex = m_VertexMap.at(src);
     const auto dstIndex = m_VertexMap.at(dst);
-    std::vector<std::size_t> toBeVisited{ srcIndex };
-    return count;
+    /**
+     std::map<std::size_t, std::size_t> counts{};
+     std::deque<std::size_t> toBeVisited{ srcIndex };
+     counts[srcIndex] = 1;
+     while (!toBeVisited.empty()) {
+       const auto current = toBeVisited.back();
+       toBeVisited.pop_back();
+       for (const auto& edge : m_Edges[current]) {
+         counts[edge.dstIndex] += counts[current];
+         toBeVisited.push_back(edge.dstIndex);
+       }
+     }
+     return counts[dstIndex];
+     */
+
+    //    if ( )
+    return findAllPathsImpl(srcIndex, dstIndex);
   }
 };
 

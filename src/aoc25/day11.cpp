@@ -68,7 +68,7 @@ solve(const Input& input)
 
   for (const auto& connection : input) {
     for (const auto& output : connection.outputs) {
-      graph[output, connection.input] = 1;
+      graph[connection.input, output] = 1;
     }
   }
 
@@ -79,16 +79,16 @@ solve(const Input& input)
 
   std::uint64_t part1 = 0;
   if (verticesContain(std::array{ "you", "out" })) {
-    part1 = graph.findAllPathsCount("you", "out");
+    part1 = graph.findAllPathsCount({ "you", "out" });
   }
   std::uint64_t part2 = 0;
   if (verticesContain(std::array{ "svr", "out", "dac", "fft" })) {
 
     part2 = graph.findAllPathsCountAvoiding("svr", "dac", "fft") *
-            graph.findAllPathsCount("dac", "fft") *
+            graph.findAllPathsCount({ "dac", "fft" }) *
             graph.findAllPathsCountAvoiding("fft", "out", "dac");
     part2 += graph.findAllPathsCountAvoiding("svr", "fft", "dac") *
-             graph.findAllPathsCount("fft", "dac") *
+             graph.findAllPathsCount({ "fft", "dac" }) *
              graph.findAllPathsCountAvoiding("dac", "out", "fft");
   }
   return { part1, part2 };

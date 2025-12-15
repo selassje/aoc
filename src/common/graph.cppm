@@ -33,7 +33,17 @@ protected:
 
   auto& getVertexMap() const { return m_VertexMap; }
 
+public:
+struct VertixPair{
+  V src;
+  V dst;
+};
+
 private:
+struct IndexPair{
+  std::size_t srcIndex;
+  std::size_t dstIndex;
+};
   class Inserter
   {
     Graph* m_Graph;
@@ -42,15 +52,15 @@ private:
 
     friend class Graph;
 
-    Inserter(Graph* graph, std::size_t srcIndex, std::size_t dstIndex)
+    Inserter(Graph* graph, IndexPair indexPair)
       : m_Graph(graph)
-      , m_SrcIndex(srcIndex)
-      , m_DstIndex(dstIndex)
+      , m_SrcIndex(indexPair.srcIndex)
+      , m_DstIndex(indexPair.dstIndex)
     {
     }
 
   public:
-    void operator=(const std::optional<W>& value)
+    void operator=(const std::optional<W>& value) //NOLINT
     {
       if (!value) {
         m_Graph->m_Edges[m_SrcIndex].erase({ m_DstIndex, W{} });
@@ -71,37 +81,34 @@ public:
     }
   }
 
-  auto operator[](const V& dst, const V& src)
+  auto operator[](const V& src, const V& dst)
   {
-    return Inserter{ this, m_VertexMap.at(src), m_VertexMap.at(dst) };
+    return Inserter{ this, {m_VertexMap.at(src), m_VertexMap.at(dst)} };
   }
 
-private:
-  auto findAllPathsImpl(std::size_t srcIndex,
-                        std::size_t dstIndex,
-                        Memo& memo) const
+  auto findAllPathsImpl(IndexPair pair, Memo& memo) const
   {
-    if (srcIndex == dstIndex) {
+    if (pair.srcIndex == pair.dstIndex) {
       return std::uint64_t{ 1 };
     }
-    if (memo[srcIndex]) {
-      return *memo[srcIndex];
+    if (memo[pair.srcIndex]) {
+      return *memo[pair.srcIndex];
     }
     std::uint64_t count = 0;
-    for (const auto& edge : m_Edges[srcIndex]) {
-      count += findAllPathsImpl(edge.dstIndex, dstIndex, memo);
+   for (const auto& edge : m_Edges[pair.srcIndex]) {
+      count += findAllPathsImpl({edge.dstIndex, pair.dstIndex}, memo);
     }
-    memo[srcIndex] = count;
+    memo[pair.srcIndex] = count;
     return count;
   }
 
 public:
-  auto findAllPathsCount(const V& src, const V& dst) const
+  auto findAllPathsCount(const VertixPair& pair) const
   {
-    const auto srcIndex = m_VertexMap.at(src);
-    const auto dstIndex = m_VertexMap.at(dst);
+    const auto srcIndex = m_VertexMap.at(pair.src);
+    const auto dstIndex = m_VertexMap.at(pair.dst);
     Memo memo(m_VertexMap.size());
-    return findAllPathsImpl(srcIndex, dstIndex, memo);
+    return findAllPathsImpl({srcIndex, dstIndex}, memo);
   }
 };
 

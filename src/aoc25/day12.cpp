@@ -3,20 +3,40 @@ module aoc25.day12;
 import std;
 import aoc.matrix;
 
-using Matrix = aoc::matrix::Matrix<aoc25::day12::Tile>;
+using ShapeGrid = aoc::matrix::Matrix<aoc25::day12::Tile>;
+using ShapeGrids = std::vector<ShapeGrid>;
+using Region = aoc25::day12::Region;
+using Tile = aoc25::day12::Tile;
+
+namespace {
+
+bool
+isRegionValid(const Region& region, const ShapeGrids& shapes)
+{
+  std::uint64_t tilesCount = 0;
+  for (auto shapeIndex = 0UZ; shapeIndex < region.shapesCount.size();
+       ++shapeIndex) {
+    tilesCount +=
+      shapes[shapeIndex].count(Tile::Full) * region.shapesCount[shapeIndex];
+  }
+  return tilesCount <= region.width * region.height;
+}
+
+}
 namespace aoc25::day12 {
 
-Result
+std::uint64_t
 solve(const Input& input)
 {
-  auto shapes = std::vector<Matrix>{};
-  for (std::size_t i = 0; i < input.shapes.size(); ++i) {
-    shapes.emplace_back(input.shapes[i].grid, std::identity{});
-    shapes.back().print([](auto tile) { return tile == Tile::Full ? '#' : '.'; });
-    std::println();
+  auto shapes = std::vector<ShapeGrid>{};
+  for (const auto& shape : input.shapes) {
+    shapes.emplace_back(shape.grid, std::identity{});
   }
-  const auto regions = input.regions;
+  std::uint64_t result = 0;
 
-  return { 0, 0 };
+  for (const auto& region : input.regions) {
+    result += isRegionValid(region, shapes) ? 1ULL : 0ULL;
+  }
+  return result;
 }
 }

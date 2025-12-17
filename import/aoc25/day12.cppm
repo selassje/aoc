@@ -33,12 +33,6 @@ struct Input
   Regions regions;
 };
 
-struct Result
-{
-  std::uint64_t part1;
-  std::uint64_t part2;
-};
-
-Result
+std::uint64_t
 solve(const Input& input);
 }

@@ -5,7 +5,7 @@ import aoc.matrix;
 import aoc.rational;
 
 using Rational = aoc::rational::Rational;
-using Matrix = aoc::matrix::Matrix<std::int32_t>;
+using Shape = aoc::matrix::Matrix<std::int32_t>;
 using RefMatrix = aoc::matrix::Matrix<Rational>;
 namespace {
 
@@ -118,7 +118,7 @@ swapRows(RefMatrix& matrix, std::size_t row1, std::size_t row2)
 }
 
 auto
-gaussianElimination(const Matrix& augmentedMatrix)
+gaussianElimination(const Shape& augmentedMatrix)
 {
   const std::size_t rowCount = augmentedMatrix.height();
   const std::size_t colCount = augmentedMatrix.width();
@@ -227,7 +227,7 @@ countMinimumPressesForJoltages(const Machine& machine)
 {
   const auto n = machine.joltages.size();
   const auto m = machine.wirings.size();
-  Matrix augmentedMatrix{ { m + 1, n }, 0 };
+  Shape augmentedMatrix{ { m + 1, n }, 0 };
 
   for (std::size_t i = 0; i < n; ++i) {
     augmentedMatrix[m, i] = static_cast<std::int32_t>(machine.joltages[i]);

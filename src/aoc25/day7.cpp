@@ -22,11 +22,11 @@ struct Point
   }
 };
 
-using Matrix = aoc::matrix::Matrix<TileEx>;
+using Shape = aoc::matrix::Matrix<TileEx>;
 
 namespace {
 auto
-tryUpdate(Matrix& matrix)
+tryUpdate(Shape& matrix)
 {
   std::uint64_t splittedCount = 0;
   bool updated = false;
@@ -60,9 +60,9 @@ tryUpdate(Matrix& matrix)
 }
 
 auto
-countSplits(const Matrix& matrix)
+countSplits(const Shape& matrix)
 {
-  Matrix tmpMatrix = matrix;
+  Shape tmpMatrix = matrix;
   const auto start = tmpMatrix.find(TileEx::Start)[0];
   tmpMatrix[start.x, start.y] = TileEx::Beam;
   std::uint64_t count = 0;
@@ -73,7 +73,7 @@ countSplits(const Matrix& matrix)
 }
 
 auto
-countUniqueTimelines(const Matrix& matrix)
+countUniqueTimelines(const Shape& matrix)
 {
   const auto start = matrix.find(TileEx::Start)[0];
   aoc::matrix::Matrix dp{ { matrix.width(), matrix.height() }, 0ULL };
@@ -107,7 +107,7 @@ namespace aoc25::day7 {
 Result
 solve(const Input& input)
 {
-  const Matrix matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
+  const Shape matrix(input, [](Tile t) { return static_cast<TileEx>(t); });
   const std::uint64_t part1 = countSplits(matrix);
   const std::uint64_t part2 = countUniqueTimelines(matrix);
   return { part1, part2 };

@@ -108,7 +108,10 @@ public:
     return results;
   }
 
-  auto count(const T& value) const { return std::ranges::count(m_Data, value); }
+  auto count(const T& value) const
+  {
+    return static_cast<std::uint64_t>(std::ranges::count(m_Data, value));
+  }
 
   template<typename F>
   void print(F f) const

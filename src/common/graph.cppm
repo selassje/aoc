@@ -111,6 +111,39 @@ public:
     Memo memo(m_VertexMap.size());
     return findAllPathsImpl({ srcIndex, dstIndex }, memo);
   }
+
+  auto findShortestDistance(const VertexPair& pair) const
+  {
+    const auto srcIndex = m_VertexMap.at(pair.src);
+    const auto dstIndex = m_VertexMap.at(pair.dst);
+    static constexpr auto inf = std::numeric_limits<std::uint64_t>::max();
+    std::vector<std::uint64_t> distances(m_VertexMap.size(), inf);
+    distances[srcIndex] = 0;
+
+    auto compare = [&distances](std::uint64_t lhs, std::uint64_t rhs) {
+      if (distances[lhs] != distances[rhs]) {
+        return distances[lhs] < distances[rhs];
+      }
+      return lhs < rhs;
+    };
+
+    std::set<std::uint64_t, decltype(compare)> queue(compare);
+    queue.insert(srcIndex);
+    while (!queue.empty()) {
+      const std::uint64_t currentVertex = *queue.begin();
+      queue.erase(queue.begin());
+      for (const auto& edge : m_Edges[currentVertex]) {
+        const std::uint64_t altDistance =
+          distances[currentVertex] + edge.weight;
+        if (altDistance < distances[edge.dstIndex]) {
+          queue.erase(currentVertex);
+          distances[edge.dstIndex] = altDistance;
+          queue.insert(edge.dstIndex);
+        }
+      }
+    }
+    return distances[dstIndex];
+  }
 };
 
 }

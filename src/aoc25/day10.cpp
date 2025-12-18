@@ -1,6 +1,7 @@
 module aoc25.day10;
 
 import std;
+import aoc.graph;
 import aoc.matrix;
 import aoc.rational;
 
@@ -15,6 +16,11 @@ std::uint64_t
 countMinimumPressesForLights(const Machine& machine)
 {
   const std::uint64_t statesCount = 1ULL << machine.lights.size();
+  auto states = [=] {
+    return std::views::iota(static_cast<std::uint64_t>(0), statesCount);
+  };
+
+  aoc::graph::Graph<std::uint64_t, std::uint64_t> graph(states());
   const std::uint64_t startState = 0;
   const std::uint64_t targetState = [&]() {
     std::uint64_t state = 0;
@@ -25,43 +31,21 @@ countMinimumPressesForLights(const Machine& machine)
     }
     return state;
   }();
-  static constexpr auto inf = std::numeric_limits<std::uint64_t>::max();
-  std::vector<std::uint64_t> distances(statesCount, inf);
-  distances[startState] = 0;
-
-  auto compare = [&distances](std::uint64_t lhs, std::uint64_t rhs) {
-    if (distances[lhs] != distances[rhs]) {
-      return distances[lhs] < distances[rhs];
-    }
-    return lhs < rhs;
-  };
-
-  std::set<std::uint64_t, decltype(compare)> queue(compare);
-  queue.insert(startState);
 
   auto toggleLight = [](std::uint64_t state, std::size_t lightIndex) {
     return state ^ (1ULL << lightIndex);
   };
-
-  while (!queue.empty()) {
-    const std::uint64_t currentState = *queue.begin();
-    queue.erase(queue.begin());
+  for (const auto& currentState : states()) {
     for (const auto& wiring : machine.wirings) {
-      std::uint64_t nextState = currentState;
+      auto nextState = currentState;
       for (auto lightIndex : wiring) {
         nextState =
           toggleLight(nextState, static_cast<std::size_t>(lightIndex));
       }
-
-      const std::uint64_t altDistance = distances[currentState] + 1;
-      if (altDistance < distances[nextState]) {
-        queue.erase(nextState);
-        distances[nextState] = altDistance;
-        queue.insert(nextState);
-      }
+      graph[currentState, nextState] = 1;
     }
   }
-  return distances[targetState];
+  return graph.findShortestDistance({ startState, targetState });
 }
 
 struct Equation

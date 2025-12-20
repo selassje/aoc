@@ -21,7 +21,7 @@ countMinimumPressesForLights(const Machine& machine)
   };
 
   aoc::graph::Graph<std::uint64_t, std::uint64_t> graph(states());
-  const std::uint64_t startState = 0;
+  constexpr std::uint64_t startState = 0;
   const std::uint64_t targetState = [&]() {
     std::uint64_t state = 0;
     for (std::size_t i = 0; i < machine.lights.size(); ++i) {

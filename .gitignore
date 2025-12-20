@@ -3,3 +3,5 @@ build*/*
 !.vscode/launch.json
 dist/*
 .vs/*
+# Default ignored files
+.idea/*

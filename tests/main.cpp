@@ -8,10 +8,13 @@
 int
 main(int argc, char* argv[])
 {
-  const auto catchTestsResult = Catch::Session().run(argc, argv);
 #ifdef ENABLE_FUZZ_TESTS
   testing::InitGoogleTest();
   fuzztest::InitFuzzTest(&argc, &argv);
+#endif
+  const auto catchTestsResult = Catch::Session().run(argc, argv);
+
+#ifdef ENABLE_FUZZ_TESTS
   const auto fuzzTestResult = RUN_ALL_TESTS();
 #else
   const auto fuzzTestResult = 0;

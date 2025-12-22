@@ -26,9 +26,8 @@ if(ENABLE_FUZZ_TESTS)
     endforeach()
   endfunction()
 
-  add_subdirectory(fuzztest)
+  add_subdirectory(fuzztest SYSTEM)
   setup_std_lib_for_targets(fuzztest)
-
 endif()
 
 list(APPEND EXCLUDED_TESTS aoc22_day16)
@@ -67,7 +66,6 @@ function(configure_tests YEAR)
       PRIVATE aoc)
 
     if(ENABLE_FUZZ_TESTS)
-      setup_std_lib(fuzztest_gtest_main)
       link_fuzztest(${TEST_NAME})
     endif()
 

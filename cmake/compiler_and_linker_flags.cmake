@@ -91,10 +91,9 @@ function(setup_tests_flags TARGET)
     target_compile_options(
       ${TARGET}
       PRIVATE -g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG
-              -fsanitize-coverage=inline-8bit-counters
-              -fsanitize-coverage=trace-cmp)
-    # -fsanitize=address -DADDRESS_SANITIZER)
-    target_link_options(${TARGET} PRIVATE -fsanitize=address)
+              -fsanitize=undefined
+              -fno-omit-frame-pointer)
+    target_link_options(${TARGET} PRIVATE -fsanitize=address,undefined)
     target_compile_definitions(${TARGET} PRIVATE ENABLE_FUZZ_TESTS)
   endif()
   if(ENABLE_TESTS)

@@ -28,10 +28,11 @@ function(configure_common_sources)
   file(GLOB HEADER_FILES ${COMMON}/*.hpp)
   file(GLOB SOURCE_FILES ${COMMON}/*.cpp)
 
-  if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows" AND ${CMAKE_GENERATOR} STREQUAL "Ninja")
-   set(VC_TOOLS_INSTALL_DIR "$ENV{VcToolsInstallDir}")
-   set(STD_MODULE_DIR ${VC_TOOLS_INSTALL_DIR}/modules)
-   set(STD_MODULE ${STD_MODULE_DIR}/std.ixx)
+  if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows" AND ${CMAKE_GENERATOR}
+                                                      STREQUAL "Ninja")
+    set(VC_TOOLS_INSTALL_DIR "$ENV{VcToolsInstallDir}")
+    set(STD_MODULE_DIR ${VC_TOOLS_INSTALL_DIR}/modules)
+    set(STD_MODULE ${STD_MODULE_DIR}/std.ixx)
   endif()
 
   target_sources(
@@ -46,17 +47,17 @@ function(configure_common_sources)
             FILES
             ${MODULE_FILES}
     PRIVATE ${SOURCE_FILES})
-  
-    target_sources(
+
+  target_sources(
     aoc
-    PUBLIC  FILE_SET
-            public_modules
-            TYPE
-            CXX_MODULES
-            BASE_DIRS
-            ${STD_MODULE_DIR}
-            FILES
-            ${STD_MODULE})
+    PUBLIC FILE_SET
+           public_modules
+           TYPE
+           CXX_MODULES
+           BASE_DIRS
+           ${STD_MODULE_DIR}
+           FILES
+           ${STD_MODULE})
 
 endfunction(configure_common_sources)
 

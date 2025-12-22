@@ -33,16 +33,13 @@ function(setup_compiler_warnings TARGET)
               -Wimplicit-fallthrough
               -Wno-include-angled-in-module-purview
               -Wno-reserved-module-identifier
-              -Wno-unknown-pragmas
-              )
+              -Wno-unknown-pragmas)
 
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
       target_compile_options(
-        ${TARGET} PRIVATE -Wno-unused-function 
-                          -Wno-unused-variable
-                          -Wno-unused-parameter 
-                          -Wno-unused-lambda-capture
-                          -Wno-unused-but-set-variable)
+        ${TARGET}
+        PRIVATE -Wno-unused-function -Wno-unused-variable -Wno-unused-parameter
+                -Wno-unused-lambda-capture -Wno-unused-but-set-variable)
     endif()
 
     if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT ${ENABLE_CLANG_TIDY})
@@ -89,10 +86,8 @@ endfunction()
 function(setup_tests_flags TARGET)
   if(ENABLE_FUZZ_TESTS)
     target_compile_options(
-      ${TARGET}
-      PRIVATE -g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG
-              -fsanitize=undefined
-              -fno-omit-frame-pointer)
+      ${TARGET} PRIVATE -g -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -UNDEBUG
+                        -fsanitize=undefined -fno-omit-frame-pointer)
     target_link_options(${TARGET} PRIVATE -fsanitize=address,undefined)
     target_compile_definitions(${TARGET} PRIVATE ENABLE_FUZZ_TESTS)
   endif()
